@@ -1,0 +1,23 @@
+# Raw bulk data — large, reproducible from documented source
+pipeline/raw/*
+!pipeline/raw/.gitkeep
+!pipeline/raw/README.md
+
+# Secrets
+.env
+.env.local
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Node / site
+node_modules/
+dist/
+.astro/
+
+# OS
+Thumbs.db
+.DS_Store
