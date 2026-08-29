@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+import ProvenanceBlock from '../components/ProvenanceBlock.astro';
+import { patentProvenance } from '../lib/data';
+---
+
+<Base
+  title="Governed Semantic Layer — Jack Kelly"
+  description="A documented semantic layer over governed patent data, with natural language access and deliberate refusal behavior when a question cannot be answered honestly."
+>
+  <p class="eyebrow">Project Two</p>
+  <h1>Governed Semantic Layer</h1>
+
+  <p class="lede">
+    Anyone can wire a chat input to a language model. The differentiator is the governed
+    layer underneath it: documented entities, metrics with explicit formulas, allowed
+    joins stated up front, and refusal when a question falls outside what the data can
+    honestly answer.
+  </p>
+
+  <div class="callout callout-limit">
+    <span class="callout-label">The claim being made</span>
+    <p style="margin-bottom:0">
+      The layer is the artifact. The chat box is the least interesting part of this
+      project, and the page is built so the layer stays at least as visible as the
+      answers it produces.
+    </p>
+  </div>
+
+  <h2>Why the layer exists</h2>
+
+  <p>
+    Point a language model at raw patent data and it produces confident nonsense. Not
+    because the model is poor, but because the data carries knowledge that is nowhere in
+    the schema:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Assignee names are not identities.</strong> "Google LLC", "Google Inc.",
+      and "GOOGLE LLC" are three strings and one company. A model asked to count patents
+      by company will happily produce three rows, and it will be wrong in a way that
+      looks entirely plausible.
+    </li>
+    <li>
+      <strong>Grant dates are not filing dates.</strong> Asked about activity "this
+      year", a naive query answers with grants — which reflect decisions made years
+      earlier. The number returned is real and the answer is misleading.
+    </li>
+    <li>
+      <strong>Sector membership is a judgment call, not a column.</strong> The
+      CPC-to-practice mapping is authored. A model cannot infer it, and if it guesses,
+      the guess is invisible in the output.
+    </li>
+    <li>
+      <strong>Some counts must never be summed.</strong> Sectors deliberately overlap,
+      so adding them double-counts. Nothing in the raw data signals that constraint.
+    </li>
+  </ul>
+
+  <p>
+    Encoding these facts so a machine can act on them correctly is the work this project
+    is actually about. The layer is where that encoding lives.
+  </p>
+
+  <h2>The layer definition</h2>
+
+  <div class="callout callout-limit">
+    <span class="callout-label">Not yet built</span>
+    <p style="margin-bottom:0">
+      Entities, dimensions, metric formulas, and allowed relationships are defined over
+      the processed patent dataset, which does not exist yet. Writing the definitions
+      against guessed column names would produce a layer that documents nothing real, so
+      this section waits for the data.
+    </p>
+  </div>
+
+  <h2>Refusal behavior</h2>
+
+  <p>
+    A system that answers everything is a system that lies sometimes. The demonstration
+    includes questions the layer correctly declines, because declining is the governance
+    behavior worth showing. Categories it should refuse:
+  </p>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Question type</th>
+          <th scope="col">Why it is refused</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Anything about pending applications</td>
+          <td>The dataset covers granted patents only. The answer is not in the data.</td>
+        </tr>
+        <tr>
+          <td>Which companies need outside counsel</td>
+          <td>
+            Patent activity is a demand proxy. It carries no information about existing
+            counsel relationships, and answering would fabricate a conclusion.
+          </td>
+        </tr>
+        <tr>
+          <td>Revenue, headcount, or company size</td>
+          <td>Not present in this data, and not joinable from it without another source.</td>
+        </tr>
+        <tr>
+          <td>Totals summed across sectors</td>
+          <td>Sectors overlap by design, so the sum double-counts.</td>
+        </tr>
+        <tr>
+          <td>Filing activity in the last few quarters</td>
+          <td>
+            Grant lag makes recent periods structurally incomplete. A number could be
+            returned; it would mislead.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Shipping this safely</h2>
+
+  <p>
+    A public static site cannot safely hold a model API key — client-side keys are
+    extractable. The approach here is a curated gallery of pre-run questions, each
+    showing its real generated query and real answer, computed ahead of time and cached,
+    clearly labeled as pre-run, with the source code linked. It costs nothing, cannot be
+    abused, and is honest about what it is. A live version runs locally for interviews.
+  </p>
+
+  <h2>Data provenance</h2>
+
+  <ProvenanceBlock
+    record={patentProvenance}
+    pendingLabel="USPTO patent tables — not yet acquired"
+    pendingNote="The layer is defined over the processed patent dataset. Until the source tables are acquired and inspected, there is no dataset to govern and no provenance record to show."
+  />
+</Base>
