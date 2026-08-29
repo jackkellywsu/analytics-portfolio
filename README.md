@@ -32,6 +32,10 @@ Acquisition is abstracted behind `pipeline/sources.py`, so the ODP Bulk Datasets
 can replace the manual download later without touching downstream code. That path
 needs an API key, which needs ID.me identity verification; it is currently a stub.
 
+A second source, the **CPC Title List** (edition 2026.08), is downloaded automatically
+and needs no account. It is the authority every classification code in the sector map
+is validated against, so no CPC title in this repo is written by hand.
+
 ## Reproducing
 
 Requires Python 3.14+.
@@ -52,6 +56,17 @@ This checksums each file as published, reports real column headers and quote-awa
 record counts, and writes a provenance record to `docs/provenance/`. It asserts
 nothing about packaging — it reports what is actually there.
 
+The sector mapping needs no patent data and runs standalone:
+
+```bash
+.venv/Scripts/python.exe -m pipeline.build_sector_map
+```
+
+It fetches the CPC scheme, validates all 58 mapped codes against it, attaches official
+titles, reports coverage and cross-sector overlap, and regenerates
+[docs/cpc-sector-mapping.md](docs/cpc-sector-mapping.md). Edit the YAML, never the
+generated Markdown.
+
 ## Layout
 
 ```
@@ -61,6 +76,7 @@ pipeline/          extraction, normalization, scoring
   semantic/        the layer definition
   sources.py       acquisition paths behind one interface
   provenance.py    provenance records (SPEC.md 1.4)
+  build_sector_map.py  validates the CPC sector mapping
   inspect_raw.py   Phase 1: inspect source files, emit provenance
 site/              static site source
 docs/              methodology writeups, provenance records

@@ -1,0 +1,283 @@
+# Practice-area sector -> CPC classification mapping
+#
+# SPEC.md 3 requires this mapping to be visible, because the mapping decisions
+# ARE the analyst judgment. Nothing here is derived from the data; it is a set of
+# claims about which technologies imply demand for which legal practice, and a
+# reviewer should be able to disagree with any single line.
+#
+# Every `code` below is validated against the official CPC scheme by
+# pipeline/build_sector_map.py. Codes are never given titles by hand -- titles are
+# attached from the published CPC Title List so they cannot drift or be misremembered.
+#
+# Granularity: subclass (4 chars, e.g. A61B) unless a subclass is too broad to be
+# meaningful, in which case a main group is used (e.g. H01L31/00 for photovoltaics,
+# because H01L as a whole is all semiconductors).
+
+version: "1.0"
+firm: "Foley & Lardner LLP"
+firm_source: "Industry teams named in SPEC.md 3"
+cpc_edition: "2026.08"
+
+# ---------------------------------------------------------------------------
+# Cross-cutting decisions. These matter more than any individual code.
+# ---------------------------------------------------------------------------
+decisions:
+  - id: overlap-allowed
+    decision: >-
+      A patent may map to more than one sector. It is not forced into exactly one.
+    rationale: >-
+      A machine-learning model for reading radiology images is genuinely relevant to
+      both the Health Care and Innovative Technology teams. Forcing an exclusive
+      assignment would encode a false choice and would hide exactly the companies
+      that sit at a lucrative intersection.
+    consequence: >-
+      Sector patent counts MUST NOT be summed to a firm-wide total; the sum
+      double-counts. Each sector is reported independently, and the overlap rate is
+      published alongside so a reader can see how much double-assignment occurs.
+
+  - id: y-section-excluded
+    decision: >-
+      CPC section Y (Y02, Y04S, Y10) is excluded from all sectors.
+    rationale: >-
+      Y is a tagging overlay applied on top of a patent's real classification, not a
+      classification in its own right. A solar inverter patent already carries H02S
+      or H02J; adding its Y02E tag would count the same invention twice within the
+      same sector and inflate Energy relative to every other sector.
+    consequence: >-
+      Energy counts are lower than a Y02E-based query would produce. This is
+      deliberate and is the more defensible number.
+
+  - id: subclass-default
+    decision: >-
+      Map at CPC subclass level by default; drop to main group only where a subclass
+      spans genuinely different industries.
+    rationale: >-
+      Group-level mapping (thousands of codes) is unmaintainable by one analyst and
+      creates an illusion of precision the underlying judgment does not support.
+      Subclass level is coarse enough to defend line by line in an interview.
+    consequence: >-
+      Some irrelevant patents are swept in at the edges of each subclass. The
+      resulting noise is a known limitation, reported rather than hidden.
+
+  - id: no-revenue-proxy
+    decision: >-
+      Sector assignment reflects the technology, not the company's industry.
+    rationale: >-
+      A conglomerate that patents in A61B is doing medical device work regardless of
+      how its revenue is classified by SIC or NAICS. The signal this project scores
+      is patent activity, so the sector must be read off the patent.
+    consequence: >-
+      A company may appear in a sector that its investor-relations material would not
+      claim. That is a feature for business development, but it means sector labels
+      here are not company classifications and must not be presented as such.
+
+# ---------------------------------------------------------------------------
+# Sectors
+# ---------------------------------------------------------------------------
+sectors:
+
+  energy:
+    label: "Energy"
+    thesis: >-
+      Generation, storage, conversion, and distribution of power, plus extraction of
+      the fuels that feed it. Patent activity here tracks capital deployment into new
+      energy assets, which reliably precedes transactional and regulatory legal work.
+    codes:
+      - code: H01M
+        why: "Batteries and fuel cells. The single densest area of energy IP activity."
+      - code: H02J
+        why: "Grid architecture and power distribution circuits; utility-scale work."
+      - code: H02S
+        why: "Photovoltaic power generation systems, as distinct from the cell itself."
+      - code: H10F10/00
+        why: >-
+          Individual photovoltaic cells. Group-level, not subclass: H10F also holds
+          photodetectors and image sensors (H10F30/00), which are Innovative
+          Technology, so the subclass cannot be claimed wholesale for Energy.
+      - code: H10F19/00
+        why: >-
+          Photovoltaic assemblies and modules -- the panel rather than the cell.
+          Separated from H10F10/00 because module-level IP tends to sit with
+          installers and integrators rather than cell manufacturers.
+      - code: F03D
+        why: "Wind motors. Wind generation equipment."
+      - code: C25B
+        why: "Electrolytic processes; the classification hydrogen production falls under."
+      - code: G21C
+        why: "Nuclear reactors."
+      - code: G21D
+        why: "Nuclear power plants; the plant-level counterpart to G21C."
+      - code: E21B
+        why: "Earth and rock drilling. Oil and gas extraction."
+      - code: C10L
+        why: "Fuels; includes biofuels and synthetic fuel formulation."
+      - code: F24S
+        why: "Solar heat collectors. Thermal solar, distinct from photovoltaic."
+      - code: H02K
+        why: >-
+          Dynamo-electric machines: generators and motors. Overlaps Manufacturing by
+          design; see decision `overlap-allowed`.
+
+  health_care_life_sciences:
+    label: "Health Care & Life Sciences"
+    thesis: >-
+      Therapeutics, diagnostics, medical devices, and the biological tooling behind
+      them. The most regulation-dense sector on this list, and the one where patent
+      activity most directly implies near-term counsel need.
+    codes:
+      - code: A61B
+        why: "Diagnosis and surgery. The core medical device subclass."
+      - code: A61K
+        why: "Medicinal preparations. The core pharmaceutical composition subclass."
+      - code: A61M
+        why: "Devices for introducing media into the body: catheters, infusion, inhalers."
+      - code: A61F
+        why: "Implants and prostheses."
+      - code: A61N
+        why: "Electrotherapy, magnetotherapy, radiation therapy."
+      - code: A61P
+        why: >-
+          Therapeutic activity of chemical compounds. Indication-level tagging that
+          distinguishes a drug patent from a general chemistry patent.
+      - code: A61L
+        why: "Sterilising and biocidal materials; biomaterials."
+      - code: C07D
+        why: "Heterocyclic compounds. Where most small-molecule drug chemistry sits."
+      - code: C07K
+        why: "Peptides. Antibody and protein therapeutics."
+      - code: C12N
+        why: "Microorganisms, enzymes, genetic engineering. Cell and gene therapy."
+      - code: C12Q
+        why: "Measuring processes involving nucleic acids or enzymes. Molecular diagnostics."
+      - code: C12M
+        why: "Apparatus for enzymology or microbiology. Bioprocessing equipment."
+      - code: G16H
+        why: "Healthcare informatics. Where digital health software is classified."
+      - code: G16B
+        why: "Bioinformatics."
+
+  innovative_technology:
+    label: "Innovative Technology"
+    thesis: >-
+      Computing, communications, semiconductors, and software. The highest-volume
+      sector, which means raw counts here need normalising harder than elsewhere
+      before they can be compared across sectors.
+    codes:
+      - code: G06F
+        why: "Electric digital data processing. The broadest software subclass."
+      - code: G06N
+        why: >-
+          Computing arrangements based on specific computational models. Where
+          machine learning and AI inventions are classified.
+      - code: G06Q
+        why: "Data processing for commerce and business methods; fintech."
+      - code: G06T
+        why: "Image data processing and generation."
+      - code: G06V
+        why: "Image and video recognition. Split out of G06K in the 2022 CPC revision."
+      - code: H04L
+        why: "Transmission of digital information; networking and applied cryptography."
+      - code: H04W
+        why: "Wireless communication networks."
+      - code: H04N
+        why: "Pictorial communication; video coding and transmission."
+      - code: G10L
+        why: "Speech analysis and synthesis."
+      - code: G11C
+        why: "Static stores. Memory devices."
+      - code: G02B
+        why: "Optical elements; photonics and optical interconnect."
+      - code: H03M
+        why: "Coding and code conversion generally."
+      - code: H10D
+        why: >-
+          Inorganic semiconductor devices: transistors and diodes. The successor to
+          the retired H01L subclass for logic devices.
+      - code: H10B
+        why: >-
+          Electronic memory devices. Complements G11C, which covers the storage
+          circuit rather than the device structure.
+      - code: H10K
+        why: "Organic electric solid-state devices; OLED displays and organic circuits."
+      - code: H10N
+        why: "Solid-state devices not otherwise provided for; MEMS and emerging devices."
+      - code: H10F30/00
+        why: >-
+          Radiation-sensitive semiconductor devices: photodetectors. Group-level so
+          the photovoltaic groups of H10F stay with Energy.
+      - code: H10F39/00
+        why: "Integrated radiation-sensitive assemblies; CMOS image sensors."
+      - code: H10P
+        why: >-
+          Manufacture and treatment of class H10 devices -- semiconductor fabrication.
+          Deliberately also mapped to Manufacturing; see decision `overlap-allowed`.
+    excluded_codes:
+      - code: H01L
+        why: >-
+          Retired. H01L was the semiconductor subclass through the 2023 CPC
+          reorganisation and is absent from edition 2026.08, having been split across
+          H10B, H10D, H10F, H10K, H10N and H10P. Kept here as a deliberate record of
+          the change, because any mapping inherited from older work will still name
+          it and will silently match nothing.
+
+  manufacturing:
+    label: "Manufacturing"
+    thesis: >-
+      Production processes, machine tools, robotics, and industrial control. Patent
+      activity signals plant investment and process change, both of which generate
+      supplier, employment, and product liability work.
+    codes:
+      - code: B23K
+        why: "Soldering, welding, cladding. Core joining processes."
+      - code: B23Q
+        why: "Machine tool details and automatic control of machine tools."
+      - code: B23P
+        why: "Other metal working; assembly and manufacturing lines."
+      - code: B25J
+        why: "Manipulators. Industrial robotics."
+      - code: B29C
+        why: "Shaping of plastics; injection moulding and extrusion."
+      - code: B33Y
+        why: "Additive manufacturing. Indexing subclass for 3D printing."
+      - code: B21D
+        why: "Working of sheet metal without essentially removing material; stamping."
+      - code: B22D
+        why: "Casting of metals."
+      - code: B24B
+        why: "Grinding and polishing; finishing operations."
+      - code: G05B
+        why: >-
+          Control and regulating systems. Industrial automation and process control;
+          overlaps Innovative Technology by design.
+      - code: B65G
+        why: "Transport and conveying; materials handling and warehouse automation."
+      - code: H10P
+        why: >-
+          Semiconductor fabrication processes and equipment. Chip-tool makers are
+          manufacturing businesses as much as technology businesses, so this code is
+          claimed by both sectors rather than arbitrarily assigned to one.
+
+# ---------------------------------------------------------------------------
+# Stated up front so the site's limitations section can quote it directly.
+# ---------------------------------------------------------------------------
+known_limitations:
+  - >-
+    Subclass-level mapping sweeps in edge patents that a specialist would exclude.
+    No claim is made that every patent counted in a sector is relevant to that
+    practice; the claim is that the ranking between companies is stable under that
+    noise, which the scoring phase must test rather than assume.
+  - >-
+    The four sectors do not partition CPC. Large areas -- textiles, construction,
+    agriculture, food -- map to no sector and are simply out of scope for this firm.
+    Coverage against the full scheme is reported by the build script.
+  - >-
+    CPC is revised quarterly and codes are retired. The first draft of this mapping
+    used H01L for semiconductors and H01L31/00 for photovoltaics; both were retired in
+    the 2023 reorganisation into the H10 series and match nothing in edition 2026.08.
+    Validation against the published scheme caught it. Any sector map that is written
+    once and never re-validated will decay the same way, silently, because a retired
+    code produces zero matches rather than an error.
+  - >-
+    The mapping reflects one analyst's reading of one firm's published industry
+    teams. It is a starting point for a conversation with the practice group, not a
+    finished taxonomy, and it carries no endorsement from the firm.

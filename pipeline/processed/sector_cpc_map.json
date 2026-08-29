@@ -1,0 +1,490 @@
+{
+  "version": "1.0",
+  "firm": "Foley & Lardner LLP",
+  "cpc_edition": "2026.08",
+  "cpc_source": "https://www.cooperativepatentclassification.org/sites/default/files/cpc/bulk/CPCTitleList202608.zip",
+  "cpc_symbols_in_scheme": 254314,
+  "cpc_subclasses_in_scheme": 681,
+  "subclasses_mapped": 53,
+  "subclass_coverage_pct": 7.78,
+  "cross_sector_prefix_collisions": {
+    "H10P": [
+      "innovative_technology",
+      "manufacturing"
+    ]
+  },
+  "decisions": [
+    {
+      "id": "overlap-allowed",
+      "decision": "A patent may map to more than one sector. It is not forced into exactly one.",
+      "rationale": "A machine-learning model for reading radiology images is genuinely relevant to both the Health Care and Innovative Technology teams. Forcing an exclusive assignment would encode a false choice and would hide exactly the companies that sit at a lucrative intersection.",
+      "consequence": "Sector patent counts MUST NOT be summed to a firm-wide total; the sum double-counts. Each sector is reported independently, and the overlap rate is published alongside so a reader can see how much double-assignment occurs."
+    },
+    {
+      "id": "y-section-excluded",
+      "decision": "CPC section Y (Y02, Y04S, Y10) is excluded from all sectors.",
+      "rationale": "Y is a tagging overlay applied on top of a patent's real classification, not a classification in its own right. A solar inverter patent already carries H02S or H02J; adding its Y02E tag would count the same invention twice within the same sector and inflate Energy relative to every other sector.",
+      "consequence": "Energy counts are lower than a Y02E-based query would produce. This is deliberate and is the more defensible number."
+    },
+    {
+      "id": "subclass-default",
+      "decision": "Map at CPC subclass level by default; drop to main group only where a subclass spans genuinely different industries.",
+      "rationale": "Group-level mapping (thousands of codes) is unmaintainable by one analyst and creates an illusion of precision the underlying judgment does not support. Subclass level is coarse enough to defend line by line in an interview.",
+      "consequence": "Some irrelevant patents are swept in at the edges of each subclass. The resulting noise is a known limitation, reported rather than hidden."
+    },
+    {
+      "id": "no-revenue-proxy",
+      "decision": "Sector assignment reflects the technology, not the company's industry.",
+      "rationale": "A conglomerate that patents in A61B is doing medical device work regardless of how its revenue is classified by SIC or NAICS. The signal this project scores is patent activity, so the sector must be read off the patent.",
+      "consequence": "A company may appear in a sector that its investor-relations material would not claim. That is a feature for business development, but it means sector labels here are not company classifications and must not be presented as such."
+    }
+  ],
+  "sectors": {
+    "energy": {
+      "label": "Energy",
+      "thesis": "Generation, storage, conversion, and distribution of power, plus extraction of the fuels that feed it. Patent activity here tracks capital deployment into new energy assets, which reliably precedes transactional and regulatory legal work.",
+      "codes": [
+        {
+          "code": "H01M",
+          "official_title": "PROCESSES OR MEANS, e.g. BATTERIES, FOR THE DIRECT CONVERSION OF CHEMICAL ENERGY INTO ELECTRICAL ENERGY",
+          "match_prefix": "H01M",
+          "level": "subclass",
+          "why": "Batteries and fuel cells. The single densest area of energy IP activity."
+        },
+        {
+          "code": "H02J",
+          "official_title": "ELECTRIC POWER NETWORKS; CIRCUIT ARRANGEMENTS OR SYSTEMS FOR SUPPLYING OR DISTRIBUTING ELECTRIC POWER; SYSTEMS FOR STORING ELECTRIC ENERGY",
+          "match_prefix": "H02J",
+          "level": "subclass",
+          "why": "Grid architecture and power distribution circuits; utility-scale work."
+        },
+        {
+          "code": "H02S",
+          "official_title": "GENERATION OF ELECTRIC POWER BY CONVERSION OF INFRARED RADIATION, VISIBLE LIGHT OR ULTRAVIOLET LIGHT, e.g. USING PHOTOVOLTAIC [PV] MODULES (obtaining electrical energy from radioactive sources G21H1/12; light sensitive inorganic semiconductor devices H10F; light sensitive organic semiconductor devices H10K30/00; thermoelectric devices H10N10/00; pyroelectric devices H10N15/00)",
+          "match_prefix": "H02S",
+          "level": "subclass",
+          "why": "Photovoltaic power generation systems, as distinct from the cell itself."
+        },
+        {
+          "code": "H10F10/00",
+          "official_title": "Individual photovoltaic cells, e.g. solar cells (electrolytic light-sensitive devices, e.g. dye-sensitised solar cells, H01G9/20)",
+          "match_prefix": "H10F10/",
+          "level": "group",
+          "why": "Individual photovoltaic cells. Group-level, not subclass: H10F also holds photodetectors and image sensors (H10F30/00), which are Innovative Technology, so the subclass cannot be claimed wholesale for Energy."
+        },
+        {
+          "code": "H10F19/00",
+          "official_title": "Integrated devices, or assemblies of multiple devices, comprising at least one photovoltaic cell covered by group H10F10/00, e.g. photovoltaic modules",
+          "match_prefix": "H10F19/",
+          "level": "group",
+          "why": "Photovoltaic assemblies and modules -- the panel rather than the cell. Separated from H10F10/00 because module-level IP tends to sit with installers and integrators rather than cell manufacturers."
+        },
+        {
+          "code": "F03D",
+          "official_title": "WIND MOTORS",
+          "match_prefix": "F03D",
+          "level": "subclass",
+          "why": "Wind motors. Wind generation equipment."
+        },
+        {
+          "code": "C25B",
+          "official_title": "ELECTROLYTIC OR ELECTROPHORETIC PROCESSES FOR THE PRODUCTION OF COMPOUNDS OR NON-METALS; APPARATUS THEREFOR (anodic or cathodic protection C23F13/00; single-crystal growth C30B)",
+          "match_prefix": "C25B",
+          "level": "subclass",
+          "why": "Electrolytic processes; the classification hydrogen production falls under."
+        },
+        {
+          "code": "G21C",
+          "official_title": "NUCLEAR REACTORS (fusion reactors, hybrid fission-fusion reactors G21B; nuclear explosives G21J)",
+          "match_prefix": "G21C",
+          "level": "subclass",
+          "why": "Nuclear reactors."
+        },
+        {
+          "code": "G21D",
+          "official_title": "NUCLEAR POWER PLANT",
+          "match_prefix": "G21D",
+          "level": "subclass",
+          "why": "Nuclear power plants; the plant-level counterpart to G21C."
+        },
+        {
+          "code": "E21B",
+          "official_title": "EARTH OR ROCK DRILLING; OBTAINING OIL, GAS, WATER, SOLUBLE OR MELTABLE MATERIALS OR A SLURRY OF MINERALS FROM WELLS",
+          "match_prefix": "E21B",
+          "level": "subclass",
+          "why": "Earth and rock drilling. Oil and gas extraction."
+        },
+        {
+          "code": "C10L",
+          "official_title": "FUELS NOT OTHERWISE PROVIDED FOR; NATURAL GAS; SYNTHETIC NATURAL GAS OBTAINED BY PROCESSES NOT COVERED BY SUBCLASSES C10G OR C10K; LIQUIFIED PETROLEUM GAS; USE OF ADDITIVES TO FUELS OR FIRES; FIRE-LIGHTERS",
+          "match_prefix": "C10L",
+          "level": "subclass",
+          "why": "Fuels; includes biofuels and synthetic fuel formulation."
+        },
+        {
+          "code": "F24S",
+          "official_title": "SOLAR HEAT COLLECTORS; SOLAR HEAT SYSTEMS (for producing mechanical power from solar energy F03G6/00)",
+          "match_prefix": "F24S",
+          "level": "subclass",
+          "why": "Solar heat collectors. Thermal solar, distinct from photovoltaic."
+        },
+        {
+          "code": "H02K",
+          "official_title": "DYNAMO-ELECTRIC MACHINES (dynamo-electric relays H01H53/00; conversion of DC or AC input power into surge output power {H03K3/53})",
+          "match_prefix": "H02K",
+          "level": "subclass",
+          "why": "Dynamo-electric machines: generators and motors. Overlaps Manufacturing by design; see decision `overlap-allowed`."
+        }
+      ],
+      "excluded_codes": []
+    },
+    "health_care_life_sciences": {
+      "label": "Health Care & Life Sciences",
+      "thesis": "Therapeutics, diagnostics, medical devices, and the biological tooling behind them. The most regulation-dense sector on this list, and the one where patent activity most directly implies near-term counsel need.",
+      "codes": [
+        {
+          "code": "A61B",
+          "official_title": "DIAGNOSIS; SURGERY; IDENTIFICATION (usefulness limited to only animals A61D)",
+          "match_prefix": "A61B",
+          "level": "subclass",
+          "why": "Diagnosis and surgery. The core medical device subclass."
+        },
+        {
+          "code": "A61K",
+          "official_title": "PREPARATIONS FOR MEDICAL, DENTAL OR TOILETRY PURPOSES (devices or methods specially adapted for bringing pharmaceutical products into particular physical or administering forms A61J3/00; chemical aspects of, or use of materials for deodorisation of air, for disinfection or sterilisation, or for bandages, dressings, absorbent pads or surgical articles A61L; soap compositions C11D)",
+          "match_prefix": "A61K",
+          "level": "subclass",
+          "why": "Medicinal preparations. The core pharmaceutical composition subclass."
+        },
+        {
+          "code": "A61M",
+          "official_title": "DEVICES FOR INTRODUCING MEDIA INTO, OR ONTO, THE BODY (introducing media into or onto the bodies of animals A61D7/00; means for inserting tampons A61F13/26; devices for administering food or medicines orally A61J; containers for collecting, storing or administering blood or medical fluids A61J1/05); DEVICES FOR TRANSDUCING BODY MEDIA OR FOR TAKING MEDIA FROM THE BODY (surgery A61B; chemical aspects of surgical articles A61L); DEVICES FOR PRODUCING OR ENDING SLEEP OR STUPOR {(Electrotherapy, e.g. producing anaesthesia by the use of alternating or intermittent currents A61N1/36021)}",
+          "match_prefix": "A61M",
+          "level": "subclass",
+          "why": "Devices for introducing media into the body: catheters, infusion, inhalers."
+        },
+        {
+          "code": "A61F",
+          "official_title": "FILTERS IMPLANTABLE INTO BLOOD VESSELS; PROSTHESES; DEVICES PROVIDING PATENCY TO, OR PREVENTING COLLAPSING OF, TUBULAR STRUCTURES OF THE BODY, e.g. STENTS; ORTHOPAEDIC, NURSING OR CONTRACEPTIVE DEVICES; FOMENTATION; TREATMENT OR PROTECTION OF EYES OR EARS; BANDAGES, DRESSINGS OR ABSORBENT PADS; FIRST-AID KITS (dental prosthetics A61C)",
+          "match_prefix": "A61F",
+          "level": "subclass",
+          "why": "Implants and prostheses."
+        },
+        {
+          "code": "A61N",
+          "official_title": "ELECTROTHERAPY; MAGNETOTHERAPY; RADIATION THERAPY; ULTRASOUND THERAPY (measurement of bioelectric currents A61B; surgical instruments, devices or methods for transferring non-mechanical forms of energy to or from the body A61B18/00; anaesthetic apparatus in general A61M; incandescent lamps H01K; infrared radiators for heating H05B)",
+          "match_prefix": "A61N",
+          "level": "subclass",
+          "why": "Electrotherapy, magnetotherapy, radiation therapy."
+        },
+        {
+          "code": "A61P",
+          "official_title": "SPECIFIC THERAPEUTIC ACTIVITY OF CHEMICAL COMPOUNDS OR MEDICINAL PREPARATIONS",
+          "match_prefix": "A61P",
+          "level": "subclass",
+          "why": "Therapeutic activity of chemical compounds. Indication-level tagging that distinguishes a drug patent from a general chemistry patent."
+        },
+        {
+          "code": "A61L",
+          "official_title": "METHODS OR APPARATUS FOR STERILISING MATERIALS OR OBJECTS IN GENERAL; DISINFECTION, STERILISATION OR DEODORISATION OF AIR; CHEMICAL ASPECTS OF BANDAGES, DRESSINGS, ABSORBENT PADS OR SURGICAL ARTICLES; MATERIALS FOR BANDAGES, DRESSINGS, ABSORBENT PADS OR SURGICAL ARTICLES (preservation of bodies or disinfecting characterised by the agents employed A01N; preserving, e.g. sterilising, food or foodstuffs A23; preparations for medical, dental or toiletry purposes A61K)",
+          "match_prefix": "A61L",
+          "level": "subclass",
+          "why": "Sterilising and biocidal materials; biomaterials."
+        },
+        {
+          "code": "C07D",
+          "official_title": "HETEROCYCLIC COMPOUNDS (macromolecular compounds C08)",
+          "match_prefix": "C07D",
+          "level": "subclass",
+          "why": "Heterocyclic compounds. Where most small-molecule drug chemistry sits."
+        },
+        {
+          "code": "C07K",
+          "official_title": "PEPTIDES (peptides in foodstuffs A23; obtaining protein compositions for foodstuffs, working-up proteins for foodstuffs A23J; preparations for medicinal purposes A61K; peptides containing beta-lactam rings C07D; cyclic dipeptides not having in their molecule any other peptide link than those which form their ring, e.g. piperazine-2,5-diones, C07D; ergot alkaloids of the cyclic peptide type C07D519/02; macromolecular compounds having statistically distributed amino acid units in their molecules, i.e. when the preparation does not provide for a specific; but for a random sequence of the amino acid units, homopolyamides and block copolyamides derived from amino acids C08G69/00; macromolecular products derived from proteins C08H1/00; preparation of glue or gelatine C09H; single cell proteins, enzymes C12N; genetic engineering processes for obtaining peptides C12N15/00; compositions for measuring or testing processes involving enzymes C12Q; investigation or analysis of biological material G01N33/00)",
+          "match_prefix": "C07K",
+          "level": "subclass",
+          "why": "Peptides. Antibody and protein therapeutics."
+        },
+        {
+          "code": "C12N",
+          "official_title": "MICROORGANISMS OR ENZYMES; COMPOSITIONS THEREOF; PROPAGATING, PRESERVING, OR MAINTAINING MICROORGANISMS; MUTATION OR GENETIC ENGINEERING; CULTURE MEDIA (microbiological testing media C12Q1/00)",
+          "match_prefix": "C12N",
+          "level": "subclass",
+          "why": "Microorganisms, enzymes, genetic engineering. Cell and gene therapy."
+        },
+        {
+          "code": "C12Q",
+          "official_title": "MEASURING OR TESTING PROCESSES INVOLVING ENZYMES, NUCLEIC ACIDS OR MICROORGANISMS (immunoassay G01N33/53); COMPOSITIONS OR TEST PAPERS THEREFOR; PROCESSES OF PREPARING SUCH COMPOSITIONS; CONDITION-RESPONSIVE CONTROL IN MICROBIOLOGICAL OR ENZYMOLOGICAL PROCESSES",
+          "match_prefix": "C12Q",
+          "level": "subclass",
+          "why": "Measuring processes involving nucleic acids or enzymes. Molecular diagnostics."
+        },
+        {
+          "code": "C12M",
+          "official_title": "APPARATUS FOR ENZYMOLOGY OR MICROBIOLOGY; {APPARATUS FOR CULTURING MICROORGANISMS FOR PRODUCING BIOMASS, FOR GROWING CELLS OR FOR OBTAINING FERMENTATION OR METABOLIC PRODUCTS, i.e. BIOREACTORS OR FERMENTERS}",
+          "match_prefix": "C12M",
+          "level": "subclass",
+          "why": "Apparatus for enzymology or microbiology. Bioprocessing equipment."
+        },
+        {
+          "code": "G16H",
+          "official_title": "HEALTHCARE INFORMATICS, i.e. INFORMATION AND COMMUNICATION TECHNOLOGY [ICT] SPECIALLY ADAPTED FOR THE HANDLING OR PROCESSING OF MEDICAL OR HEALTHCARE DATA",
+          "match_prefix": "G16H",
+          "level": "subclass",
+          "why": "Healthcare informatics. Where digital health software is classified."
+        },
+        {
+          "code": "G16B",
+          "official_title": "BIOINFORMATICS, i.e. INFORMATION AND COMMUNICATION TECHNOLOGY [ICT] SPECIALLY ADAPTED FOR GENETIC OR PROTEIN-RELATED DATA PROCESSING IN COMPUTATIONAL MOLECULAR BIOLOGY",
+          "match_prefix": "G16B",
+          "level": "subclass",
+          "why": "Bioinformatics."
+        }
+      ],
+      "excluded_codes": []
+    },
+    "innovative_technology": {
+      "label": "Innovative Technology",
+      "thesis": "Computing, communications, semiconductors, and software. The highest-volume sector, which means raw counts here need normalising harder than elsewhere before they can be compared across sectors.",
+      "codes": [
+        {
+          "code": "G06F",
+          "official_title": "ELECTRIC DIGITAL DATA PROCESSING (computer systems based on specific computational models G06N)",
+          "match_prefix": "G06F",
+          "level": "subclass",
+          "why": "Electric digital data processing. The broadest software subclass."
+        },
+        {
+          "code": "G06N",
+          "official_title": "COMPUTING ARRANGEMENTS BASED ON SPECIFIC COMPUTATIONAL MODELS",
+          "match_prefix": "G06N",
+          "level": "subclass",
+          "why": "Computing arrangements based on specific computational models. Where machine learning and AI inventions are classified."
+        },
+        {
+          "code": "G06Q",
+          "official_title": "INFORMATION AND COMMUNICATION TECHNOLOGY [ICT] SPECIALLY ADAPTED FOR ADMINISTRATIVE, COMMERCIAL, FINANCIAL, MANAGERIAL OR SUPERVISORY PURPOSES; SYSTEMS OR METHODS SPECIALLY ADAPTED FOR ADMINISTRATIVE, COMMERCIAL, FINANCIAL, MANAGERIAL OR SUPERVISORY\u00a0PURPOSES, NOT OTHERWISE PROVIDED FOR",
+          "match_prefix": "G06Q",
+          "level": "subclass",
+          "why": "Data processing for commerce and business methods; fintech."
+        },
+        {
+          "code": "G06T",
+          "official_title": "IMAGE DATA PROCESSING OR GENERATION, IN GENERAL",
+          "match_prefix": "G06T",
+          "level": "subclass",
+          "why": "Image data processing and generation."
+        },
+        {
+          "code": "G06V",
+          "official_title": "IMAGE OR VIDEO RECOGNITION OR UNDERSTANDING",
+          "match_prefix": "G06V",
+          "level": "subclass",
+          "why": "Image and video recognition. Split out of G06K in the 2022 CPC revision."
+        },
+        {
+          "code": "H04L",
+          "official_title": "TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION (arrangements common to telegraphic and telephonic communication H04M)",
+          "match_prefix": "H04L",
+          "level": "subclass",
+          "why": "Transmission of digital information; networking and applied cryptography."
+        },
+        {
+          "code": "H04W",
+          "official_title": "WIRELESS COMMUNICATION NETWORKS (broadcast communication H04H; communication systems using wireless links for non-selective communication, e.g. wireless extensions H04M1/72)",
+          "match_prefix": "H04W",
+          "level": "subclass",
+          "why": "Wireless communication networks."
+        },
+        {
+          "code": "H04N",
+          "official_title": "PICTORIAL COMMUNICATION, e.g. TELEVISION",
+          "match_prefix": "H04N",
+          "level": "subclass",
+          "why": "Pictorial communication; video coding and transmission."
+        },
+        {
+          "code": "G10L",
+          "official_title": "SPEECH ANALYSIS TECHNIQUES OR SPEECH SYNTHESIS; SPEECH RECOGNITION; SPEECH OR VOICE PROCESSING TECHNIQUES; SPEECH OR AUDIO CODING OR DECODING",
+          "match_prefix": "G10L",
+          "level": "subclass",
+          "why": "Speech analysis and synthesis."
+        },
+        {
+          "code": "G11C",
+          "official_title": "STATIC STORES (semiconductor memory devices H10B)",
+          "match_prefix": "G11C",
+          "level": "subclass",
+          "why": "Static stores. Memory devices."
+        },
+        {
+          "code": "G02B",
+          "official_title": "OPTICAL ELEMENTS, SYSTEMS OR APPARATUS",
+          "match_prefix": "G02B",
+          "level": "subclass",
+          "why": "Optical elements; photonics and optical interconnect."
+        },
+        {
+          "code": "H03M",
+          "official_title": "CODING; DECODING; CODE CONVERSION IN GENERAL (using fluidic means F15C4/00; optical analogue/digital converters G02F7/00; coding, decoding or code conversion, specially adapted for particular applications, see the relevant subclasses, e.g. G01D, G01R, G06F, G06T, G09G, G10L, G11B, G11C, H04B, H04L, H04M, H04N; ciphering or deciphering for cryptography or other purposes involving the need for secrecy G09C)",
+          "match_prefix": "H03M",
+          "level": "subclass",
+          "why": "Coding and code conversion generally."
+        },
+        {
+          "code": "H10D",
+          "official_title": "INORGANIC ELECTRIC SEMICONDUCTOR DEVICES",
+          "match_prefix": "H10D",
+          "level": "subclass",
+          "why": "Inorganic semiconductor devices: transistors and diodes. The successor to the retired H01L subclass for logic devices."
+        },
+        {
+          "code": "H10B",
+          "official_title": "ELECTRONIC MEMORY DEVICES",
+          "match_prefix": "H10B",
+          "level": "subclass",
+          "why": "Electronic memory devices. Complements G11C, which covers the storage circuit rather than the device structure."
+        },
+        {
+          "code": "H10K",
+          "official_title": "ORGANIC ELECTRIC SOLID-STATE DEVICES",
+          "match_prefix": "H10K",
+          "level": "subclass",
+          "why": "Organic electric solid-state devices; OLED displays and organic circuits."
+        },
+        {
+          "code": "H10N",
+          "official_title": "ELECTRIC SOLID-STATE DEVICES NOT OTHERWISE PROVIDED FOR",
+          "match_prefix": "H10N",
+          "level": "subclass",
+          "why": "Solid-state devices not otherwise provided for; MEMS and emerging devices."
+        },
+        {
+          "code": "H10F30/00",
+          "official_title": "Individual radiation-sensitive semiconductor devices in which radiation controls the flow of current through the devices, e.g. photodetectors",
+          "match_prefix": "H10F30/",
+          "level": "group",
+          "why": "Radiation-sensitive semiconductor devices: photodetectors. Group-level so the photovoltaic groups of H10F stay with Energy."
+        },
+        {
+          "code": "H10F39/00",
+          "official_title": "Integrated devices, or assemblies of multiple devices, comprising at least one element covered by group H10F30/00, e.g. radiation detectors comprising photodiode arrays",
+          "match_prefix": "H10F39/",
+          "level": "group",
+          "why": "Integrated radiation-sensitive assemblies; CMOS image sensors."
+        },
+        {
+          "code": "H10P",
+          "official_title": "GENERIC PROCESSES OR APPARATUS FOR THE MANUFACTURE OR TREATMENT OF DEVICES COVERED BY CLASS H10",
+          "match_prefix": "H10P",
+          "level": "subclass",
+          "why": "Manufacture and treatment of class H10 devices -- semiconductor fabrication. Deliberately also mapped to Manufacturing; see decision `overlap-allowed`."
+        }
+      ],
+      "excluded_codes": [
+        {
+          "code": "H01L",
+          "official_title": "(not in scheme)",
+          "why": "Retired. H01L was the semiconductor subclass through the 2023 CPC reorganisation and is absent from edition 2026.08, having been split across H10B, H10D, H10F, H10K, H10N and H10P. Kept here as a deliberate record of the change, because any mapping inherited from older work will still name it and will silently match nothing."
+        }
+      ]
+    },
+    "manufacturing": {
+      "label": "Manufacturing",
+      "thesis": "Production processes, machine tools, robotics, and industrial control. Patent activity signals plant investment and process change, both of which generate supplier, employment, and product liability work.",
+      "codes": [
+        {
+          "code": "B23K",
+          "official_title": "SOLDERING OR UNSOLDERING; WELDING; CLADDING OR PLATING BY SOLDERING OR WELDING; CUTTING BY APPLYING HEAT LOCALLY, e.g. FLAME CUTTING; WORKING BY LASER BEAM",
+          "match_prefix": "B23K",
+          "level": "subclass",
+          "why": "Soldering, welding, cladding. Core joining processes."
+        },
+        {
+          "code": "B23Q",
+          "official_title": "DETAILS, COMPONENTS, OR ACCESSORIES FOR MACHINE TOOLS, e.g. ARRANGEMENTS FOR COPYING OR CONTROLLING (tools of the kind used in lathes or boring machines B23B27/00); MACHINE TOOLS IN GENERAL CHARACTERISED BY THE CONSTRUCTION OF PARTICULAR DETAILS OR COMPONENTS; COMBINATIONS OR ASSOCIATIONS OF METAL-WORKING MACHINES, NOT DIRECTED TO A PARTICULAR RESULT",
+          "match_prefix": "B23Q",
+          "level": "subclass",
+          "why": "Machine tool details and automatic control of machine tools."
+        },
+        {
+          "code": "B23P",
+          "official_title": "METAL-WORKING NOT OTHERWISE PROVIDED FOR; COMBINED OPERATIONS; UNIVERSAL MACHINE TOOLS (arrangements for copying or controlling B23Q)",
+          "match_prefix": "B23P",
+          "level": "subclass",
+          "why": "Other metal working; assembly and manufacturing lines."
+        },
+        {
+          "code": "B25J",
+          "official_title": "MANIPULATORS; CHAMBERS PROVIDED WITH MANIPULATION DEVICES ({manipulators specially adapted for use in surgery A61B34/70; manipulators used in cleaning hollow articles B08B9/04}; manipulators associated with rolling mills B21B39/20; manipulators associated with forging machines B21J13/10; {manipulators associated with picking-up and placing mechanisms B23P19/007}; means for holding wheels or parts thereof B60B30/00; {vehicles with ground-engaging propulsion means, e.g. walking members B62D57/02, B62D57/032; devices for picking-up and depositing articles or materials between conveyors B65G47/90, B65G47/91; manipulators with gripping or holding means for transferring packages B65H67/065}; cranes B66C; {manipulators used in the protection or supervision of pipe-line installations F17D5/00; walking equipment adapted for nuclear steam-generators F22B37/006}; manipulators specially adapted for, or associated with, nuclear reactors G21C; {apparatus used for handling wafers during manufacture or treatment of semiconductor H10P72/50})",
+          "match_prefix": "B25J",
+          "level": "subclass",
+          "why": "Manipulators. Industrial robotics."
+        },
+        {
+          "code": "B29C",
+          "official_title": "SHAPING OR JOINING OF PLASTICS; SHAPING OF MATERIAL IN A PLASTIC STATE, NOT OTHERWISE PROVIDED FOR; AFTER-TREATMENT OF THE SHAPED PRODUCTS, e.g. REPAIRING (making preforms B29B11/00; making laminated products by combining previously unconnected layers which become one product whose layers will remain together B32B37/00 - B32B41/00)",
+          "match_prefix": "B29C",
+          "level": "subclass",
+          "why": "Shaping of plastics; injection moulding and extrusion."
+        },
+        {
+          "code": "B33Y",
+          "official_title": "ADDITIVE MANUFACTURING, i.e. MANUFACTURING OF THREE-DIMENSIONAL [3D] OBJECTS BY ADDITIVE DEPOSITION, ADDITIVE AGGLOMERATION OR ADDITIVE LAYERING, e.g. BY 3D PRINTING, STEREOLITHOGRAPHY OR SELECTIVE LASER SINTERING",
+          "match_prefix": "B33Y",
+          "level": "subclass",
+          "why": "Additive manufacturing. Indexing subclass for 3D printing."
+        },
+        {
+          "code": "B21D",
+          "official_title": "WORKING OR PROCESSING OF SHEET METAL OR METAL TUBES, RODS OR PROFILES WITHOUT ESSENTIALLY REMOVING MATERIAL; PUNCHING METAL (working or processing of wire B21F)",
+          "match_prefix": "B21D",
+          "level": "subclass",
+          "why": "Working of sheet metal without essentially removing material; stamping."
+        },
+        {
+          "code": "B22D",
+          "official_title": "CASTING OF METALS; CASTING OF OTHER SUBSTANCES BY THE SAME PROCESSES OR DEVICES (shaping of plastics or substances in a plastic state B29C; metallurgical processing, selection of substances to be added to metal C21, C22)",
+          "match_prefix": "B22D",
+          "level": "subclass",
+          "why": "Casting of metals."
+        },
+        {
+          "code": "B24B",
+          "official_title": "MACHINES, DEVICES, OR PROCESSES FOR GRINDING OR POLISHING (grinding of gear teeth B23F, of screw-threads B23G1/36; by electro-erosion B23H; abrasive or related blasting B24C; tools for grinding, buffing or sharpening B24D; polishing compositions C09G1/00; abrasives C09K3/14; electrolytic etching or polishing C25F3/00; grinding arrangements for use on assembled railway tracks E01B31/17); DRESSING OR CONDITIONING OF ABRADING SURFACES; FEEDING OF GRINDING, POLISHING, OR LAPPING AGENTS",
+          "match_prefix": "B24B",
+          "level": "subclass",
+          "why": "Grinding and polishing; finishing operations."
+        },
+        {
+          "code": "G05B",
+          "official_title": "CONTROL OR REGULATING SYSTEMS IN GENERAL; FUNCTIONAL ELEMENTS OF SUCH SYSTEMS; MONITORING OR TESTING ARRANGEMENTS FOR SUCH SYSTEMS OR ELEMENTS (systems for controlling or regulating non-electric variables G05D; systems for regulating electric or magnetic variables G05F; control devices or systems insofar as characterised by mechanical features only G05G)",
+          "match_prefix": "G05B",
+          "level": "subclass",
+          "why": "Control and regulating systems. Industrial automation and process control; overlaps Innovative Technology by design."
+        },
+        {
+          "code": "B65G",
+          "official_title": "TRANSPORT OR STORAGE DEVICES, e.g. CONVEYORS FOR LOADING OR TIPPING,\u00a0SHOP CONVEYOR SYSTEMS OR\u00a0PNEUMATIC TUBE CONVEYORS (packaging B65B; handling thin or filamentary materials, e.g. paper sheets or thread, B65H; cranes B66C; portable mobile or lifting or hauling appliances, e.g. hoists, B66D; devices for lifting or lowering goods for loading or unloading purposes, e.g. fork-lift trucks, B66F9/00; emptying bottles, jars, casks, barrels or similar containers, not otherwise provided for, B67C9/00; delivering or transferring liquids B67D; filling or discharging vessels for liquefied, solidified or compressed gases F17C; pipe-line systems for fluids F17D)",
+          "match_prefix": "B65G",
+          "level": "subclass",
+          "why": "Transport and conveying; materials handling and warehouse automation."
+        },
+        {
+          "code": "H10P",
+          "official_title": "GENERIC PROCESSES OR APPARATUS FOR THE MANUFACTURE OR TREATMENT OF DEVICES COVERED BY CLASS H10",
+          "match_prefix": "H10P",
+          "level": "subclass",
+          "why": "Semiconductor fabrication processes and equipment. Chip-tool makers are manufacturing businesses as much as technology businesses, so this code is claimed by both sectors rather than arbitrarily assigned to one."
+        }
+      ],
+      "excluded_codes": []
+    }
+  },
+  "known_limitations": [
+    "Subclass-level mapping sweeps in edge patents that a specialist would exclude. No claim is made that every patent counted in a sector is relevant to that practice; the claim is that the ranking between companies is stable under that noise, which the scoring phase must test rather than assume.",
+    "The four sectors do not partition CPC. Large areas -- textiles, construction, agriculture, food -- map to no sector and are simply out of scope for this firm. Coverage against the full scheme is reported by the build script.",
+    "CPC is revised quarterly and codes are retired. The first draft of this mapping used H01L for semiconductors and H01L31/00 for photovoltaics; both were retired in the 2023 reorganisation into the H10 series and match nothing in edition 2026.08. Validation against the published scheme caught it. Any sector map that is written once and never re-validated will decay the same way, silently, because a retired code produces zero matches rather than an error.",
+    "The mapping reflects one analyst's reading of one firm's published industry teams. It is a starting point for a conversation with the practice group, not a finished taxonomy, and it carries no endorsement from the firm."
+  ]
+}
