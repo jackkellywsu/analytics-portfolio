@@ -1,0 +1,23 @@
+{
+  "dataset": "order_reviews",
+  "rows_in": 99224,
+  "rows_out": 99224,
+  "rules": [
+    {
+      "rule": "review_text_dropped",
+      "description": "40,977 reviews carry Portuguese free text. It is dropped from the shipped table: no metric uses it, and it would inflate the download for a reader who cannot verify it anyway.",
+      "rows_affected": 40977,
+      "before": null,
+      "after": null,
+      "severity": "dropped"
+    },
+    {
+      "rule": "duplicate_review_ids",
+      "description": "review_id is not unique - a single review can attach to more than one order. Counting reviews by id would undercount.",
+      "rows_affected": 814,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}

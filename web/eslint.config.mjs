@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Third-party runtime copied in at build time, not source we maintain.
+    "public/duckdb/**",
   ]),
 ]);
 

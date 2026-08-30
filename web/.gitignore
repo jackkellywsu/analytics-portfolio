@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# DuckDB runtime, generated at build time by scripts/copy-duckdb-assets.mjs
+public/duckdb/

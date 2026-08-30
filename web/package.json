@@ -6,9 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prebuild": "node scripts/copy-duckdb-assets.mjs",
+    "predev": "node scripts/copy-duckdb-assets.mjs"
   },
   "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.33.1-dev57.0",
+    "apache-arrow": "^21.2.0",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"

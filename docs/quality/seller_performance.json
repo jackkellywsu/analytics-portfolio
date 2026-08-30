@@ -1,0 +1,15 @@
+{
+  "dataset": "seller_performance",
+  "rows_in": 3056,
+  "rows_out": 3056,
+  "rules": [
+    {
+      "rule": "revenue_excludes_freight_and_cancellations",
+      "description": "Revenue is the sum of item price on non-cancelled orders. Freight is reported separately because it is a pass-through cost, not seller revenue.",
+      "rows_affected": 3056,
+      "before": null,
+      "after": null,
+      "severity": "fixed"
+    }
+  ]
+}

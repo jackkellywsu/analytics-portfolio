@@ -1,0 +1,82 @@
+{
+  "key": "crm_pipeline",
+  "source": "CRM Sales Opportunities \u2014 Maven Analytics (via Kaggle mirror)",
+  "url": "https://www.kaggle.com/datasets/innocentmfa/crm-sales-opportunities",
+  "slug": "innocentmfa/crm-sales-opportunities",
+  "nature": "synthetic",
+  "pulled_at": "2026-08-30",
+  "cache_path": "~/.cache/kagglehub/datasets/innocentmfa/crm-sales-opportunities/versions/1",
+  "files": [
+    {
+      "name": "accounts.csv",
+      "bytes": 4670,
+      "sha256": "e5242324768a563fc632cddfed49a29acbbf2892b8a3c6453cc9650de9ae0358",
+      "rows": 85,
+      "columns": [
+        "account",
+        "sector",
+        "year_established",
+        "revenue",
+        "employees",
+        "office_location",
+        "subsidiary_of"
+      ]
+    },
+    {
+      "name": "data_dictionary.csv",
+      "bytes": 996,
+      "sha256": "22b34e498d07e3d7f322afdbf81d70a5dc0a389792944e50ca2af86a3597f0af",
+      "rows": 21,
+      "columns": [
+        "Table",
+        "Field",
+        "Description"
+      ]
+    },
+    {
+      "name": "products.csv",
+      "bytes": 171,
+      "sha256": "7c1c8cbbdb6d4c286902e1985eeb529a36366d6a43f43cd4a93c4b1da2a6eb84",
+      "rows": 7,
+      "columns": [
+        "product",
+        "series",
+        "sales_price"
+      ]
+    },
+    {
+      "name": "sales_pipeline.csv",
+      "bytes": 637773,
+      "sha256": "825ce8f6c32d4009548b468df3173d55a46fd73f2531f532c5459371dc52adf2",
+      "rows": 8800,
+      "columns": [
+        "opportunity_id",
+        "sales_agent",
+        "product",
+        "account",
+        "deal_stage",
+        "engage_date",
+        "close_date",
+        "close_value"
+      ]
+    },
+    {
+      "name": "sales_teams.csv",
+      "bytes": 1284,
+      "sha256": "aeff1272ebe196f5a27e3fc0578aa27abf48ed9ae461aa344fb95990e5ad8bd1",
+      "rows": 35,
+      "columns": [
+        "sales_agent",
+        "manager",
+        "regional_office"
+      ]
+    }
+  ],
+  "notes": "A fictitious B2B hardware vendor's sales pipeline, published by Maven Analytics as a teaching dataset. Three independent Kaggle mirrors carry byte-identical files, which is how the mirror was verified against the original. It is used here for pipeline shape \u2014 stages, cycle time, quota attainment \u2014 and never for a claim that depends on the data being real.",
+  "gaps": [
+    "The data is synthetic. No finding here describes a real market.",
+    "Covers 2017 only, so there is no multi-year trend to read.",
+    "Deal values are list prices; no discounting, margin, or cost of sale.",
+    "No marketing touch history, so nothing upstream of the opportunity is visible."
+  ]
+}

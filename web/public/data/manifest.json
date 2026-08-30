@@ -1,0 +1,1219 @@
+{
+  "generated_at": "2026-08-30T16:56:49+00:00",
+  "total_bytes": 20374072,
+  "tables": [
+    {
+      "name": "crm_opportunities",
+      "domain": "crm",
+      "source": "crm_pipeline",
+      "grain": "One row per sales opportunity.",
+      "description": "Every opportunity in the pipeline, open or closed. Won deals carry a close value; lost deals carry zero; open deals carry null.",
+      "file": "/data/crm_opportunities.parquet",
+      "bytes": 107564,
+      "rows": 8800,
+      "columns": [
+        {
+          "name": "opportunity_id",
+          "type": "String"
+        },
+        {
+          "name": "sales_agent",
+          "type": "String"
+        },
+        {
+          "name": "product",
+          "type": "String"
+        },
+        {
+          "name": "account",
+          "type": "String"
+        },
+        {
+          "name": "deal_stage",
+          "type": "String"
+        },
+        {
+          "name": "engage_date",
+          "type": "Date"
+        },
+        {
+          "name": "close_date",
+          "type": "Date"
+        },
+        {
+          "name": "close_value",
+          "type": "Int64"
+        },
+        {
+          "name": "is_won",
+          "type": "Boolean"
+        },
+        {
+          "name": "is_closed",
+          "type": "Boolean"
+        },
+        {
+          "name": "cycle_days",
+          "type": "Int64"
+        }
+      ],
+      "quality": {
+        "dataset": "crm_opportunities",
+        "rows_in": 8800,
+        "rows_out": 8800,
+        "rules": [
+          {
+            "rule": "product_name_variant",
+            "description": "Pipeline rows referenced 'GTXPro', which the product catalogue does not define. The catalogue contains 'GTX Pro' and no other candidate, so the spacing variant is unambiguous. Left unfixed, these rows drop out of every product join.",
+            "rows_affected": 1480,
+            "before": "GTXPro",
+            "after": "GTX Pro",
+            "severity": "fixed"
+          },
+          {
+            "rule": "lost_deal_zero_value",
+            "description": "Lost deals carry close_value = 0. That is a real outcome, not a missing value, but it must be excluded from deal-size averages or it drags them toward zero. Kept as 0 and flagged via is_won.",
+            "rows_affected": 2473,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "open_deal_null_value",
+            "description": "Open deals (Prospecting, Engaging) have no close_value or close_date. Left null so that open pipeline is never counted as booked revenue.",
+            "rows_affected": 2089,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "prospecting_no_engage_date",
+            "description": "Every Prospecting opportunity lacks an engage_date, so cycle time is undefined for them by construction rather than by data loss.",
+            "rows_affected": 500,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "opportunity_without_account",
+            "description": "Opportunities with no account named. Confined to open stages, which is consistent with an account being attached later in the process. Left null; any account-level metric must exclude them explicitly.",
+            "rows_affected": 1425,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "negative_cycle_time",
+            "description": "Opportunities closing before they were engaged would indicate a source defect. Checked explicitly.",
+            "rows_affected": 0,
+            "before": null,
+            "after": null,
+            "severity": "fixed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "crm_accounts",
+      "domain": "crm",
+      "source": "crm_pipeline",
+      "grain": "One row per client account.",
+      "description": "The client companies opportunities are opened against.",
+      "file": "/data/crm_accounts.parquet",
+      "bytes": 4842,
+      "rows": 85,
+      "columns": [
+        {
+          "name": "account",
+          "type": "String"
+        },
+        {
+          "name": "sector",
+          "type": "String"
+        },
+        {
+          "name": "year_established",
+          "type": "Int64"
+        },
+        {
+          "name": "revenue_musd",
+          "type": "Float64"
+        },
+        {
+          "name": "employees",
+          "type": "Int64"
+        },
+        {
+          "name": "office_location",
+          "type": "String"
+        },
+        {
+          "name": "parent_account",
+          "type": "String"
+        }
+      ],
+      "quality": {
+        "dataset": "crm_accounts",
+        "rows_in": 85,
+        "rows_out": 85,
+        "rules": [
+          {
+            "rule": "sector_spelling",
+            "description": "Sector label misspelled at source. No correctly spelled variant exists to merge with, so this relabels rather than deduplicates.",
+            "rows_affected": 12,
+            "before": "technolgy",
+            "after": "technology",
+            "severity": "fixed"
+          },
+          {
+            "rule": "parent_account_missing",
+            "description": "Accounts with no parent company. This is meaningful absence, not a defect \u2014 most accounts are independent \u2014 so it is left null rather than filled.",
+            "rows_affected": 70,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "crm_products",
+      "domain": "crm",
+      "source": "crm_pipeline",
+      "grain": "One row per product.",
+      "description": "Product catalogue with list prices, grouped into series.",
+      "file": "/data/crm_products.parquet",
+      "bytes": 1302,
+      "rows": 7,
+      "columns": [
+        {
+          "name": "product",
+          "type": "String"
+        },
+        {
+          "name": "series",
+          "type": "String"
+        },
+        {
+          "name": "list_price",
+          "type": "Int64"
+        }
+      ],
+      "quality": {
+        "dataset": "crm_products",
+        "rows_in": 7,
+        "rows_out": 7,
+        "rules": []
+      }
+    },
+    {
+      "name": "crm_sales_teams",
+      "domain": "crm",
+      "source": "crm_pipeline",
+      "grain": "One row per sales agent.",
+      "description": "Agents, the manager they report to, and their regional office.",
+      "file": "/data/crm_sales_teams.parquet",
+      "bytes": 1873,
+      "rows": 35,
+      "columns": [
+        {
+          "name": "sales_agent",
+          "type": "String"
+        },
+        {
+          "name": "manager",
+          "type": "String"
+        },
+        {
+          "name": "regional_office",
+          "type": "String"
+        }
+      ],
+      "quality": {
+        "dataset": "crm_sales_teams",
+        "rows_in": 35,
+        "rows_out": 35,
+        "rules": []
+      }
+    },
+    {
+      "name": "funnel_leads",
+      "domain": "funnel",
+      "source": "olist_funnel",
+      "grain": "One row per marketing-qualified lead.",
+      "description": "Leads that passed marketing qualification, with the channel and landing page that produced them.",
+      "file": "/data/funnel_leads.parquet",
+      "bytes": 177406,
+      "rows": 8000,
+      "columns": [
+        {
+          "name": "mql_id",
+          "type": "String"
+        },
+        {
+          "name": "first_contact_date",
+          "type": "Date"
+        },
+        {
+          "name": "landing_page_id",
+          "type": "String"
+        },
+        {
+          "name": "origin",
+          "type": "String"
+        }
+      ],
+      "quality": {
+        "dataset": "funnel_leads",
+        "rows_in": 8000,
+        "rows_out": 8000,
+        "rules": [
+          {
+            "rule": "origin_missing_vs_unknown",
+            "description": "60 leads have a null origin and 1,099 carry the literal value 'unknown'. These are different facts - one is an unrecorded channel, the other is a channel recorded as unidentifiable - so they are kept apart rather than merged into one bucket.",
+            "rows_affected": 60,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "funnel_deals",
+      "domain": "funnel",
+      "source": "olist_funnel",
+      "grain": "One row per closed deal.",
+      "description": "Leads that converted into signed clients, with segment, lead type, and the reps who worked them.",
+      "file": "/data/funnel_deals.parquet",
+      "bytes": 54232,
+      "rows": 842,
+      "columns": [
+        {
+          "name": "mql_id",
+          "type": "String"
+        },
+        {
+          "name": "seller_id",
+          "type": "String"
+        },
+        {
+          "name": "sdr_id",
+          "type": "String"
+        },
+        {
+          "name": "sr_id",
+          "type": "String"
+        },
+        {
+          "name": "won_date",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "business_segment",
+          "type": "String"
+        },
+        {
+          "name": "lead_type",
+          "type": "String"
+        },
+        {
+          "name": "lead_behaviour_profile",
+          "type": "String"
+        },
+        {
+          "name": "has_company",
+          "type": "Boolean"
+        },
+        {
+          "name": "has_gtin",
+          "type": "Boolean"
+        },
+        {
+          "name": "average_stock",
+          "type": "String"
+        },
+        {
+          "name": "business_type",
+          "type": "String"
+        },
+        {
+          "name": "declared_product_catalog_size",
+          "type": "Float64"
+        },
+        {
+          "name": "declared_monthly_revenue",
+          "type": "Float64"
+        },
+        {
+          "name": "behaviour_primary",
+          "type": "String"
+        },
+        {
+          "name": "behaviour_multi",
+          "type": "Boolean"
+        },
+        {
+          "name": "first_contact_date",
+          "type": "Date"
+        },
+        {
+          "name": "origin",
+          "type": "String"
+        },
+        {
+          "name": "landing_page_id",
+          "type": "String"
+        },
+        {
+          "name": "days_to_close",
+          "type": "Int64"
+        }
+      ],
+      "quality": {
+        "dataset": "funnel_deals",
+        "rows_in": 842,
+        "rows_out": 842,
+        "rules": [
+          {
+            "rule": "deal_without_lead",
+            "description": "Every closed deal resolves to a marketing-qualified lead, so the funnel join is complete. Checked rather than assumed.",
+            "rows_affected": 0,
+            "before": null,
+            "after": null,
+            "severity": "fixed"
+          },
+          {
+            "rule": "behaviour_profile_multivalued",
+            "description": "Some leads carry two behaviour profiles in one comma-separated field. Split to a primary profile for grouping, with a flag preserving that the original was multi-valued.",
+            "rows_affected": 16,
+            "before": null,
+            "after": null,
+            "severity": "fixed"
+          },
+          {
+            "rule": "declared_revenue_unusable",
+            "description": "declared_monthly_revenue is self-reported and unusable: the median and the 75th percentile are both zero while the maximum is 50,000,000. It is retained for transparency but excluded from every metric and from the prospect score.",
+            "rows_affected": 797,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "qualification_fields_sparse",
+            "description": "Four qualification fields are ~92% null (has_company: 779, has_gtin: 778, average_stock: 776, declared_product_catalog_size: 773). Too sparse to model on; kept for drill-down only.",
+            "rows_affected": 779,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "negative_time_to_close",
+            "description": "Deals won before first contact would indicate a source defect. Checked explicitly.",
+            "rows_affected": 1,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deal_outcomes",
+      "domain": "funnel",
+      "source": "olist_funnel",
+      "grain": "One row per closed deal.",
+      "description": "Closed deals joined to the revenue that client actually generated afterwards, with the observation window each deal had. This is the attribution table; window_complete marks the deals a rate may use.",
+      "file": "/data/deal_outcomes.parquet",
+      "bytes": 58891,
+      "rows": 842,
+      "columns": [
+        {
+          "name": "mql_id",
+          "type": "String"
+        },
+        {
+          "name": "seller_id",
+          "type": "String"
+        },
+        {
+          "name": "won_date",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "business_segment",
+          "type": "String"
+        },
+        {
+          "name": "lead_type",
+          "type": "String"
+        },
+        {
+          "name": "behaviour_primary",
+          "type": "String"
+        },
+        {
+          "name": "business_type",
+          "type": "String"
+        },
+        {
+          "name": "origin",
+          "type": "String"
+        },
+        {
+          "name": "landing_page_id",
+          "type": "String"
+        },
+        {
+          "name": "first_contact_date",
+          "type": "Date"
+        },
+        {
+          "name": "days_to_close",
+          "type": "Int64"
+        },
+        {
+          "name": "sdr_id",
+          "type": "String"
+        },
+        {
+          "name": "sr_id",
+          "type": "String"
+        },
+        {
+          "name": "days_observed",
+          "type": "Int64"
+        },
+        {
+          "name": "window_complete",
+          "type": "Boolean"
+        },
+        {
+          "name": "revenue_90d",
+          "type": "Float64"
+        },
+        {
+          "name": "orders_90d",
+          "type": "UInt32"
+        },
+        {
+          "name": "revenue_lifetime",
+          "type": "Float64"
+        },
+        {
+          "name": "orders_lifetime",
+          "type": "UInt32"
+        },
+        {
+          "name": "ever_sold",
+          "type": "Boolean"
+        }
+      ],
+      "quality": {
+        "dataset": "deal_outcomes",
+        "rows_in": 842,
+        "rows_out": 842,
+        "rules": [
+          {
+            "rule": "right_censoring",
+            "description": "The commerce data ends 2018-09-03 while deals close through 2018-11-14. Across all 842 deals 45.0% show any revenue, but that figure is depressed by deals with no observation window. Restricted to the 671 deals with a full 90-day window the rate is 51.4%. Every attachment and revenue metric uses the restricted set.",
+            "rows_affected": 171,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "deals_after_observation_end",
+            "description": "Deals won after the commerce data stops. They cannot show revenue by construction and are excluded from every rate.",
+            "rows_affected": 48,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "seller_performance",
+      "domain": "commerce",
+      "source": "olist_commerce",
+      "grain": "One row per selling client.",
+      "description": "Lifetime orders, revenue, and average review score per client, excluding cancelled orders.",
+      "file": "/data/seller_performance.parquet",
+      "bytes": 135561,
+      "rows": 3056,
+      "columns": [
+        {
+          "name": "seller_id",
+          "type": "String"
+        },
+        {
+          "name": "orders",
+          "type": "UInt32"
+        },
+        {
+          "name": "items",
+          "type": "UInt32"
+        },
+        {
+          "name": "revenue_brl",
+          "type": "Float64"
+        },
+        {
+          "name": "freight_brl",
+          "type": "Float64"
+        },
+        {
+          "name": "first_order_at",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "last_order_at",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "avg_review_score",
+          "type": "Float64"
+        },
+        {
+          "name": "reviews",
+          "type": "UInt32"
+        }
+      ],
+      "quality": {
+        "dataset": "seller_performance",
+        "rows_in": 3056,
+        "rows_out": 3056,
+        "rules": [
+          {
+            "rule": "revenue_excludes_freight_and_cancellations",
+            "description": "Revenue is the sum of item price on non-cancelled orders. Freight is reported separately because it is a pass-through cost, not seller revenue.",
+            "rows_affected": 3056,
+            "before": null,
+            "after": null,
+            "severity": "fixed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sellers",
+      "domain": "commerce",
+      "source": "olist_commerce",
+      "grain": "One row per client.",
+      "description": "Client registry with location.",
+      "file": "/data/sellers.parquet",
+      "bytes": 76835,
+      "rows": 3095,
+      "columns": [
+        {
+          "name": "seller_id",
+          "type": "String"
+        },
+        {
+          "name": "seller_zip_code_prefix",
+          "type": "Int64"
+        },
+        {
+          "name": "seller_city",
+          "type": "String"
+        },
+        {
+          "name": "seller_state",
+          "type": "String"
+        }
+      ],
+      "quality": {
+        "dataset": "sellers",
+        "rows_in": 3095,
+        "rows_out": 3095,
+        "rules": []
+      }
+    },
+    {
+      "name": "orders",
+      "domain": "commerce",
+      "source": "olist_commerce",
+      "grain": "One row per order.",
+      "description": "Orders with status and the purchase, approval, shipping, delivery, and estimated-delivery timestamps.",
+      "file": "/data/orders.parquet",
+      "bytes": 6206406,
+      "rows": 99441,
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "String"
+        },
+        {
+          "name": "customer_id",
+          "type": "String"
+        },
+        {
+          "name": "order_status",
+          "type": "String"
+        },
+        {
+          "name": "order_purchase_timestamp",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "order_approved_at",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "order_delivered_carrier_date",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "order_delivered_customer_date",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "order_estimated_delivery_date",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        }
+      ],
+      "quality": {
+        "dataset": "orders",
+        "rows_in": 99441,
+        "rows_out": 99441,
+        "rules": [
+          {
+            "rule": "cancelled_orders_retained",
+            "description": "Cancelled orders are kept in the table but excluded from every revenue metric. Dropping them here would make the exclusion invisible to anyone reading a query.",
+            "rows_affected": 625,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "delivery_date_missing",
+            "description": "Orders with no delivery timestamp - cancelled, unavailable, or still in transit at the end of the window. Delivery metrics must exclude them.",
+            "rows_affected": 2965,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "order_items",
+      "domain": "commerce",
+      "source": "olist_commerce",
+      "grain": "One row per item line within an order.",
+      "description": "Item lines with price and freight. An order with three items is three rows, so per-order metrics must aggregate first.",
+      "file": "/data/order_items.parquet",
+      "bytes": 4135256,
+      "rows": 112650,
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "String"
+        },
+        {
+          "name": "order_item_id",
+          "type": "Int64"
+        },
+        {
+          "name": "product_id",
+          "type": "String"
+        },
+        {
+          "name": "seller_id",
+          "type": "String"
+        },
+        {
+          "name": "shipping_limit_date",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "price",
+          "type": "Float64"
+        },
+        {
+          "name": "freight_value",
+          "type": "Float64"
+        }
+      ],
+      "quality": {
+        "dataset": "order_items",
+        "rows_in": 112650,
+        "rows_out": 112650,
+        "rules": [
+          {
+            "rule": "line_level_grain",
+            "description": "One row per item line, not per order: an order with three items is three rows. Any per-order metric has to aggregate first or it will double count.",
+            "rows_affected": 112650,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "order_reviews",
+      "domain": "commerce",
+      "source": "olist_commerce",
+      "grain": "One row per review.",
+      "description": "Review scores and timestamps. Free-text comments were dropped; no metric uses them.",
+      "file": "/data/order_reviews.parquet",
+      "bytes": 4436960,
+      "rows": 99224,
+      "columns": [
+        {
+          "name": "review_id",
+          "type": "String"
+        },
+        {
+          "name": "order_id",
+          "type": "String"
+        },
+        {
+          "name": "review_score",
+          "type": "Int64"
+        },
+        {
+          "name": "review_creation_date",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        },
+        {
+          "name": "review_answer_timestamp",
+          "type": "Datetime(time_unit='us', time_zone=None)"
+        }
+      ],
+      "quality": {
+        "dataset": "order_reviews",
+        "rows_in": 99224,
+        "rows_out": 99224,
+        "rules": [
+          {
+            "rule": "review_text_dropped",
+            "description": "40,977 reviews carry Portuguese free text. It is dropped from the shipped table: no metric uses it, and it would inflate the download for a reader who cannot verify it anyway.",
+            "rows_affected": 40977,
+            "before": null,
+            "after": null,
+            "severity": "dropped"
+          },
+          {
+            "rule": "duplicate_review_ids",
+            "description": "review_id is not unique - a single review can attach to more than one order. Counting reviews by id would undercount.",
+            "rows_affected": 814,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "products",
+      "domain": "commerce",
+      "source": "olist_commerce",
+      "grain": "One row per product.",
+      "description": "Product attributes with the official English category name.",
+      "file": "/data/products.parquet",
+      "bytes": 882468,
+      "rows": 32951,
+      "columns": [
+        {
+          "name": "product_id",
+          "type": "String"
+        },
+        {
+          "name": "product_category_name",
+          "type": "String"
+        },
+        {
+          "name": "product_name_length",
+          "type": "Int64"
+        },
+        {
+          "name": "product_description_length",
+          "type": "Int64"
+        },
+        {
+          "name": "product_photos_qty",
+          "type": "Int64"
+        },
+        {
+          "name": "product_weight_g",
+          "type": "Int64"
+        },
+        {
+          "name": "product_length_cm",
+          "type": "Int64"
+        },
+        {
+          "name": "product_height_cm",
+          "type": "Int64"
+        },
+        {
+          "name": "product_width_cm",
+          "type": "Int64"
+        },
+        {
+          "name": "product_category_name_english",
+          "type": "String"
+        }
+      ],
+      "quality": {
+        "dataset": "products",
+        "rows_in": 32951,
+        "rows_out": 32951,
+        "rules": [
+          {
+            "rule": "misspelled_source_columns",
+            "description": "Two columns are misspelled at source ('lenght'). Renamed, because a model writing SQL against this schema should not have to reproduce a typo to get a correct answer.",
+            "rows_affected": 2,
+            "before": "product_name_lenght",
+            "after": "product_name_length",
+            "severity": "fixed"
+          },
+          {
+            "rule": "category_untranslated",
+            "description": "Categories present in the product table but absent from the official translation file. Left with a null English name rather than a guessed one.",
+            "rows_affected": 13,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          },
+          {
+            "rule": "category_missing",
+            "description": "Products with no category at all.",
+            "rows_affected": 610,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "customers",
+      "domain": "commerce",
+      "source": "olist_commerce",
+      "grain": "One row per customer record on an order.",
+      "description": "End customers. customer_id is per order; customer_unique_id identifies the person across orders.",
+      "file": "/data/customers.parquet",
+      "bytes": 4094476,
+      "rows": 99441,
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "String"
+        },
+        {
+          "name": "customer_unique_id",
+          "type": "String"
+        },
+        {
+          "name": "customer_zip_code_prefix",
+          "type": "Int64"
+        },
+        {
+          "name": "customer_city",
+          "type": "String"
+        },
+        {
+          "name": "customer_state",
+          "type": "String"
+        }
+      ],
+      "quality": {
+        "dataset": "customers",
+        "rows_in": 99441,
+        "rows_out": 99441,
+        "rules": [
+          {
+            "rule": "customer_id_is_per_order",
+            "description": "customer_id identifies an order's customer record, not a person. customer_unique_id does that, and 3,345 rows are repeat buyers. Counting customers by customer_id overstates the customer base.",
+            "rows_affected": 3345,
+            "before": null,
+            "after": null,
+            "severity": "flagged"
+          }
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "key": "crm_pipeline",
+      "source": "CRM Sales Opportunities \u2014 Maven Analytics (via Kaggle mirror)",
+      "url": "https://www.kaggle.com/datasets/innocentmfa/crm-sales-opportunities",
+      "slug": "innocentmfa/crm-sales-opportunities",
+      "nature": "synthetic",
+      "pulled_at": "2026-08-30",
+      "cache_path": "~/.cache/kagglehub/datasets/innocentmfa/crm-sales-opportunities/versions/1",
+      "files": [
+        {
+          "name": "accounts.csv",
+          "bytes": 4670,
+          "sha256": "e5242324768a563fc632cddfed49a29acbbf2892b8a3c6453cc9650de9ae0358",
+          "rows": 85,
+          "columns": [
+            "account",
+            "sector",
+            "year_established",
+            "revenue",
+            "employees",
+            "office_location",
+            "subsidiary_of"
+          ]
+        },
+        {
+          "name": "data_dictionary.csv",
+          "bytes": 996,
+          "sha256": "22b34e498d07e3d7f322afdbf81d70a5dc0a389792944e50ca2af86a3597f0af",
+          "rows": 21,
+          "columns": [
+            "Table",
+            "Field",
+            "Description"
+          ]
+        },
+        {
+          "name": "products.csv",
+          "bytes": 171,
+          "sha256": "7c1c8cbbdb6d4c286902e1985eeb529a36366d6a43f43cd4a93c4b1da2a6eb84",
+          "rows": 7,
+          "columns": [
+            "product",
+            "series",
+            "sales_price"
+          ]
+        },
+        {
+          "name": "sales_pipeline.csv",
+          "bytes": 637773,
+          "sha256": "825ce8f6c32d4009548b468df3173d55a46fd73f2531f532c5459371dc52adf2",
+          "rows": 8800,
+          "columns": [
+            "opportunity_id",
+            "sales_agent",
+            "product",
+            "account",
+            "deal_stage",
+            "engage_date",
+            "close_date",
+            "close_value"
+          ]
+        },
+        {
+          "name": "sales_teams.csv",
+          "bytes": 1284,
+          "sha256": "aeff1272ebe196f5a27e3fc0578aa27abf48ed9ae461aa344fb95990e5ad8bd1",
+          "rows": 35,
+          "columns": [
+            "sales_agent",
+            "manager",
+            "regional_office"
+          ]
+        }
+      ],
+      "notes": "A fictitious B2B hardware vendor's sales pipeline, published by Maven Analytics as a teaching dataset. Three independent Kaggle mirrors carry byte-identical files, which is how the mirror was verified against the original. It is used here for pipeline shape \u2014 stages, cycle time, quota attainment \u2014 and never for a claim that depends on the data being real.",
+      "gaps": [
+        "The data is synthetic. No finding here describes a real market.",
+        "Covers 2017 only, so there is no multi-year trend to read.",
+        "Deal values are list prices; no discounting, margin, or cost of sale.",
+        "No marketing touch history, so nothing upstream of the opportunity is visible."
+      ]
+    },
+    {
+      "key": "olist_commerce",
+      "source": "Brazilian E-Commerce Public Dataset by Olist \u2014 Olist",
+      "url": "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce",
+      "slug": "olistbr/brazilian-ecommerce",
+      "nature": "real",
+      "pulled_at": "2026-08-30",
+      "cache_path": "~/.cache/kagglehub/datasets/olistbr/brazilian-ecommerce/versions/2",
+      "files": [
+        {
+          "name": "olist_customers_dataset.csv",
+          "bytes": 9033957,
+          "sha256": "983a422239e1712ded753b3bf9ecf47dc73f144d306029dcfa99e70a226883d2",
+          "rows": 99441,
+          "columns": [
+            "customer_id",
+            "customer_unique_id",
+            "customer_zip_code_prefix",
+            "customer_city",
+            "customer_state"
+          ]
+        },
+        {
+          "name": "olist_geolocation_dataset.csv",
+          "bytes": 61273883,
+          "sha256": "b514f6fc991b9566aeba02aa5d67e2c3630f034b60a0e05aa0d082a3b66d88d6",
+          "rows": 1000163,
+          "columns": [
+            "geolocation_zip_code_prefix",
+            "geolocation_lat",
+            "geolocation_lng",
+            "geolocation_city",
+            "geolocation_state"
+          ]
+        },
+        {
+          "name": "olist_order_items_dataset.csv",
+          "bytes": 15438671,
+          "sha256": "0bc4d068c4fe38cbb01bd90e8746e3c613fe7b4baef75fab7b0e329701c3e279",
+          "rows": 112650,
+          "columns": [
+            "order_id",
+            "order_item_id",
+            "product_id",
+            "seller_id",
+            "shipping_limit_date",
+            "price",
+            "freight_value"
+          ]
+        },
+        {
+          "name": "olist_order_payments_dataset.csv",
+          "bytes": 5777138,
+          "sha256": "4f713964f2815dbbaa40b9488268c55aac3627bfce5aa96cf58d1f3616de3cc0",
+          "rows": 103886,
+          "columns": [
+            "order_id",
+            "payment_sequential",
+            "payment_type",
+            "payment_installments",
+            "payment_value"
+          ]
+        },
+        {
+          "name": "olist_order_reviews_dataset.csv",
+          "bytes": 14451670,
+          "sha256": "012b61c7593e34f51fa614efdf802b9c7056ce6aae5307ddb93236e7cfc797d7",
+          "rows": 99224,
+          "columns": [
+            "review_id",
+            "order_id",
+            "review_score",
+            "review_comment_title",
+            "review_comment_message",
+            "review_creation_date",
+            "review_answer_timestamp"
+          ]
+        },
+        {
+          "name": "olist_orders_dataset.csv",
+          "bytes": 17654914,
+          "sha256": "8df58ef3d2d7e9944010f7beecd9b75367f5588ec6e3c91cec19ae3345ef9ecf",
+          "rows": 99441,
+          "columns": [
+            "order_id",
+            "customer_id",
+            "order_status",
+            "order_purchase_timestamp",
+            "order_approved_at",
+            "order_delivered_carrier_date",
+            "order_delivered_customer_date",
+            "order_estimated_delivery_date"
+          ]
+        },
+        {
+          "name": "olist_products_dataset.csv",
+          "bytes": 2379446,
+          "sha256": "3e6569628a17fbc75fd206ee357b59e20364b9afa90f5b6cd5b4d624c58aa9cc",
+          "rows": 32951,
+          "columns": [
+            "product_id",
+            "product_category_name",
+            "product_name_lenght",
+            "product_description_lenght",
+            "product_photos_qty",
+            "product_weight_g",
+            "product_length_cm",
+            "product_height_cm",
+            "product_width_cm"
+          ]
+        },
+        {
+          "name": "olist_sellers_dataset.csv",
+          "bytes": 174703,
+          "sha256": "1f643d2b950373b85735e7794b20986f528d7a000432e7c6f9bcbb44d0846a0e",
+          "rows": 3095,
+          "columns": [
+            "seller_id",
+            "seller_zip_code_prefix",
+            "seller_city",
+            "seller_state"
+          ]
+        },
+        {
+          "name": "product_category_name_translation.csv",
+          "bytes": 2613,
+          "sha256": "a81f0d1f27b27e7293f761bc79e3ce8f348ee39c4b3ed3e49bde38f478586278",
+          "rows": 71,
+          "columns": [
+            "product_category_name",
+            "product_category_name_english"
+          ]
+        }
+      ],
+      "notes": "~100k real orders across nine related tables. Used here for what a seller actually billed after being acquired, which turns the funnel data into an attribution problem instead of a conversion-rate problem.",
+      "gaps": [
+        "Order values are anonymised and rescaled by the publisher.",
+        "Review comments are in Portuguese.",
+        "Geolocation is zip-prefix level, so it cannot identify a customer.",
+        "Sellers acquired late in the window have little realised revenue yet, which biases any lifetime-value figure downward for recent cohorts."
+      ]
+    },
+    {
+      "key": "olist_funnel",
+      "source": "Marketing Funnel by Olist \u2014 Olist",
+      "url": "https://www.kaggle.com/datasets/olistbr/marketing-funnel-olist",
+      "slug": "olistbr/marketing-funnel-olist",
+      "nature": "real",
+      "pulled_at": "2026-08-30",
+      "cache_path": "~/.cache/kagglehub/datasets/olistbr/marketing-funnel-olist/versions/2",
+      "files": [
+        {
+          "name": "olist_closed_deals_dataset.csv",
+          "bytes": 171352,
+          "sha256": "1433f402d8fff00ca167579de641d9525f6e846368958c166f699ef1b0c31f3d",
+          "rows": 842,
+          "columns": [
+            "mql_id",
+            "seller_id",
+            "sdr_id",
+            "sr_id",
+            "won_date",
+            "business_segment",
+            "lead_type",
+            "lead_behaviour_profile",
+            "has_company",
+            "has_gtin",
+            "average_stock",
+            "business_type",
+            "declared_product_catalog_size",
+            "declared_monthly_revenue"
+          ]
+        },
+        {
+          "name": "olist_marketing_qualified_leads_dataset.csv",
+          "bytes": 703836,
+          "sha256": "5537753b7549ce4068e52e2402c29f2773c5375fc0575520ae8f3f301f666573",
+          "rows": 8000,
+          "columns": [
+            "mql_id",
+            "first_contact_date",
+            "landing_page_id",
+            "origin"
+          ]
+        }
+      ],
+      "notes": "Real marketing-qualified leads and closed deals from Olist, a Brazilian marketplace, covering its acquisition of sellers as business clients. Joins to the Olist e-commerce dataset on seller id, which is what makes lead-to-revenue attribution possible rather than just lead counting.",
+      "gaps": [
+        "Leads are marketing-qualified only; anything before qualification is absent.",
+        "Anonymised sales reps, so rep-level findings cannot be validated externally.",
+        "Brazilian marketplace, mid-2017 to end-2018 \u2014 not a legal-services market.",
+        "Declared monthly revenue is self-reported by the lead and is unverified."
+      ]
+    }
+  ]
+}

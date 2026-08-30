@@ -1,0 +1,15 @@
+{
+  "dataset": "funnel_leads",
+  "rows_in": 8000,
+  "rows_out": 8000,
+  "rules": [
+    {
+      "rule": "origin_missing_vs_unknown",
+      "description": "60 leads have a null origin and 1,099 carry the literal value 'unknown'. These are different facts - one is an unrecorded channel, the other is a channel recorded as unidentifiable - so they are kept apart rather than merged into one bucket.",
+      "rows_affected": 60,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}

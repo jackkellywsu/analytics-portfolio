@@ -1,0 +1,52 @@
+{
+  "key": "olist_funnel",
+  "source": "Marketing Funnel by Olist \u2014 Olist",
+  "url": "https://www.kaggle.com/datasets/olistbr/marketing-funnel-olist",
+  "slug": "olistbr/marketing-funnel-olist",
+  "nature": "real",
+  "pulled_at": "2026-08-30",
+  "cache_path": "~/.cache/kagglehub/datasets/olistbr/marketing-funnel-olist/versions/2",
+  "files": [
+    {
+      "name": "olist_closed_deals_dataset.csv",
+      "bytes": 171352,
+      "sha256": "1433f402d8fff00ca167579de641d9525f6e846368958c166f699ef1b0c31f3d",
+      "rows": 842,
+      "columns": [
+        "mql_id",
+        "seller_id",
+        "sdr_id",
+        "sr_id",
+        "won_date",
+        "business_segment",
+        "lead_type",
+        "lead_behaviour_profile",
+        "has_company",
+        "has_gtin",
+        "average_stock",
+        "business_type",
+        "declared_product_catalog_size",
+        "declared_monthly_revenue"
+      ]
+    },
+    {
+      "name": "olist_marketing_qualified_leads_dataset.csv",
+      "bytes": 703836,
+      "sha256": "5537753b7549ce4068e52e2402c29f2773c5375fc0575520ae8f3f301f666573",
+      "rows": 8000,
+      "columns": [
+        "mql_id",
+        "first_contact_date",
+        "landing_page_id",
+        "origin"
+      ]
+    }
+  ],
+  "notes": "Real marketing-qualified leads and closed deals from Olist, a Brazilian marketplace, covering its acquisition of sellers as business clients. Joins to the Olist e-commerce dataset on seller id, which is what makes lead-to-revenue attribution possible rather than just lead counting.",
+  "gaps": [
+    "Leads are marketing-qualified only; anything before qualification is absent.",
+    "Anonymised sales reps, so rep-level findings cannot be validated externally.",
+    "Brazilian marketplace, mid-2017 to end-2018 \u2014 not a legal-services market.",
+    "Declared monthly revenue is self-reported by the lead and is unverified."
+  ]
+}

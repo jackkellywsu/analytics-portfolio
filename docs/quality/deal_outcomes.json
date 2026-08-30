@@ -1,0 +1,23 @@
+{
+  "dataset": "deal_outcomes",
+  "rows_in": 842,
+  "rows_out": 842,
+  "rules": [
+    {
+      "rule": "right_censoring",
+      "description": "The commerce data ends 2018-09-03 while deals close through 2018-11-14. Across all 842 deals 45.0% show any revenue, but that figure is depressed by deals with no observation window. Restricted to the 671 deals with a full 90-day window the rate is 51.4%. Every attachment and revenue metric uses the restricted set.",
+      "rows_affected": 171,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "deals_after_observation_end",
+      "description": "Deals won after the commerce data stops. They cannot show revenue by construction and are excluded from every rate.",
+      "rows_affected": 48,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}

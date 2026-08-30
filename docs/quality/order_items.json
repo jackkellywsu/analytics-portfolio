@@ -1,0 +1,15 @@
+{
+  "dataset": "order_items",
+  "rows_in": 112650,
+  "rows_out": 112650,
+  "rules": [
+    {
+      "rule": "line_level_grain",
+      "description": "One row per item line, not per order: an order with three items is three rows. Any per-order metric has to aggregate first or it will double count.",
+      "rows_affected": 112650,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}

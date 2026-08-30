@@ -1,0 +1,15 @@
+{
+  "dataset": "customers",
+  "rows_in": 99441,
+  "rows_out": 99441,
+  "rules": [
+    {
+      "rule": "customer_id_is_per_order",
+      "description": "customer_id identifies an order's customer record, not a person. customer_unique_id does that, and 3,345 rows are repeat buyers. Counting customers by customer_id overstates the customer base.",
+      "rows_affected": 3345,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}

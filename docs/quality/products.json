@@ -1,0 +1,31 @@
+{
+  "dataset": "products",
+  "rows_in": 32951,
+  "rows_out": 32951,
+  "rules": [
+    {
+      "rule": "misspelled_source_columns",
+      "description": "Two columns are misspelled at source ('lenght'). Renamed, because a model writing SQL against this schema should not have to reproduce a typo to get a correct answer.",
+      "rows_affected": 2,
+      "before": "product_name_lenght",
+      "after": "product_name_length",
+      "severity": "fixed"
+    },
+    {
+      "rule": "category_untranslated",
+      "description": "Categories present in the product table but absent from the official translation file. Left with a null English name rather than a guessed one.",
+      "rows_affected": 13,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "category_missing",
+      "description": "Products with no category at all.",
+      "rows_affected": 610,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}

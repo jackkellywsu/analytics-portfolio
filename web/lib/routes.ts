@@ -87,9 +87,9 @@ export const ROUTES: Route[] = [
     label: "Methods",
     title: "Methods and provenance",
     blurb:
-      "The semantic layer, the data dictionary, where every number came from, and what this data cannot tell you.",
+      "The data dictionary, the cleaning log, where every number came from, and a SQL console that runs in your browser.",
     group: "Evidence",
-    phase: 6,
+    phase: 2,
   },
   {
     href: "/about",
@@ -108,7 +108,7 @@ export function routeByHref(href: string): Route | undefined {
 }
 
 /** The highest phase currently shipped. Pages above this render a scaffold. */
-export const CURRENT_PHASE: Phase = 1;
+export const CURRENT_PHASE: Phase = 2;
 
 export const RESUME_HREF = "/Jack-Kelly-Resume.pdf";
 

@@ -28,3 +28,6 @@ next-env.d.ts
 # OS
 Thumbs.db
 .DS_Store
+
+# Intermediate build artefacts; the published copy lives in web/public/data
+pipeline/processed/

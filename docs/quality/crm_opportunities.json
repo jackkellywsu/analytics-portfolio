@@ -1,0 +1,55 @@
+{
+  "dataset": "crm_opportunities",
+  "rows_in": 8800,
+  "rows_out": 8800,
+  "rules": [
+    {
+      "rule": "product_name_variant",
+      "description": "Pipeline rows referenced 'GTXPro', which the product catalogue does not define. The catalogue contains 'GTX Pro' and no other candidate, so the spacing variant is unambiguous. Left unfixed, these rows drop out of every product join.",
+      "rows_affected": 1480,
+      "before": "GTXPro",
+      "after": "GTX Pro",
+      "severity": "fixed"
+    },
+    {
+      "rule": "lost_deal_zero_value",
+      "description": "Lost deals carry close_value = 0. That is a real outcome, not a missing value, but it must be excluded from deal-size averages or it drags them toward zero. Kept as 0 and flagged via is_won.",
+      "rows_affected": 2473,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "open_deal_null_value",
+      "description": "Open deals (Prospecting, Engaging) have no close_value or close_date. Left null so that open pipeline is never counted as booked revenue.",
+      "rows_affected": 2089,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "prospecting_no_engage_date",
+      "description": "Every Prospecting opportunity lacks an engage_date, so cycle time is undefined for them by construction rather than by data loss.",
+      "rows_affected": 500,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "opportunity_without_account",
+      "description": "Opportunities with no account named. Confined to open stages, which is consistent with an account being attached later in the process. Left null; any account-level metric must exclude them explicitly.",
+      "rows_affected": 1425,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "negative_cycle_time",
+      "description": "Opportunities closing before they were engaged would indicate a source defect. Checked explicitly.",
+      "rows_affected": 0,
+      "before": null,
+      "after": null,
+      "severity": "fixed"
+    }
+  ]
+}

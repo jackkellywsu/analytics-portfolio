@@ -1,0 +1,23 @@
+{
+  "dataset": "crm_accounts",
+  "rows_in": 85,
+  "rows_out": 85,
+  "rules": [
+    {
+      "rule": "sector_spelling",
+      "description": "Sector label misspelled at source. No correctly spelled variant exists to merge with, so this relabels rather than deduplicates.",
+      "rows_affected": 12,
+      "before": "technolgy",
+      "after": "technology",
+      "severity": "fixed"
+    },
+    {
+      "rule": "parent_account_missing",
+      "description": "Accounts with no parent company. This is meaningful absence, not a defect \u2014 most accounts are independent \u2014 so it is left null rather than filled.",
+      "rows_affected": 70,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}

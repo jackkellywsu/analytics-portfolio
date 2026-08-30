@@ -51,13 +51,31 @@ The site runs at http://localhost:3000. No API key or database is needed to brow
 the live natural-language demo falls back to a cached gallery of pre-run examples when no
 key is configured.
 
+To regenerate the data from source, put a Kaggle API token at `~/.kaggle/access_token`
+and run:
+
+```bash
+python -m venv .venv
+.venv/Scripts/python.exe -m pip install -r requirements.txt
+.venv/Scripts/python.exe -m pipeline.acquire
+.venv/Scripts/python.exe -m pipeline.build_crm
+.venv/Scripts/python.exe -m pipeline.build_olist
+.venv/Scripts/python.exe -m pipeline.build_manifest
+```
+
+`acquire` downloads each source and writes a provenance record with per-file checksums
+and quote-aware row counts. The `build_*` scripts clean each source and write a quality
+log recording every rule applied and the rows it touched. `build_manifest` publishes the
+Parquet and generates the data dictionary the site renders — so the dictionary cannot
+drift from what actually shipped.
+
 ## Build status
 
 | Phase | Scope | State |
 |---|---|---|
 | 1 | Foundation — design system, layout, routes | ✅ done |
-| 2 | Data pipeline, provenance, DuckDB-WASM | in progress |
-| 3 | Dashboards | not started |
+| 2 | Data pipeline, provenance, DuckDB-WASM | ✅ done |
+| 3 | Dashboards | next |
 | 4 | Semantic layer, natural-language interface, guardrails | not started |
 | 5 | Evaluation lab | not started |
 | 6 | Anomaly detection, methods, about, polish | not started |

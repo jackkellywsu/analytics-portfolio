@@ -1,0 +1,47 @@
+{
+  "dataset": "funnel_deals",
+  "rows_in": 842,
+  "rows_out": 842,
+  "rules": [
+    {
+      "rule": "deal_without_lead",
+      "description": "Every closed deal resolves to a marketing-qualified lead, so the funnel join is complete. Checked rather than assumed.",
+      "rows_affected": 0,
+      "before": null,
+      "after": null,
+      "severity": "fixed"
+    },
+    {
+      "rule": "behaviour_profile_multivalued",
+      "description": "Some leads carry two behaviour profiles in one comma-separated field. Split to a primary profile for grouping, with a flag preserving that the original was multi-valued.",
+      "rows_affected": 16,
+      "before": null,
+      "after": null,
+      "severity": "fixed"
+    },
+    {
+      "rule": "declared_revenue_unusable",
+      "description": "declared_monthly_revenue is self-reported and unusable: the median and the 75th percentile are both zero while the maximum is 50,000,000. It is retained for transparency but excluded from every metric and from the prospect score.",
+      "rows_affected": 797,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "qualification_fields_sparse",
+      "description": "Four qualification fields are ~92% null (has_company: 779, has_gtin: 778, average_stock: 776, declared_product_catalog_size: 773). Too sparse to model on; kept for drill-down only.",
+      "rows_affected": 779,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    },
+    {
+      "rule": "negative_time_to_close",
+      "description": "Deals won before first contact would indicate a source defect. Checked explicitly.",
+      "rows_affected": 1,
+      "before": null,
+      "after": null,
+      "severity": "flagged"
+    }
+  ]
+}
