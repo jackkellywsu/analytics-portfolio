@@ -1,0 +1,194 @@
+{
+  "generated_at": "2026-08-30T19:12:36Z",
+  "note": "Recorded output from the live /api/ask route. Served when the live translator is unavailable, and labelled as pre-run when it is.",
+  "examples": [
+    {
+      "question": "Which acquisition channel produced the most revenue per lead?",
+      "kind": "answer",
+      "sql": "SELECT l.origin AS channel, COUNT(DISTINCT l.mql_id) AS leads, SUM(CASE WHEN d.window_complete THEN d.revenue_90d ELSE 0 END) AS revenue_90d, SUM(CASE WHEN d.window_complete THEN d.revenue_90d ELSE 0 END) / COUNT(DISTINCT l.mql_id) AS revenue_per_lead FROM funnel_leads l LEFT JOIN deal_outcomes d ON d.mql_id = l.mql_id GROUP BY l.origin ORDER BY revenue_per_lead DESC",
+      "metrics_used": [
+        "lead_count",
+        "revenue_90d"
+      ],
+      "explanation": "For each acquisition channel, this divides the first-90-day revenue billed by clients signed from that channel by the total number of qualified leads the channel produced, ranking channels highest first. Only deals with a complete 90-day observation window contribute revenue \u2014 a required filter, since deals signed near the end of the data cannot show revenue yet. Note 'unknown' and 'not_recorded' are kept separate as distinct facts.",
+      "confidence": 0.82,
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 5847,
+        "inputTokens": 213,
+        "outputTokens": 472,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.015884
+      }
+    },
+    {
+      "question": "What is the win rate by client sector?",
+      "kind": "answer",
+      "sql": "SELECT a.sector, AVG(CASE WHEN o.is_won THEN 1.0 ELSE 0.0 END) AS win_rate, COUNT(*) AS closed_opportunities FROM crm_opportunities o JOIN crm_accounts a ON o.account = a.account WHERE o.is_closed GROUP BY a.sector ORDER BY win_rate DESC",
+      "metrics_used": [
+        "win_rate"
+      ],
+      "explanation": "This shows, for each client industry sector, the share of decided (closed) opportunities that were won, alongside how many closed opportunities sit behind each figure. Open deals are excluded because their outcome isn't known yet, and opportunities with no named account drop out of the sector breakdown. Note that differences between sectors in this synthetic pipeline data are within sampling noise, so they should not be read as real sector effects.",
+      "confidence": 0.92,
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 4956,
+        "inputTokens": 205,
+        "outputTokens": 375,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.013419
+      }
+    },
+    {
+      "question": "How many qualified leads became signed clients?",
+      "kind": "answer",
+      "sql": "SELECT COUNT(DISTINCT funnel_leads.mql_id) AS lead_count, COUNT(DISTINCT deal_outcomes.mql_id) AS deal_count, COUNT(DISTINCT deal_outcomes.mql_id) * 1.0 / COUNT(DISTINCT funnel_leads.mql_id) AS conversion_rate FROM funnel_leads LEFT JOIN deal_outcomes ON funnel_leads.mql_id = deal_outcomes.mql_id",
+      "metrics_used": [
+        "lead_count",
+        "deal_count",
+        "conversion_rate"
+      ],
+      "explanation": "This counts all marketing-qualified leads, how many of them went on to sign as clients, and the resulting conversion share. It covers every lead in the June 2017 to November 2018 window, with no observation-window filter needed since whether a lead signed is fully recorded.",
+      "confidence": 0.92,
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 4986,
+        "inputTokens": 207,
+        "outputTokens": 388,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.013754
+      }
+    },
+    {
+      "question": "What share of signed clients ever generated revenue?",
+      "kind": "answer",
+      "sql": "SELECT AVG(CASE WHEN deal_outcomes.ever_sold THEN 1.0 ELSE 0.0 END) AS attachment_rate FROM deal_outcomes WHERE deal_outcomes.window_complete",
+      "metrics_used": [
+        "attachment_rate"
+      ],
+      "explanation": "This gives the share of signed clients that went on to bill any revenue. It counts only clients who had a full 90-day observation window, which is essential: clients signed too close to the end of the commerce data could not have shown revenue yet, and including them would understate the rate (45.0% instead of 51.4%).",
+      "confidence": 0.95,
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 4192,
+        "inputTokens": 209,
+        "outputTokens": 290,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.011314
+      }
+    },
+    {
+      "question": "Which product series takes longest to close?",
+      "kind": "answer",
+      "sql": "SELECT p.series AS product_series, MEDIAN(o.cycle_days) AS median_cycle_days, COUNT(*) AS opportunities FROM crm_opportunities o JOIN crm_products p ON o.product = p.product WHERE o.cycle_days IS NOT NULL GROUP BY p.series ORDER BY median_cycle_days DESC",
+      "metrics_used": [
+        "median_cycle_days"
+      ],
+      "explanation": "This ranks the product families (GTX, MG, GTK) in the synthetic sales pipeline by the typical (median) number of days from engagement to close, longest first. Opportunities with no cycle time \u2014 notably all Prospecting deals, which have no engagement date \u2014 are excluded, since their duration is undefined. Medians are used because deal durations are skewed.",
+      "confidence": 0.9,
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 5011,
+        "inputTokens": 205,
+        "outputTokens": 353,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.012869
+      }
+    },
+    {
+      "question": "Which acquisition channel has the best ROI?",
+      "kind": "refusal",
+      "refusal_id": "profitability",
+      "explanation": "Return on investment needs what each channel cost to run, and neither dataset records any spend or cost \u2014 only revenue and volumes. So ROI cannot be computed here; it would need marketing spend data held elsewhere.",
+      "nearest_answerable": "Which acquisition channel has the highest lead-to-signed-client conversion rate, or the highest first-90-day revenue per signed client?",
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 4282,
+        "inputTokens": 209,
+        "outputTokens": 202,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.009114
+      }
+    },
+    {
+      "question": "Will paid search convert better next quarter?",
+      "kind": "refusal",
+      "refusal_id": "prediction",
+      "explanation": "This asks for a forecast of future performance. The layer only reports what actually happened in the observed period, and the acquisition data ends in November 2018, so any statement about \"next quarter\" would be invented rather than measured.",
+      "nearest_answerable": "What was the lead-to-signed-client conversion rate for paid search compared with other channels over the observed period (June 2017 \u2013 November 2018)?",
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 3677,
+        "inputTokens": 207,
+        "outputTokens": 202,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.009104
+      }
+    },
+    {
+      "question": "Did the email campaign cause the increase in signed clients?",
+      "kind": "refusal",
+      "refusal_id": "causation",
+      "explanation": "This is observational data with no experiment or control group, so it cannot show that the email channel caused any change in signings. We can only show how many leads and signed clients came through the email channel over time, alongside other channels \u2014 an association, not a cause.",
+      "nearest_answerable": "How many leads and signed clients came from the email channel each month, compared with other acquisition channels?",
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 4436,
+        "inputTokens": 212,
+        "outputTokens": 189,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.008804
+      }
+    },
+    {
+      "question": "Compare the CRM win rate to the marketplace conversion rate.",
+      "kind": "refusal",
+      "refusal_id": "cross_domain",
+      "explanation": "The CRM win rate comes from a synthetic dataset about a fictitious hardware vendor's 2017 pipeline, while the conversion rate comes from real Olist marketplace lead data. They are separate businesses with no shared market, entity, or time period, so putting the two figures side by side as a comparison would describe nothing real.",
+      "nearest_answerable": "What is the CRM win rate by regional office (closed opportunities only)? Or, separately: what is the lead-to-deal conversion rate by acquisition channel in the marketplace funnel?",
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 4446,
+        "inputTokens": 216,
+        "outputTokens": 259,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.010574
+      }
+    },
+    {
+      "question": "What is the name of our largest customer?",
+      "kind": "refusal",
+      "refusal_id": "identity",
+      "explanation": "The marketplace customers and signed clients in this data are anonymised at source \u2014 only hashed identifiers exist, with no names. So no individual or company name can be produced for the \"largest customer\". (The CRM side does carry account names, but those belong to a fictitious synthetic vendor and describe no real customer.)",
+      "nearest_answerable": "Which Brazilian states, or which selling clients by hashed seller ID, account for the most order revenue?",
+      "meta": {
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "latencyMs": 4488,
+        "inputTokens": 205,
+        "outputTokens": 218,
+        "cacheReadTokens": 6038,
+        "cacheWriteTokens": 0,
+        "costUsd": 0.009494
+      }
+    }
+  ]
+}

@@ -67,6 +67,14 @@ python -m venv .venv
 .venv/Scripts/python.exe -m pipeline.build_attribution
 ```
 
+The natural-language demo needs `ANTHROPIC_API_KEY` in the same `.env`. With the
+dev server running, regenerate the pre-run gallery — the real answers and
+refusals served when the live translator is unavailable — with:
+
+```bash
+.venv/Scripts/python.exe -m pipeline.build_ask_gallery
+```
+
 `acquire` downloads each source and writes a provenance record with per-file checksums
 and quote-aware row counts. The `build_*` scripts clean each source and write a quality
 log recording every rule applied and the rows it touched. `build_manifest` publishes the
@@ -80,8 +88,8 @@ drift from what actually shipped.
 | 1 | Foundation — design system, layout, routes | ✅ done |
 | 2 | Data pipeline, provenance, DuckDB-WASM | ✅ done |
 | 3 | Dashboards | ✅ done |
-| 4 | Semantic layer, natural-language interface, guardrails | next |
-| 5 | Evaluation lab | not started |
+| 4 | Semantic layer, natural-language interface, guardrails | ✅ done |
+| 5 | Evaluation lab | next |
 | 6 | Anomaly detection, methods, about, polish | not started |
 
 Prior, abandoned work on a USPTO patent dataset is preserved on the

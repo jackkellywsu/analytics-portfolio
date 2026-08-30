@@ -108,7 +108,7 @@ export function routeByHref(href: string): Route | undefined {
 }
 
 /** The highest phase currently shipped. Pages above this render a scaffold. */
-export const CURRENT_PHASE: Phase = 2;
+export const CURRENT_PHASE: Phase = 4;
 
 export const RESUME_HREF = "/Jack-Kelly-Resume.pdf";
 

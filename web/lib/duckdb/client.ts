@@ -76,6 +76,24 @@ export function isReady(): boolean {
   return connectionPromise !== null;
 }
 
+/**
+ * Hand a statement to DuckDB's parser and get its syntax tree back.
+ *
+ * This is what the guardrail validator runs on. Using the engine's own parser
+ * rather than a second SQL library means the thing that checks the query and
+ * the thing that runs it agree by construction — there is no dialect gap
+ * between them for a query to slip through.
+ */
+export async function serializeSql(sql: string): Promise<string> {
+  const connection = await getConnection();
+  const escaped = sql.replace(/'/g, "''");
+  const table = await connection.query(
+    `SELECT json_serialize_sql('${escaped}') AS tree`,
+  );
+  const row = table.toArray()[0]?.toJSON() as Record<string, unknown> | undefined;
+  return String(row?.tree ?? "");
+}
+
 export async function runQuery(sql: string): Promise<QueryResult> {
   const connection = await getConnection();
 

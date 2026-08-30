@@ -206,6 +206,31 @@ def main() -> int:
     # so it can never describe tables that did not ship.
     policy_path = export_policy(load_policy(manifest_path=out), PUBLIC_DATA / "policy.json")
     print(f"  policy   -> {policy_path}")
+
+    # The layer is authored in YAML because a human maintains it; the site and
+    # the prompt builder read JSON. Converting here keeps one source of truth
+    # and spares the web app a YAML parser.
+    import yaml
+
+    layer = yaml.safe_load((ROOT / "semantic" / "layer.yaml").read_text(encoding="utf-8"))
+    layer_path = PUBLIC_DATA / "layer.json"
+    # default=str because YAML parses the layer's `updated:` field into a date
+    # object, which json cannot serialise on its own.
+    layer_path.write_text(
+        json.dumps(layer, indent=2, default=str) + "\n", encoding="utf-8"
+    )
+    # The conformance corpus ships too: the guardrails page runs these exact
+    # cases through the real validator in the browser, so what a visitor fires
+    # is what the test suite asserts.
+    cases_src = ROOT / "semantic" / "guardrail_cases.json"
+    shutil.copy2(cases_src, PUBLIC_DATA / "guardrail_cases.json")
+    print(f"  cases    -> {PUBLIC_DATA / 'guardrail_cases.json'}")
+
+    print(
+        f"  layer    -> {layer_path} "
+        f"({len(layer['entities'])} entities, {len(layer['metrics'])} metrics, "
+        f"{len(layer['refusals'])} refusal rules)"
+    )
     return 0
 
 
