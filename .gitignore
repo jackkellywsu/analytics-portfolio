@@ -1,22 +1,29 @@
-# Raw bulk data — large, reproducible from documented source
-pipeline/raw/*
-!pipeline/raw/.gitkeep
-!pipeline/raw/README.md
-
 # Secrets
 .env
 .env.local
+.env*.local
+
+# Raw source data — large, reproducible from documented sources
+pipeline/raw/*
+!pipeline/raw/.gitkeep
 
 # Python
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
 .ipynb_checkpoints/
 
-# Node / site
+# Node / Next.js
 node_modules/
+.next/
+out/
 dist/
-.astro/
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel/
 
 # OS
 Thumbs.db
