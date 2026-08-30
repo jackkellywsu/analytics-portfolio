@@ -12,6 +12,7 @@ query asked for one.
 
 from __future__ import annotations
 
+import itertools
 import math
 from dataclasses import dataclass, field
 from enum import StrEnum
@@ -31,6 +32,8 @@ class Outcome(StrEnum):
     API_ERROR = "api_error"
     # Reached the database and got the wrong answer.
     WRONG_SHAPE = "wrong_shape"
+    # Right answer, extra columns beside it. Strictly wrong, leniently correct.
+    EXTRA_COLUMNS = "extra_columns"
     WRONG_ROW_COUNT = "wrong_row_count"
     WRONG_VALUES = "wrong_values"
     EXECUTION_ERROR = "execution_error"
@@ -51,6 +54,41 @@ class Score:
     candidate_rows: int = 0
     dropped_required_filter: bool = False
     notes: list[str] = field(default_factory=list)
+    """Correct once extra supporting columns are allowed.
+
+    Reported alongside the strict score because the first run of this benchmark
+    showed the two measure different things. Opus 5's most common failure was
+    returning the right answer with extra columns beside it - a win rate plus
+    the deal count, a share plus its numerator and denominator. That is a
+    different output contract, arguably a better one, and scoring it as wrong
+    made a more capable model look worse than a cheaper one.
+    """
+    correct_lenient: bool = False
+
+
+def _lenient_match(
+    gold_rows: list[tuple], candidate_rows: list[tuple], ordered: bool
+) -> bool:
+    """Does the gold result appear inside the candidate's columns?
+
+    Searches for any projection of the candidate's columns that reproduces the
+    gold result exactly. Row counts must still match: extra rows are a real
+    error, extra columns are a stylistic one.
+    """
+    if not gold_rows or not candidate_rows:
+        return False
+    gold_width = len(gold_rows[0])
+    candidate_width = len(candidate_rows[0])
+    if candidate_width <= gold_width or candidate_width > 8:
+        return False
+    if len(gold_rows) != len(candidate_rows):
+        return False
+
+    for indices in itertools.permutations(range(candidate_width), gold_width):
+        projected = [tuple(row[i] for i in indices) for row in candidate_rows]
+        if _rows_equal(gold_rows, projected, ordered):
+            return True
+    return False
 
 
 def _normalise(value: Any) -> Any:
@@ -131,14 +169,18 @@ def score_case(
             notes.append(f"omits the required filter on {required_filter}")
 
     if gold_rows and candidate_rows and len(gold_rows[0]) != len(candidate_rows[0]):
+        lenient = _lenient_match(gold_rows, candidate_rows, gold_is_ordered(gold_sql))
         return Score(
-            Outcome.WRONG_SHAPE,
+            Outcome.EXTRA_COLUMNS if lenient else Outcome.WRONG_SHAPE,
             False,
-            f"gold returns {len(gold_rows[0])} columns, candidate returns {len(candidate_rows[0])}",
+            f"gold returns {len(gold_rows[0])} columns, candidate returns "
+            f"{len(candidate_rows[0])}"
+            + (" but contains the gold answer" if lenient else ""),
             gold_rows=len(gold_rows),
             candidate_rows=len(candidate_rows),
             dropped_required_filter=dropped,
             notes=notes,
+            correct_lenient=lenient,
         )
 
     if len(gold_rows) != len(candidate_rows):
@@ -160,6 +202,7 @@ def score_case(
             candidate_rows=len(candidate_rows),
             dropped_required_filter=dropped,
             notes=notes,
+            correct_lenient=True,
         )
 
     return Score(

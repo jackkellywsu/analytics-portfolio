@@ -1,4 +1,4 @@
-import layerJson from "@/public/data/layer.json";
+import layerJson from "../../public/data/layer.json";
 
 /**
  * Prompt construction.
@@ -174,6 +174,79 @@ export function systemPrompt(columns: ColumnIndex): string {
 /** Collapse YAML folded scalars into single lines so the prompt stays compact. */
 function collapse(text: string): string {
   return text.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * The bare-schema condition, used only by the benchmark.
+ *
+ * This is the honest version of "just point a model at the database": table
+ * names, column names, and nothing else. No grain, no metric definitions, no
+ * mandatory filters, no note that lost deals carry zero rather than null. It is
+ * what a text-to-SQL feature looks like before anyone does the encoding work,
+ * and the gap between it and the layer condition is what that work is worth.
+ */
+export function barePrompt(columns: ColumnIndex): string {
+  const tables = Object.entries(columns)
+    .map(([table, cols]) => `${table}(${cols.join(", ")})`)
+    .join("\n");
+  return [
+    "You translate business questions into DuckDB SQL.",
+    "",
+    "You have two tools and must call exactly one of them. Call `answer` with a",
+    "single SELECT statement, or `refuse` if the question cannot be answered from",
+    "these tables.",
+    "",
+    "One SELECT statement. No DDL, no DML, no semicolons, no comments.",
+    "",
+    "# Schema",
+    tables,
+  ].join("\n");
+}
+
+/**
+ * Worked examples for the few-shot condition.
+ *
+ * Deliberately not drawn from the benchmark cases. Reusing a test question as a
+ * demonstration would leak the answer and inflate that condition's score - the
+ * result would look like better prompting and actually be contamination.
+ */
+export const FEW_SHOT: Array<{ question: string; sql: string; why: string }> = [
+  {
+    question: "How many accounts are in each office location?",
+    sql: "SELECT office_location, COUNT(*) AS n FROM crm_accounts GROUP BY office_location ORDER BY n DESC",
+    why: "A plain group-by needs no metric definition.",
+  },
+  {
+    question: "What share of opportunities engaged in 2017 were eventually won?",
+    sql: "SELECT AVG(CASE WHEN is_won THEN 1.0 ELSE 0.0 END) AS win_rate FROM crm_opportunities WHERE is_closed AND engage_date >= DATE '2017-01-01'",
+    why: "win_rate carries a required filter on is_closed. Open deals are undecided, not lost.",
+  },
+  {
+    question: "How much revenue did clients from the social channel bill in their first 90 days?",
+    sql: "SELECT SUM(revenue_90d) AS revenue FROM deal_outcomes WHERE window_complete AND origin = 'social'",
+    why: "Any revenue or attachment figure over deal_outcomes requires window_complete, or the observation window depresses it.",
+  },
+  {
+    question: "How many distinct orders included freight above 50?",
+    sql: "SELECT COUNT(DISTINCT order_id) AS n FROM order_items WHERE freight_value > 50",
+    why: "order_items is one row per line, so orders must be counted distinctly.",
+  },
+  {
+    question: "What is the average price of an item line on delivered orders?",
+    sql: "SELECT AVG(i.price) AS avg_price FROM order_items i JOIN orders o ON o.order_id = i.order_id WHERE o.order_status = 'delivered'",
+    why: "Order status has to be filtered explicitly; cancelled orders stay in the table.",
+  },
+];
+
+export function fewShotBlock(): string {
+  return [
+    "",
+    "# Worked examples",
+    ...FEW_SHOT.map(
+      (example) =>
+        `Q: ${example.question}\nSQL: ${example.sql}\nWhy: ${example.why}`,
+    ),
+  ].join("\n\n");
 }
 
 export const ANSWER_TOOL = {

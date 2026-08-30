@@ -7,6 +7,7 @@ and testable. Each function has a known-answer test in pipeline/tests.
 from __future__ import annotations
 
 import math
+import random
 from dataclasses import dataclass
 
 # 97.5th percentile of the standard normal, for a two-sided 95% interval.
@@ -228,3 +229,172 @@ def summarise(values: list[float]) -> dict[str, float]:
         "max": max(values),
         "mean": sum(values) / len(values),
     }
+
+
+@dataclass(frozen=True)
+class PairedComparison:
+    """Result of comparing two systems on the same set of items."""
+
+    n: int
+    a_correct: int
+    b_correct: int
+    both_correct: int
+    a_only: int
+    b_only: int
+    neither: int
+    difference: float
+    ci_low: float
+    ci_high: float
+    p_value: float
+
+    @property
+    def significant(self) -> bool:
+        return self.p_value < 0.05
+
+    def as_dict(self) -> dict:
+        return {
+            "n": self.n,
+            "a_correct": self.a_correct,
+            "b_correct": self.b_correct,
+            "both_correct": self.both_correct,
+            "a_only": self.a_only,
+            "b_only": self.b_only,
+            "neither": self.neither,
+            "difference": round(self.difference, 5),
+            "ci_low": round(self.ci_low, 5),
+            "ci_high": round(self.ci_high, 5),
+            "p_value": round(self.p_value, 6),
+            "significant": self.significant,
+        }
+
+
+def mcnemar_exact(a_only: int, b_only: int) -> float:
+    """Two-sided exact McNemar test on the discordant pairs.
+
+    The right test for two systems evaluated on the *same* items. Comparing two
+    independent proportions throws away the pairing and is much less powerful:
+    if both systems get the same easy cases right, those cases carry no
+    information about which is better, and only the disagreements do.
+
+    Exact rather than chi-square because the discordant counts here are small,
+    and the chi-square approximation is unreliable below about 25.
+    """
+    n = a_only + b_only
+    if n == 0:
+        return 1.0
+
+    # Two-sided binomial test at p = 0.5, summing all outcomes at least as
+    # extreme as the observed split.
+    observed = min(a_only, b_only)
+    total = 0.0
+    for k in range(observed + 1):
+        total += math.comb(n, k)
+    p = 2.0 * total / (2**n)
+    return min(1.0, p)
+
+
+def paired_bootstrap(
+    a_outcomes: list[bool],
+    b_outcomes: list[bool],
+    iterations: int = 10_000,
+    seed: int = 20260830,
+) -> tuple[float, float]:
+    """Percentile confidence interval for the difference in accuracy.
+
+    Resamples cases, not predictions: the pairing is preserved so the interval
+    reflects uncertainty about which questions were asked, which is the
+    uncertainty a reader cares about when the same benchmark is used for both.
+    """
+    if len(a_outcomes) != len(b_outcomes):
+        msg = "paired bootstrap requires equal-length outcome lists"
+        raise ValueError(msg)
+    n = len(a_outcomes)
+    if n == 0:
+        return (0.0, 0.0)
+
+    rng = random.Random(seed)
+    differences = []
+    for _ in range(iterations):
+        a_hits = 0
+        b_hits = 0
+        for _ in range(n):
+            index = rng.randrange(n)
+            a_hits += a_outcomes[index]
+            b_hits += b_outcomes[index]
+        differences.append((a_hits - b_hits) / n)
+    differences.sort()
+    return (
+        differences[int(0.025 * iterations)],
+        differences[min(iterations - 1, int(0.975 * iterations))],
+    )
+
+
+def compare_paired(
+    a_outcomes: list[bool], b_outcomes: list[bool], iterations: int = 10_000
+) -> PairedComparison:
+    both = sum(1 for a, b in zip(a_outcomes, b_outcomes) if a and b)
+    a_only = sum(1 for a, b in zip(a_outcomes, b_outcomes) if a and not b)
+    b_only = sum(1 for a, b in zip(a_outcomes, b_outcomes) if b and not a)
+    neither = sum(1 for a, b in zip(a_outcomes, b_outcomes) if not a and not b)
+    n = len(a_outcomes)
+    low, high = paired_bootstrap(a_outcomes, b_outcomes, iterations=iterations)
+    return PairedComparison(
+        n=n,
+        a_correct=sum(a_outcomes),
+        b_correct=sum(b_outcomes),
+        both_correct=both,
+        a_only=a_only,
+        b_only=b_only,
+        neither=neither,
+        difference=(sum(a_outcomes) - sum(b_outcomes)) / n if n else 0.0,
+        ci_low=low,
+        ci_high=high,
+        p_value=mcnemar_exact(a_only, b_only),
+    )
+
+
+def calibration(
+    confidences: list[float], outcomes: list[bool], bins: int = 5
+) -> dict:
+    """Does an 80%-confident answer turn out right 80% of the time?
+
+    Reports per-bin observed accuracy, the expected calibration error, and the
+    Brier score. A model can be accurate and badly calibrated, and on a system
+    where a human decides whether to trust an answer, the calibration is the
+    part that matters.
+    """
+    if not confidences:
+        return {"bins": [], "ece": 0.0, "brier": 0.0, "n": 0}
+
+    edges = [i / bins for i in range(bins + 1)]
+    rows = []
+    ece = 0.0
+    n = len(confidences)
+
+    for i in range(bins):
+        low, high = edges[i], edges[i + 1]
+        members = [
+            (c, o)
+            for c, o in zip(confidences, outcomes)
+            if (c >= low and c < high) or (i == bins - 1 and c == 1.0)
+        ]
+        if not members:
+            rows.append(
+                {"low": low, "high": high, "n": 0, "mean_confidence": None, "accuracy": None}
+            )
+            continue
+        mean_confidence = sum(c for c, _ in members) / len(members)
+        accuracy = sum(1 for _, o in members if o) / len(members)
+        ece += (len(members) / n) * abs(accuracy - mean_confidence)
+        rows.append(
+            {
+                "low": low,
+                "high": high,
+                "n": len(members),
+                "mean_confidence": round(mean_confidence, 5),
+                "accuracy": round(accuracy, 5),
+            }
+        )
+
+    brier = sum((c - (1.0 if o else 0.0)) ** 2 for c, o in zip(confidences, outcomes)) / n
+    return {"bins": rows, "ece": round(ece, 5), "brier": round(brier, 5), "n": n}

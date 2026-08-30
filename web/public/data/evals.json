@@ -1,0 +1,1741 @@
+{
+  "generated_at": "2026-08-30T20:24:12+00:00",
+  "run_file": "20260830T201021Z.jsonl",
+  "cases": 72,
+  "calls": 648,
+  "total_cost_usd": 3.5824,
+  "models": [
+    {
+      "key": "opus",
+      "label": "Claude Opus 5"
+    },
+    {
+      "key": "sonnet",
+      "label": "Claude Sonnet 5"
+    },
+    {
+      "key": "haiku",
+      "label": "Claude Haiku 4.5"
+    }
+  ],
+  "conditions": [
+    {
+      "key": "bare",
+      "label": "Bare schema"
+    },
+    {
+      "key": "layer",
+      "label": "Semantic layer"
+    },
+    {
+      "key": "layer_fewshot",
+      "label": "Layer + examples"
+    }
+  ],
+  "accuracy": [
+    {
+      "model": "opus",
+      "model_label": "Claude Opus 5",
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "rate": {
+        "n": 72,
+        "successes": 23,
+        "point": 0.31944,
+        "low": 0.22326,
+        "high": 0.43392
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 41,
+        "point": 0.56944,
+        "low": 0.45443,
+        "high": 0.67742
+      },
+      "extra_columns": 18,
+      "cost_usd": 0.6023,
+      "cost_per_query": 0.008365,
+      "median_latency_ms": 3557,
+      "false_refusals": 1,
+      "dropped_filters": 3
+    },
+    {
+      "model": "opus",
+      "model_label": "Claude Opus 5",
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "rate": {
+        "n": 72,
+        "successes": 42,
+        "point": 0.58333,
+        "low": 0.46808,
+        "high": 0.69015
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 55,
+        "point": 0.76389,
+        "low": 0.65401,
+        "high": 0.84703
+      },
+      "extra_columns": 13,
+      "cost_usd": 0.8389,
+      "cost_per_query": 0.011652,
+      "median_latency_ms": 3797,
+      "false_refusals": 2,
+      "dropped_filters": 0
+    },
+    {
+      "model": "opus",
+      "model_label": "Claude Opus 5",
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "rate": {
+        "n": 72,
+        "successes": 42,
+        "point": 0.58333,
+        "low": 0.46808,
+        "high": 0.69015
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 54,
+        "point": 0.75,
+        "low": 0.63906,
+        "high": 0.83561
+      },
+      "extra_columns": 12,
+      "cost_usd": 0.8283,
+      "cost_per_query": 0.011504,
+      "median_latency_ms": 3807,
+      "false_refusals": 2,
+      "dropped_filters": 0
+    },
+    {
+      "model": "sonnet",
+      "model_label": "Claude Sonnet 5",
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "rate": {
+        "n": 72,
+        "successes": 41,
+        "point": 0.56944,
+        "low": 0.45443,
+        "high": 0.67742
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 43,
+        "point": 0.59722,
+        "low": 0.48181,
+        "high": 0.70279
+      },
+      "extra_columns": 2,
+      "cost_usd": 0.2235,
+      "cost_per_query": 0.003104,
+      "median_latency_ms": 3611,
+      "false_refusals": 1,
+      "dropped_filters": 5
+    },
+    {
+      "model": "sonnet",
+      "model_label": "Claude Sonnet 5",
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "rate": {
+        "n": 72,
+        "successes": 54,
+        "point": 0.75,
+        "low": 0.63906,
+        "high": 0.83561
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 56,
+        "point": 0.77778,
+        "low": 0.66909,
+        "high": 0.85833
+      },
+      "extra_columns": 2,
+      "cost_usd": 0.3132,
+      "cost_per_query": 0.00435,
+      "median_latency_ms": 3055,
+      "false_refusals": 2,
+      "dropped_filters": 0
+    },
+    {
+      "model": "sonnet",
+      "model_label": "Claude Sonnet 5",
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "rate": {
+        "n": 72,
+        "successes": 54,
+        "point": 0.75,
+        "low": 0.63906,
+        "high": 0.83561
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 55,
+        "point": 0.76389,
+        "low": 0.65401,
+        "high": 0.84703
+      },
+      "extra_columns": 1,
+      "cost_usd": 0.3207,
+      "cost_per_query": 0.004455,
+      "median_latency_ms": 3077,
+      "false_refusals": 2,
+      "dropped_filters": 0
+    },
+    {
+      "model": "haiku",
+      "model_label": "Claude Haiku 4.5",
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "rate": {
+        "n": 72,
+        "successes": 31,
+        "point": 0.43056,
+        "low": 0.32258,
+        "high": 0.54557
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 31,
+        "point": 0.43056,
+        "low": 0.32258,
+        "high": 0.54557
+      },
+      "extra_columns": 0,
+      "cost_usd": 0.186,
+      "cost_per_query": 0.002584,
+      "median_latency_ms": 2138,
+      "false_refusals": 5,
+      "dropped_filters": 6
+    },
+    {
+      "model": "haiku",
+      "model_label": "Claude Haiku 4.5",
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "rate": {
+        "n": 72,
+        "successes": 57,
+        "point": 0.79167,
+        "low": 0.68431,
+        "high": 0.86948
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 57,
+        "point": 0.79167,
+        "low": 0.68431,
+        "high": 0.86948
+      },
+      "extra_columns": 0,
+      "cost_usd": 0.1338,
+      "cost_per_query": 0.001858,
+      "median_latency_ms": 2191,
+      "false_refusals": 3,
+      "dropped_filters": 0
+    },
+    {
+      "model": "haiku",
+      "model_label": "Claude Haiku 4.5",
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "rate": {
+        "n": 72,
+        "successes": 52,
+        "point": 0.72222,
+        "low": 0.60954,
+        "high": 0.8124
+      },
+      "rate_lenient": {
+        "n": 72,
+        "successes": 52,
+        "point": 0.72222,
+        "low": 0.60954,
+        "high": 0.8124
+      },
+      "extra_columns": 0,
+      "cost_usd": 0.1356,
+      "cost_per_query": 0.001883,
+      "median_latency_ms": 2508,
+      "false_refusals": 3,
+      "dropped_filters": 0
+    }
+  ],
+  "ablation": [
+    {
+      "model": "opus",
+      "model_label": "Claude Opus 5",
+      "a": "layer",
+      "b": "bare",
+      "a_label": "Semantic layer",
+      "b_label": "Bare schema",
+      "strict": {
+        "n": 72,
+        "a_correct": 42,
+        "b_correct": 23,
+        "both_correct": 22,
+        "a_only": 20,
+        "b_only": 1,
+        "neither": 29,
+        "difference": 0.26389,
+        "ci_low": 0.15278,
+        "ci_high": 0.375,
+        "p_value": 2.1e-05,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 55,
+        "b_correct": 41,
+        "both_correct": 39,
+        "a_only": 16,
+        "b_only": 2,
+        "neither": 15,
+        "difference": 0.19444,
+        "ci_low": 0.08333,
+        "ci_high": 0.30556,
+        "p_value": 0.001312,
+        "significant": true
+      }
+    },
+    {
+      "model": "opus",
+      "model_label": "Claude Opus 5",
+      "a": "layer_fewshot",
+      "b": "layer",
+      "a_label": "Layer + examples",
+      "b_label": "Semantic layer",
+      "strict": {
+        "n": 72,
+        "a_correct": 42,
+        "b_correct": 42,
+        "both_correct": 41,
+        "a_only": 1,
+        "b_only": 1,
+        "neither": 29,
+        "difference": 0.0,
+        "ci_low": -0.04167,
+        "ci_high": 0.04167,
+        "p_value": 1.0,
+        "significant": false
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 54,
+        "b_correct": 55,
+        "both_correct": 54,
+        "a_only": 0,
+        "b_only": 1,
+        "neither": 17,
+        "difference": -0.01389,
+        "ci_low": -0.04167,
+        "ci_high": 0.0,
+        "p_value": 1.0,
+        "significant": false
+      }
+    },
+    {
+      "model": "opus",
+      "model_label": "Claude Opus 5",
+      "a": "layer_fewshot",
+      "b": "bare",
+      "a_label": "Layer + examples",
+      "b_label": "Bare schema",
+      "strict": {
+        "n": 72,
+        "a_correct": 42,
+        "b_correct": 23,
+        "both_correct": 22,
+        "a_only": 20,
+        "b_only": 1,
+        "neither": 29,
+        "difference": 0.26389,
+        "ci_low": 0.15278,
+        "ci_high": 0.375,
+        "p_value": 2.1e-05,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 54,
+        "b_correct": 41,
+        "both_correct": 39,
+        "a_only": 15,
+        "b_only": 2,
+        "neither": 16,
+        "difference": 0.18056,
+        "ci_low": 0.08333,
+        "ci_high": 0.29167,
+        "p_value": 0.00235,
+        "significant": true
+      }
+    },
+    {
+      "model": "sonnet",
+      "model_label": "Claude Sonnet 5",
+      "a": "layer",
+      "b": "bare",
+      "a_label": "Semantic layer",
+      "b_label": "Bare schema",
+      "strict": {
+        "n": 72,
+        "a_correct": 54,
+        "b_correct": 41,
+        "both_correct": 36,
+        "a_only": 18,
+        "b_only": 5,
+        "neither": 13,
+        "difference": 0.18056,
+        "ci_low": 0.05556,
+        "ci_high": 0.30556,
+        "p_value": 0.010622,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 56,
+        "b_correct": 43,
+        "both_correct": 39,
+        "a_only": 17,
+        "b_only": 4,
+        "neither": 12,
+        "difference": 0.18056,
+        "ci_low": 0.06944,
+        "ci_high": 0.30556,
+        "p_value": 0.007197,
+        "significant": true
+      }
+    },
+    {
+      "model": "sonnet",
+      "model_label": "Claude Sonnet 5",
+      "a": "layer_fewshot",
+      "b": "layer",
+      "a_label": "Layer + examples",
+      "b_label": "Semantic layer",
+      "strict": {
+        "n": 72,
+        "a_correct": 54,
+        "b_correct": 54,
+        "both_correct": 51,
+        "a_only": 3,
+        "b_only": 3,
+        "neither": 15,
+        "difference": 0.0,
+        "ci_low": -0.06944,
+        "ci_high": 0.06944,
+        "p_value": 1.0,
+        "significant": false
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 55,
+        "b_correct": 56,
+        "both_correct": 53,
+        "a_only": 2,
+        "b_only": 3,
+        "neither": 14,
+        "difference": -0.01389,
+        "ci_low": -0.06944,
+        "ci_high": 0.04167,
+        "p_value": 1.0,
+        "significant": false
+      }
+    },
+    {
+      "model": "sonnet",
+      "model_label": "Claude Sonnet 5",
+      "a": "layer_fewshot",
+      "b": "bare",
+      "a_label": "Layer + examples",
+      "b_label": "Bare schema",
+      "strict": {
+        "n": 72,
+        "a_correct": 54,
+        "b_correct": 41,
+        "both_correct": 37,
+        "a_only": 17,
+        "b_only": 4,
+        "neither": 14,
+        "difference": 0.18056,
+        "ci_low": 0.06944,
+        "ci_high": 0.29167,
+        "p_value": 0.007197,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 55,
+        "b_correct": 43,
+        "both_correct": 39,
+        "a_only": 16,
+        "b_only": 4,
+        "neither": 13,
+        "difference": 0.16667,
+        "ci_low": 0.05556,
+        "ci_high": 0.27778,
+        "p_value": 0.011818,
+        "significant": true
+      }
+    },
+    {
+      "model": "haiku",
+      "model_label": "Claude Haiku 4.5",
+      "a": "layer",
+      "b": "bare",
+      "a_label": "Semantic layer",
+      "b_label": "Bare schema",
+      "strict": {
+        "n": 72,
+        "a_correct": 57,
+        "b_correct": 31,
+        "both_correct": 27,
+        "a_only": 30,
+        "b_only": 4,
+        "neither": 11,
+        "difference": 0.36111,
+        "ci_low": 0.22222,
+        "ci_high": 0.5,
+        "p_value": 6e-06,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 57,
+        "b_correct": 31,
+        "both_correct": 27,
+        "a_only": 30,
+        "b_only": 4,
+        "neither": 11,
+        "difference": 0.36111,
+        "ci_low": 0.22222,
+        "ci_high": 0.5,
+        "p_value": 6e-06,
+        "significant": true
+      }
+    },
+    {
+      "model": "haiku",
+      "model_label": "Claude Haiku 4.5",
+      "a": "layer_fewshot",
+      "b": "layer",
+      "a_label": "Layer + examples",
+      "b_label": "Semantic layer",
+      "strict": {
+        "n": 72,
+        "a_correct": 52,
+        "b_correct": 57,
+        "both_correct": 50,
+        "a_only": 2,
+        "b_only": 7,
+        "neither": 13,
+        "difference": -0.06944,
+        "ci_low": -0.15278,
+        "ci_high": 0.01389,
+        "p_value": 0.179688,
+        "significant": false
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 52,
+        "b_correct": 57,
+        "both_correct": 50,
+        "a_only": 2,
+        "b_only": 7,
+        "neither": 13,
+        "difference": -0.06944,
+        "ci_low": -0.15278,
+        "ci_high": 0.01389,
+        "p_value": 0.179688,
+        "significant": false
+      }
+    },
+    {
+      "model": "haiku",
+      "model_label": "Claude Haiku 4.5",
+      "a": "layer_fewshot",
+      "b": "bare",
+      "a_label": "Layer + examples",
+      "b_label": "Bare schema",
+      "strict": {
+        "n": 72,
+        "a_correct": 52,
+        "b_correct": 31,
+        "both_correct": 26,
+        "a_only": 26,
+        "b_only": 5,
+        "neither": 15,
+        "difference": 0.29167,
+        "ci_low": 0.15278,
+        "ci_high": 0.43056,
+        "p_value": 0.000192,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 52,
+        "b_correct": 31,
+        "both_correct": 26,
+        "a_only": 26,
+        "b_only": 5,
+        "neither": 15,
+        "difference": 0.29167,
+        "ci_low": 0.15278,
+        "ci_high": 0.43056,
+        "p_value": 0.000192,
+        "significant": true
+      }
+    }
+  ],
+  "model_comparison": [
+    {
+      "a": "opus",
+      "b": "sonnet",
+      "a_label": "Claude Opus 5",
+      "b_label": "Claude Sonnet 5",
+      "condition": "layer",
+      "strict": {
+        "n": 72,
+        "a_correct": 42,
+        "b_correct": 54,
+        "both_correct": 39,
+        "a_only": 3,
+        "b_only": 15,
+        "neither": 15,
+        "difference": -0.16667,
+        "ci_low": -0.27778,
+        "ci_high": -0.05556,
+        "p_value": 0.007538,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 55,
+        "b_correct": 56,
+        "both_correct": 51,
+        "a_only": 4,
+        "b_only": 5,
+        "neither": 12,
+        "difference": -0.01389,
+        "ci_low": -0.09722,
+        "ci_high": 0.06944,
+        "p_value": 1.0,
+        "significant": false
+      }
+    },
+    {
+      "a": "opus",
+      "b": "haiku",
+      "a_label": "Claude Opus 5",
+      "b_label": "Claude Haiku 4.5",
+      "condition": "layer",
+      "strict": {
+        "n": 72,
+        "a_correct": 42,
+        "b_correct": 57,
+        "both_correct": 40,
+        "a_only": 2,
+        "b_only": 17,
+        "neither": 13,
+        "difference": -0.20833,
+        "ci_low": -0.31944,
+        "ci_high": -0.09722,
+        "p_value": 0.000729,
+        "significant": true
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 55,
+        "b_correct": 57,
+        "both_correct": 49,
+        "a_only": 6,
+        "b_only": 8,
+        "neither": 9,
+        "difference": -0.02778,
+        "ci_low": -0.125,
+        "ci_high": 0.06944,
+        "p_value": 0.790527,
+        "significant": false
+      }
+    },
+    {
+      "a": "sonnet",
+      "b": "haiku",
+      "a_label": "Claude Sonnet 5",
+      "b_label": "Claude Haiku 4.5",
+      "condition": "layer",
+      "strict": {
+        "n": 72,
+        "a_correct": 54,
+        "b_correct": 57,
+        "both_correct": 50,
+        "a_only": 4,
+        "b_only": 7,
+        "neither": 11,
+        "difference": -0.04167,
+        "ci_low": -0.125,
+        "ci_high": 0.04167,
+        "p_value": 0.548828,
+        "significant": false
+      },
+      "lenient": {
+        "n": 72,
+        "a_correct": 56,
+        "b_correct": 57,
+        "both_correct": 52,
+        "a_only": 4,
+        "b_only": 5,
+        "neither": 11,
+        "difference": -0.01389,
+        "ci_low": -0.09722,
+        "ci_high": 0.06944,
+        "p_value": 1.0,
+        "significant": false
+      }
+    }
+  ],
+  "by_difficulty": [
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "difficulty": "easy",
+      "rate": {
+        "n": 84,
+        "successes": 53,
+        "point": 0.63095,
+        "low": 0.52415,
+        "high": 0.7263
+      },
+      "rate_lenient": {
+        "n": 84,
+        "successes": 60,
+        "point": 0.71429,
+        "low": 0.60998,
+        "high": 0.79985
+      }
+    },
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "difficulty": "medium",
+      "rate": {
+        "n": 90,
+        "successes": 32,
+        "point": 0.35556,
+        "low": 0.26444,
+        "high": 0.4585
+      },
+      "rate_lenient": {
+        "n": 90,
+        "successes": 40,
+        "point": 0.44444,
+        "low": 0.34616,
+        "high": 0.54728
+      }
+    },
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "difficulty": "hard",
+      "rate": {
+        "n": 42,
+        "successes": 10,
+        "point": 0.2381,
+        "low": 0.13481,
+        "high": 0.38528
+      },
+      "rate_lenient": {
+        "n": 42,
+        "successes": 15,
+        "point": 0.35714,
+        "low": 0.22989,
+        "high": 0.50834
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "difficulty": "easy",
+      "rate": {
+        "n": 84,
+        "successes": 71,
+        "point": 0.84524,
+        "low": 0.75301,
+        "high": 0.90727
+      },
+      "rate_lenient": {
+        "n": 84,
+        "successes": 75,
+        "point": 0.89286,
+        "low": 0.80875,
+        "high": 0.9426
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "difficulty": "medium",
+      "rate": {
+        "n": 90,
+        "successes": 55,
+        "point": 0.61111,
+        "low": 0.50782,
+        "high": 0.7053
+      },
+      "rate_lenient": {
+        "n": 90,
+        "successes": 60,
+        "point": 0.66667,
+        "low": 0.56422,
+        "high": 0.75546
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "difficulty": "hard",
+      "rate": {
+        "n": 42,
+        "successes": 27,
+        "point": 0.64286,
+        "low": 0.49166,
+        "high": 0.77011
+      },
+      "rate_lenient": {
+        "n": 42,
+        "successes": 33,
+        "point": 0.78571,
+        "low": 0.6406,
+        "high": 0.88294
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "difficulty": "easy",
+      "rate": {
+        "n": 84,
+        "successes": 68,
+        "point": 0.80952,
+        "low": 0.71276,
+        "high": 0.87921
+      },
+      "rate_lenient": {
+        "n": 84,
+        "successes": 71,
+        "point": 0.84524,
+        "low": 0.75301,
+        "high": 0.90727
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "difficulty": "medium",
+      "rate": {
+        "n": 90,
+        "successes": 53,
+        "point": 0.58889,
+        "low": 0.48563,
+        "high": 0.68487
+      },
+      "rate_lenient": {
+        "n": 90,
+        "successes": 57,
+        "point": 0.63333,
+        "low": 0.53022,
+        "high": 0.72553
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "difficulty": "hard",
+      "rate": {
+        "n": 42,
+        "successes": 27,
+        "point": 0.64286,
+        "low": 0.49166,
+        "high": 0.77011
+      },
+      "rate_lenient": {
+        "n": 42,
+        "successes": 33,
+        "point": 0.78571,
+        "low": 0.6406,
+        "high": 0.88294
+      }
+    }
+  ],
+  "by_trap": [
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "trap_kind": "grain",
+      "rate": {
+        "n": 15,
+        "successes": 11,
+        "point": 0.73333,
+        "low": 0.4805,
+        "high": 0.89103
+      },
+      "rate_lenient": {
+        "n": 15,
+        "successes": 11,
+        "point": 0.73333,
+        "low": 0.4805,
+        "high": 0.89103
+      }
+    },
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "trap_kind": "join_type",
+      "rate": {
+        "n": 3,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.5615
+      },
+      "rate_lenient": {
+        "n": 3,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.5615
+      }
+    },
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "trap_kind": "missing_required_filter",
+      "rate": {
+        "n": 30,
+        "successes": 5,
+        "point": 0.16667,
+        "low": 0.07337,
+        "high": 0.33564
+      },
+      "rate_lenient": {
+        "n": 30,
+        "successes": 7,
+        "point": 0.23333,
+        "low": 0.11792,
+        "high": 0.40928
+      }
+    },
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "trap_kind": "null_semantics",
+      "rate": {
+        "n": 9,
+        "successes": 6,
+        "point": 0.66667,
+        "low": 0.3542,
+        "high": 0.87942
+      },
+      "rate_lenient": {
+        "n": 9,
+        "successes": 9,
+        "point": 1.0,
+        "low": 0.70085,
+        "high": 1.0
+      }
+    },
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "trap_kind": "value_normalisation",
+      "rate": {
+        "n": 6,
+        "successes": 1,
+        "point": 0.16667,
+        "low": 0.03005,
+        "high": 0.5635
+      },
+      "rate_lenient": {
+        "n": 6,
+        "successes": 3,
+        "point": 0.5,
+        "low": 0.18762,
+        "high": 0.81238
+      }
+    },
+    {
+      "condition": "bare",
+      "condition_label": "Bare schema",
+      "trap_kind": "zero_inflation",
+      "rate": {
+        "n": 3,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.5615
+      },
+      "rate_lenient": {
+        "n": 3,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.5615
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "trap_kind": "grain",
+      "rate": {
+        "n": 15,
+        "successes": 15,
+        "point": 1.0,
+        "low": 0.79612,
+        "high": 1.0
+      },
+      "rate_lenient": {
+        "n": 15,
+        "successes": 15,
+        "point": 1.0,
+        "low": 0.79612,
+        "high": 1.0
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "trap_kind": "join_type",
+      "rate": {
+        "n": 3,
+        "successes": 2,
+        "point": 0.66667,
+        "low": 0.20766,
+        "high": 0.93851
+      },
+      "rate_lenient": {
+        "n": 3,
+        "successes": 3,
+        "point": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "trap_kind": "missing_required_filter",
+      "rate": {
+        "n": 30,
+        "successes": 22,
+        "point": 0.73333,
+        "low": 0.55552,
+        "high": 0.85817
+      },
+      "rate_lenient": {
+        "n": 30,
+        "successes": 24,
+        "point": 0.8,
+        "low": 0.62694,
+        "high": 0.90495
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "trap_kind": "null_semantics",
+      "rate": {
+        "n": 9,
+        "successes": 6,
+        "point": 0.66667,
+        "low": 0.3542,
+        "high": 0.87942
+      },
+      "rate_lenient": {
+        "n": 9,
+        "successes": 7,
+        "point": 0.77778,
+        "low": 0.45259,
+        "high": 0.93677
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "trap_kind": "value_normalisation",
+      "rate": {
+        "n": 6,
+        "successes": 4,
+        "point": 0.66667,
+        "low": 0.29999,
+        "high": 0.90323
+      },
+      "rate_lenient": {
+        "n": 6,
+        "successes": 5,
+        "point": 0.83333,
+        "low": 0.4365,
+        "high": 0.96995
+      }
+    },
+    {
+      "condition": "layer",
+      "condition_label": "Semantic layer",
+      "trap_kind": "zero_inflation",
+      "rate": {
+        "n": 3,
+        "successes": 2,
+        "point": 0.66667,
+        "low": 0.20766,
+        "high": 0.93851
+      },
+      "rate_lenient": {
+        "n": 3,
+        "successes": 2,
+        "point": 0.66667,
+        "low": 0.20766,
+        "high": 0.93851
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "trap_kind": "grain",
+      "rate": {
+        "n": 15,
+        "successes": 15,
+        "point": 1.0,
+        "low": 0.79612,
+        "high": 1.0
+      },
+      "rate_lenient": {
+        "n": 15,
+        "successes": 15,
+        "point": 1.0,
+        "low": 0.79612,
+        "high": 1.0
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "trap_kind": "join_type",
+      "rate": {
+        "n": 3,
+        "successes": 2,
+        "point": 0.66667,
+        "low": 0.20766,
+        "high": 0.93851
+      },
+      "rate_lenient": {
+        "n": 3,
+        "successes": 3,
+        "point": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "trap_kind": "missing_required_filter",
+      "rate": {
+        "n": 30,
+        "successes": 22,
+        "point": 0.73333,
+        "low": 0.55552,
+        "high": 0.85817
+      },
+      "rate_lenient": {
+        "n": 30,
+        "successes": 23,
+        "point": 0.76667,
+        "low": 0.59072,
+        "high": 0.88208
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "trap_kind": "null_semantics",
+      "rate": {
+        "n": 9,
+        "successes": 6,
+        "point": 0.66667,
+        "low": 0.3542,
+        "high": 0.87942
+      },
+      "rate_lenient": {
+        "n": 9,
+        "successes": 7,
+        "point": 0.77778,
+        "low": 0.45259,
+        "high": 0.93677
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "trap_kind": "value_normalisation",
+      "rate": {
+        "n": 6,
+        "successes": 4,
+        "point": 0.66667,
+        "low": 0.29999,
+        "high": 0.90323
+      },
+      "rate_lenient": {
+        "n": 6,
+        "successes": 5,
+        "point": 0.83333,
+        "low": 0.4365,
+        "high": 0.96995
+      }
+    },
+    {
+      "condition": "layer_fewshot",
+      "condition_label": "Layer + examples",
+      "trap_kind": "zero_inflation",
+      "rate": {
+        "n": 3,
+        "successes": 2,
+        "point": 0.66667,
+        "low": 0.20766,
+        "high": 0.93851
+      },
+      "rate_lenient": {
+        "n": 3,
+        "successes": 2,
+        "point": 0.66667,
+        "low": 0.20766,
+        "high": 0.93851
+      }
+    }
+  ],
+  "error_heatmap": [
+    {
+      "condition": "bare",
+      "difficulty": "easy",
+      "outcome": "extra_columns",
+      "count": 7
+    },
+    {
+      "condition": "bare",
+      "difficulty": "easy",
+      "outcome": "false_refusal",
+      "count": 1
+    },
+    {
+      "condition": "bare",
+      "difficulty": "easy",
+      "outcome": "wrong_row_count",
+      "count": 2
+    },
+    {
+      "condition": "bare",
+      "difficulty": "easy",
+      "outcome": "wrong_values",
+      "count": 21
+    },
+    {
+      "condition": "bare",
+      "difficulty": "hard",
+      "outcome": "execution_error",
+      "count": 2
+    },
+    {
+      "condition": "bare",
+      "difficulty": "hard",
+      "outcome": "extra_columns",
+      "count": 5
+    },
+    {
+      "condition": "bare",
+      "difficulty": "hard",
+      "outcome": "false_refusal",
+      "count": 1
+    },
+    {
+      "condition": "bare",
+      "difficulty": "hard",
+      "outcome": "wrong_row_count",
+      "count": 3
+    },
+    {
+      "condition": "bare",
+      "difficulty": "hard",
+      "outcome": "wrong_shape",
+      "count": 7
+    },
+    {
+      "condition": "bare",
+      "difficulty": "hard",
+      "outcome": "wrong_values",
+      "count": 14
+    },
+    {
+      "condition": "bare",
+      "difficulty": "medium",
+      "outcome": "execution_error",
+      "count": 1
+    },
+    {
+      "condition": "bare",
+      "difficulty": "medium",
+      "outcome": "extra_columns",
+      "count": 8
+    },
+    {
+      "condition": "bare",
+      "difficulty": "medium",
+      "outcome": "false_refusal",
+      "count": 5
+    },
+    {
+      "condition": "bare",
+      "difficulty": "medium",
+      "outcome": "wrong_row_count",
+      "count": 5
+    },
+    {
+      "condition": "bare",
+      "difficulty": "medium",
+      "outcome": "wrong_shape",
+      "count": 13
+    },
+    {
+      "condition": "bare",
+      "difficulty": "medium",
+      "outcome": "wrong_values",
+      "count": 26
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "easy",
+      "outcome": "execution_error",
+      "count": 1
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "easy",
+      "outcome": "extra_columns",
+      "count": 3
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "easy",
+      "outcome": "wrong_row_count",
+      "count": 3
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "easy",
+      "outcome": "wrong_values",
+      "count": 9
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "hard",
+      "outcome": "extra_columns",
+      "count": 6
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "hard",
+      "outcome": "false_refusal",
+      "count": 4
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "hard",
+      "outcome": "wrong_shape",
+      "count": 1
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "hard",
+      "outcome": "wrong_values",
+      "count": 4
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "medium",
+      "outcome": "execution_error",
+      "count": 1
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "medium",
+      "outcome": "extra_columns",
+      "count": 4
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "medium",
+      "outcome": "false_refusal",
+      "count": 3
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "medium",
+      "outcome": "wrong_row_count",
+      "count": 8
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "medium",
+      "outcome": "wrong_shape",
+      "count": 7
+    },
+    {
+      "condition": "layer_fewshot",
+      "difficulty": "medium",
+      "outcome": "wrong_values",
+      "count": 14
+    },
+    {
+      "condition": "layer",
+      "difficulty": "easy",
+      "outcome": "extra_columns",
+      "count": 4
+    },
+    {
+      "condition": "layer",
+      "difficulty": "easy",
+      "outcome": "wrong_row_count",
+      "count": 3
+    },
+    {
+      "condition": "layer",
+      "difficulty": "easy",
+      "outcome": "wrong_values",
+      "count": 6
+    },
+    {
+      "condition": "layer",
+      "difficulty": "hard",
+      "outcome": "extra_columns",
+      "count": 6
+    },
+    {
+      "condition": "layer",
+      "difficulty": "hard",
+      "outcome": "false_refusal",
+      "count": 3
+    },
+    {
+      "condition": "layer",
+      "difficulty": "hard",
+      "outcome": "wrong_shape",
+      "count": 1
+    },
+    {
+      "condition": "layer",
+      "difficulty": "hard",
+      "outcome": "wrong_values",
+      "count": 5
+    },
+    {
+      "condition": "layer",
+      "difficulty": "medium",
+      "outcome": "execution_error",
+      "count": 1
+    },
+    {
+      "condition": "layer",
+      "difficulty": "medium",
+      "outcome": "extra_columns",
+      "count": 5
+    },
+    {
+      "condition": "layer",
+      "difficulty": "medium",
+      "outcome": "false_refusal",
+      "count": 4
+    },
+    {
+      "condition": "layer",
+      "difficulty": "medium",
+      "outcome": "wrong_row_count",
+      "count": 6
+    },
+    {
+      "condition": "layer",
+      "difficulty": "medium",
+      "outcome": "wrong_shape",
+      "count": 7
+    },
+    {
+      "condition": "layer",
+      "difficulty": "medium",
+      "outcome": "wrong_values",
+      "count": 12
+    }
+  ],
+  "calibration": [
+    {
+      "model": "opus",
+      "model_label": "Claude Opus 5",
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.2,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.2,
+          "high": 0.4,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.4,
+          "high": 0.6,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.6,
+          "high": 0.8,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.8,
+          "high": 1.0,
+          "n": 70,
+          "mean_confidence": 0.92086,
+          "accuracy": 0.6
+        }
+      ],
+      "ece": 0.32086,
+      "brier": 0.34198,
+      "n": 70,
+      "lenient": {
+        "bins": [
+          {
+            "low": 0.0,
+            "high": 0.2,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.2,
+            "high": 0.4,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.8,
+            "high": 1.0,
+            "n": 70,
+            "mean_confidence": 0.92086,
+            "accuracy": 0.78571
+          }
+        ],
+        "ece": 0.13514,
+        "brier": 0.18884,
+        "n": 70
+      }
+    },
+    {
+      "model": "sonnet",
+      "model_label": "Claude Sonnet 5",
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.2,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.2,
+          "high": 0.4,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.4,
+          "high": 0.6,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.6,
+          "high": 0.8,
+          "n": 5,
+          "mean_confidence": 0.71,
+          "accuracy": 0.6
+        },
+        {
+          "low": 0.8,
+          "high": 1.0,
+          "n": 65,
+          "mean_confidence": 0.92262,
+          "accuracy": 0.78462
+        }
+      ],
+      "ece": 0.136,
+      "brier": 0.19306,
+      "n": 70,
+      "lenient": {
+        "bins": [
+          {
+            "low": 0.0,
+            "high": 0.2,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.2,
+            "high": 0.4,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 5,
+            "mean_confidence": 0.71,
+            "accuracy": 0.6
+          },
+          {
+            "low": 0.8,
+            "high": 1.0,
+            "n": 65,
+            "mean_confidence": 0.92262,
+            "accuracy": 0.81538
+          }
+        ],
+        "ece": 0.10743,
+        "brier": 0.16677,
+        "n": 70
+      }
+    },
+    {
+      "model": "haiku",
+      "model_label": "Claude Haiku 4.5",
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.2,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.2,
+          "high": 0.4,
+          "n": 1,
+          "mean_confidence": 0.3,
+          "accuracy": 0.0
+        },
+        {
+          "low": 0.4,
+          "high": 0.6,
+          "n": 0,
+          "mean_confidence": null,
+          "accuracy": null
+        },
+        {
+          "low": 0.6,
+          "high": 0.8,
+          "n": 1,
+          "mean_confidence": 0.7,
+          "accuracy": 0.0
+        },
+        {
+          "low": 0.8,
+          "high": 1.0,
+          "n": 67,
+          "mean_confidence": 0.95478,
+          "accuracy": 0.85075
+        }
+      ],
+      "ece": 0.11551,
+      "brier": 0.13966,
+      "n": 69,
+      "lenient": {
+        "bins": [
+          {
+            "low": 0.0,
+            "high": 0.2,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.2,
+            "high": 0.4,
+            "n": 1,
+            "mean_confidence": 0.3,
+            "accuracy": 0.0
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 0,
+            "mean_confidence": null,
+            "accuracy": null
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 1,
+            "mean_confidence": 0.7,
+            "accuracy": 0.0
+          },
+          {
+            "low": 0.8,
+            "high": 1.0,
+            "n": 67,
+            "mean_confidence": 0.95478,
+            "accuracy": 0.85075
+          }
+        ],
+        "ece": 0.11551,
+        "brier": 0.13966,
+        "n": 69
+      }
+    }
+  ]
+}

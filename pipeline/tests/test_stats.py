@@ -15,6 +15,10 @@ from pipeline.stats import (
     Interval,
     fit_beta_prior,
     histogram,
+    calibration,
+    compare_paired,
+    mcnemar_exact,
+    paired_bootstrap,
     quantile,
     shrink_group_means,
     summarise,
@@ -253,3 +257,86 @@ class TestShrinkGroupMeans:
 
     def test_single_group_is_returned_unchanged(self) -> None:
         assert shrink_group_means({"only": [3.0, 5.0]})["only"] == pytest.approx(4.0)
+
+
+class TestMcNemar:
+    @pytest.mark.parametrize(
+        ("a_only", "b_only"), [(10, 2), (5, 5), (20, 7), (1, 8), (0, 3), (30, 30)]
+    )
+    def test_matches_scipy_binomtest(self, a_only: int, b_only: int) -> None:
+        scipy_stats = pytest.importorskip("scipy.stats")
+        expected = scipy_stats.binomtest(
+            min(a_only, b_only), a_only + b_only, 0.5, alternative="two-sided"
+        ).pvalue
+        assert mcnemar_exact(a_only, b_only) == pytest.approx(expected, abs=1e-12)
+
+    def test_no_disagreement_is_not_evidence(self) -> None:
+        # Two systems that never disagree give no information about which wins.
+        assert mcnemar_exact(0, 0) == 1.0
+
+    def test_symmetric(self) -> None:
+        assert mcnemar_exact(9, 3) == mcnemar_exact(3, 9)
+
+
+class TestComparePaired:
+    def test_counts_the_four_cells(self) -> None:
+        a = [True, True, False, False, True]
+        b = [True, False, True, False, False]
+        result = compare_paired(a, b, iterations=500)
+        assert result.both_correct == 1
+        assert result.a_only == 2
+        assert result.b_only == 1
+        assert result.neither == 1
+        assert result.n == 5
+
+    def test_identical_systems_show_no_difference(self) -> None:
+        outcomes = [True, False, True, True, False, True]
+        result = compare_paired(outcomes, list(outcomes), iterations=500)
+        assert result.difference == 0.0
+        assert result.p_value == 1.0
+        assert not result.significant
+
+    def test_a_strictly_better_is_detected(self) -> None:
+        a = [True] * 20
+        b = [False] * 20
+        result = compare_paired(a, b, iterations=500)
+        assert result.difference == pytest.approx(1.0)
+        assert result.significant
+
+    def test_bootstrap_interval_brackets_the_difference(self) -> None:
+        a = [True] * 15 + [False] * 5
+        b = [True] * 8 + [False] * 12
+        result = compare_paired(a, b, iterations=2000)
+        assert result.ci_low <= result.difference <= result.ci_high
+
+    def test_mismatched_lengths_are_rejected(self) -> None:
+        with pytest.raises(ValueError, match="equal-length"):
+            paired_bootstrap([True, False], [True])
+
+
+class TestCalibration:
+    def test_perfectly_calibrated_has_near_zero_error(self) -> None:
+        # 20 items at 0.9 confidence, 18 of them correct.
+        confidences = [0.9] * 20
+        outcomes = [True] * 18 + [False] * 2
+        result = calibration(confidences, outcomes, bins=5)
+        assert result["ece"] == pytest.approx(0.0, abs=0.01)
+
+    def test_overconfidence_is_measured(self) -> None:
+        confidences = [0.95] * 20
+        outcomes = [True] * 10 + [False] * 10
+        result = calibration(confidences, outcomes, bins=5)
+        assert result["ece"] == pytest.approx(0.45, abs=0.01)
+
+    def test_brier_matches_the_definition(self) -> None:
+        result = calibration([1.0, 0.0], [True, False], bins=2)
+        assert result["brier"] == pytest.approx(0.0)
+        result = calibration([1.0, 0.0], [False, True], bins=2)
+        assert result["brier"] == pytest.approx(1.0)
+
+    def test_confidence_of_one_lands_in_the_top_bin(self) -> None:
+        result = calibration([1.0] * 4, [True] * 4, bins=5)
+        assert result["bins"][-1]["n"] == 4
+
+    def test_empty_input(self) -> None:
+        assert calibration([], [])["n"] == 0
