@@ -33,6 +33,28 @@
   --color-caution: #d29922;
   --color-info: #58a6ff;
 
+  /* ---------------------------------------------------------------------
+     Chart series.
+
+     Validated against this site's chart surface (#0e1014), not a generic one:
+     all three sit inside the L 0.48-0.67 band, clear the chroma floor, and
+     clear 3:1 contrast. Two series separate cleanly (CVD dE 27.4); three pass
+     but the yellow/aqua pair is tight under tritanopia (dE 4.0), so any
+     three-series chart must also carry direct labels. Four fail outright -
+     past three, facet or fold the tail into "Other" rather than adding a hue.
+
+     The site accent (#f0b429) is deliberately NOT a series colour: at L 0.804
+     it sits outside the band and would dominate whatever it shared a chart
+     with. It stays on UI chrome.
+  --------------------------------------------------------------------- */
+  --color-series-1: #c98500;
+  --color-series-2: #3987e5;
+  --color-series-3: #199e70;
+
+  /* Chart chrome, one step off the surface and recessive by design. */
+  --color-grid: #1e222a;
+  --color-axis: #2b313b;
+
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
