@@ -1,0 +1,471 @@
+# The semantic layer.
+#
+# This file is the artifact. A language model pointed at raw tables produces
+# confident nonsense: it does not know that lost deals carry a close value of
+# zero rather than null, that order_items is one row per line and not per order,
+# or that an attachment rate computed over every deal is depressed by an
+# observation window that closes mid-dataset. Those facts are not in the schema.
+# They are here, and they are what makes the model's output trustworthy.
+#
+# Three things live in this file:
+#   - what the business words mean, in SQL and in English
+#   - which joins are legitimate, so a model cannot invent a relationship
+#   - what the data cannot answer, so the system refuses instead of guessing
+#
+# Edit this rather than the prompt. The prompt is generated from it.
+
+version: 3
+updated: 2026-08-30
+
+domains:
+  crm:
+    label: Sales pipeline
+    nature: synthetic
+    description: >
+      A fictitious B2B hardware vendor's 2017 pipeline, published by Maven
+      Analytics as a teaching dataset. Used for pipeline shape only. No finding
+      from this domain describes a real market, and it must never be compared
+      to the acquisition domain as though the two were one business.
+  acquisition:
+    label: Client acquisition and revenue
+    nature: real
+    description: >
+      Real marketing-qualified leads, signed clients, and the orders those
+      clients went on to fulfil, from Olist, a Brazilian marketplace, between
+      June 2017 and November 2018.
+
+entities:
+  opportunities:
+    domain: crm
+    table: crm_opportunities
+    grain: One row per sales opportunity.
+    primary_key: opportunity_id
+    description: >
+      Every opportunity, open or closed. deal_stage is one of Prospecting,
+      Engaging, Won, Lost.
+    caveats:
+      - close_value is 0 for Lost deals and NULL for open ones. These mean
+        different things and must not be collapsed.
+      - 1,425 opportunities name no account. Any account-level metric must
+        exclude them explicitly.
+      - Every Prospecting opportunity lacks an engage_date, so cycle time is
+        undefined for them by construction.
+
+  accounts:
+    domain: crm
+    table: crm_accounts
+    grain: One row per client account.
+    primary_key: account
+    description: The client companies opportunities are opened against.
+
+  products:
+    domain: crm
+    table: crm_products
+    grain: One row per product.
+    primary_key: product
+    description: Product catalogue with list prices, grouped into series.
+
+  sales_teams:
+    domain: crm
+    table: crm_sales_teams
+    grain: One row per sales agent.
+    primary_key: sales_agent
+    description: Agents, the manager they report to, and their regional office.
+
+  leads:
+    domain: acquisition
+    table: funnel_leads
+    grain: One row per marketing-qualified lead.
+    primary_key: mql_id
+    description: >
+      Leads that passed marketing qualification, with the channel and landing
+      page that produced them.
+    caveats:
+      - origin 'unknown' is a recorded value meaning the source could not be
+        identified. origin 'not_recorded' is this pipeline's label for a NULL.
+        They are different facts and must not be merged.
+
+  deals:
+    domain: acquisition
+    table: deal_outcomes
+    grain: One row per closed deal.
+    primary_key: mql_id
+    description: >
+      Leads that converted into signed clients, joined to the revenue that
+      client generated in the 90 days after signing.
+    caveats:
+      - window_complete marks deals that had a full 90-day observation window.
+        Every rate over this table must filter on it. The commerce data ends
+        2018-09-03 while deals close through 2018-11-14, so deals signed late
+        cannot show revenue by construction, not by failure.
+      - revenue_90d is 0 for clients that never billed. That is a real outcome,
+        not a missing value.
+
+  seller_performance:
+    domain: acquisition
+    table: seller_performance
+    grain: One row per selling client, lifetime.
+    primary_key: seller_id
+    description: >
+      Lifetime orders, revenue, and average review score per client, excluding
+      cancelled orders.
+
+  orders:
+    domain: acquisition
+    table: orders
+    grain: One row per order.
+    primary_key: order_id
+    description: Orders with status and the full set of delivery timestamps.
+    caveats:
+      - Cancelled orders are present. Every revenue metric excludes them.
+      - 2,965 orders have no delivery timestamp. Delivery metrics exclude them.
+
+  order_items:
+    domain: acquisition
+    table: order_items
+    grain: One row per item line within an order.
+    primary_key: [order_id, order_item_id]
+    description: Item lines with price and freight.
+    caveats:
+      - One row per line, not per order. Any per-order metric must aggregate
+        first or it will double count.
+
+  customers:
+    domain: acquisition
+    table: customers
+    grain: One row per customer record on an order.
+    primary_key: customer_id
+    description: End customers, with city and state.
+    caveats:
+      - customer_id identifies an order's customer record, not a person.
+        customer_unique_id identifies the person across orders. Counting
+        customers by customer_id overstates the customer base by 3,345.
+
+  reviews:
+    domain: acquisition
+    table: order_reviews
+    grain: One row per review.
+    primary_key: review_id
+    description: Review scores from 1 to 5 with timestamps.
+    caveats:
+      - review_id is not unique; one review can attach to more than one order.
+
+dimensions:
+  sector:
+    entity: accounts
+    sql: crm_accounts.sector
+    description: Industry of the client account.
+  account_name:
+    entity: accounts
+    sql: crm_accounts.account
+    description: Client account name.
+  product_name:
+    entity: products
+    sql: crm_products.product
+    description: Product name.
+  product_series:
+    entity: products
+    sql: crm_products.series
+    description: Product family (GTX, MG, GTK).
+  sales_agent:
+    entity: sales_teams
+    sql: crm_sales_teams.sales_agent
+    description: Individual sales agent.
+  manager:
+    entity: sales_teams
+    sql: crm_sales_teams.manager
+    description: The manager an agent reports to.
+  regional_office:
+    entity: sales_teams
+    sql: crm_sales_teams.regional_office
+    description: East, West, or Central.
+  deal_stage:
+    entity: opportunities
+    sql: crm_opportunities.deal_stage
+    description: Prospecting, Engaging, Won, or Lost.
+  close_month:
+    entity: opportunities
+    sql: strftime(crm_opportunities.close_date, '%Y-%m')
+    description: Month an opportunity closed.
+  channel:
+    entity: leads
+    sql: funnel_leads.origin
+    description: >
+      Acquisition channel of a lead. Values include organic_search, paid_search,
+      social, unknown, direct_traffic, email, referral, display, other,
+      other_publicities, not_recorded.
+  business_segment:
+    entity: deals
+    sql: deal_outcomes.business_segment
+    description: The market segment a signed client sells into.
+  lead_type:
+    entity: deals
+    sql: deal_outcomes.lead_type
+    description: Size and channel classification of the lead at qualification.
+  won_month:
+    entity: deals
+    sql: strftime(deal_outcomes.won_date, '%Y-%m')
+    description: Month a deal was signed.
+  customer_state:
+    entity: customers
+    sql: customers.customer_state
+    description: Two-letter Brazilian state of the end customer.
+  order_status:
+    entity: orders
+    sql: orders.order_status
+    description: delivered, shipped, canceled, unavailable, and others.
+
+metrics:
+  opportunity_count:
+    domain: crm
+    sql: COUNT(*)
+    entity: opportunities
+    description: Number of opportunities, open or closed.
+
+  win_rate:
+    domain: crm
+    sql: AVG(CASE WHEN crm_opportunities.is_won THEN 1.0 ELSE 0.0 END)
+    entity: opportunities
+    required_filter: crm_opportunities.is_closed
+    description: >
+      Share of closed opportunities that were won. Open deals are excluded
+      because their outcome is not yet known; including them understates the
+      rate by treating "undecided" as "lost".
+    reporting_note: >
+      Quote with a confidence interval whenever it is compared across groups.
+      Differences between sectors in this data are inside sampling noise.
+
+  booked_value:
+    domain: crm
+    sql: SUM(CASE WHEN crm_opportunities.is_won THEN crm_opportunities.close_value ELSE 0 END)
+    entity: opportunities
+    description: Total value of won deals. Lost and open deals contribute nothing.
+
+  avg_won_value:
+    domain: crm
+    sql: AVG(CASE WHEN crm_opportunities.is_won THEN crm_opportunities.close_value END)
+    entity: opportunities
+    description: >
+      Mean value of won deals. The CASE returns NULL rather than 0 for
+      non-wins so that AVG skips them; using 0 would drag the mean toward zero.
+
+  median_cycle_days:
+    domain: crm
+    sql: MEDIAN(crm_opportunities.cycle_days)
+    entity: opportunities
+    required_filter: crm_opportunities.cycle_days IS NOT NULL
+    description: >
+      Median days from engagement to close. Median rather than mean: the
+      distribution is bimodal and a mean describes no real deal.
+
+  lead_count:
+    domain: acquisition
+    sql: COUNT(*)
+    entity: leads
+    description: Number of marketing-qualified leads.
+
+  deal_count:
+    domain: acquisition
+    sql: COUNT(*)
+    entity: deals
+    description: Number of signed clients.
+
+  conversion_rate:
+    domain: acquisition
+    sql: COUNT(DISTINCT deal_outcomes.mql_id) * 1.0 / COUNT(DISTINCT funnel_leads.mql_id)
+    entity: leads
+    description: >
+      Share of qualified leads that signed. Measured over every lead, because
+      nothing about a lead becoming a deal is censored.
+
+  attachment_rate:
+    domain: acquisition
+    sql: AVG(CASE WHEN deal_outcomes.ever_sold THEN 1.0 ELSE 0.0 END)
+    entity: deals
+    required_filter: deal_outcomes.window_complete
+    description: >
+      Share of signed clients that generated any revenue. The filter on
+      window_complete is mandatory: without it the figure is 45.0% instead of
+      51.4%, and the difference is entirely an artefact of when the data ends.
+
+  revenue_90d:
+    domain: acquisition
+    sql: SUM(deal_outcomes.revenue_90d)
+    entity: deals
+    required_filter: deal_outcomes.window_complete
+    description: Revenue billed by signed clients in their first 90 days.
+
+  median_days_to_close:
+    domain: acquisition
+    sql: MEDIAN(deal_outcomes.days_to_close)
+    entity: deals
+    description: Median days from first marketing contact to signature.
+
+  order_revenue:
+    domain: acquisition
+    sql: SUM(order_items.price)
+    entity: order_items
+    required_filter: orders.order_status <> 'canceled'
+    description: >
+      Item revenue on live orders. Excludes freight, which is a pass-through
+      cost rather than seller revenue, and excludes cancelled orders.
+
+  order_count:
+    domain: acquisition
+    sql: COUNT(DISTINCT orders.order_id)
+    entity: orders
+    description: >
+      Distinct orders. Always COUNT(DISTINCT order_id) when order_items is in
+      the query, or an order with three lines counts three times.
+
+  avg_review_score:
+    domain: acquisition
+    sql: AVG(order_reviews.review_score)
+    entity: reviews
+    description: Mean review score, 1 to 5.
+
+  on_time_delivery_rate:
+    domain: acquisition
+    sql: >
+      AVG(CASE WHEN orders.order_delivered_customer_date
+                    <= orders.order_estimated_delivery_date
+               THEN 1.0 ELSE 0.0 END)
+    entity: orders
+    required_filter: orders.order_delivered_customer_date IS NOT NULL
+    description: >
+      Share of delivered orders that arrived on or before the estimate.
+      Undelivered orders are excluded rather than counted as late.
+
+  avg_delivery_days:
+    domain: acquisition
+    sql: >
+      AVG(DATE_DIFF('day', orders.order_purchase_timestamp,
+                           orders.order_delivered_customer_date))
+    entity: orders
+    required_filter: orders.order_delivered_customer_date IS NOT NULL
+    description: Mean days from purchase to delivery.
+
+joins:
+  - from: opportunities
+    to: accounts
+    on: crm_opportunities.account = crm_accounts.account
+    cardinality: many_to_one
+    note: >
+      Excludes the 1,425 opportunities with no account. Use a LEFT JOIN only if
+      the question is about opportunities regardless of account.
+  - from: opportunities
+    to: products
+    on: crm_opportunities.product = crm_products.product
+    cardinality: many_to_one
+  - from: opportunities
+    to: sales_teams
+    on: crm_opportunities.sales_agent = crm_sales_teams.sales_agent
+    cardinality: many_to_one
+  - from: deals
+    to: leads
+    on: deal_outcomes.mql_id = funnel_leads.mql_id
+    cardinality: one_to_one
+  - from: deals
+    to: seller_performance
+    on: deal_outcomes.seller_id = seller_performance.seller_id
+    cardinality: one_to_one
+    note: Only 380 of 842 signed clients appear here; the rest never listed.
+  - from: order_items
+    to: orders
+    on: order_items.order_id = orders.order_id
+    cardinality: many_to_one
+  - from: orders
+    to: customers
+    on: orders.customer_id = customers.customer_id
+    cardinality: many_to_one
+  - from: reviews
+    to: orders
+    on: order_reviews.order_id = orders.order_id
+    cardinality: many_to_one
+  - from: order_items
+    to: seller_performance
+    on: order_items.seller_id = seller_performance.seller_id
+    cardinality: many_to_one
+
+# Joins that are syntactically possible and semantically meaningless. The
+# validator rejects these outright rather than trusting the model to know.
+forbidden_joins:
+  - between: [opportunities, deals]
+    reason: >
+      The CRM pipeline is a synthetic dataset about a fictitious hardware
+      vendor. The acquisition funnel is real data from a Brazilian marketplace.
+      They share no entity, no market, and no time period. Joining them
+      produces a number that describes nothing.
+  - between: [accounts, leads]
+    reason: Same as above - different businesses entirely.
+  - between: [accounts, deals]
+    reason: Same as above - different businesses entirely.
+  - between: [customers, leads]
+    reason: >
+      Customers are end consumers buying from the marketplace. Leads are
+      businesses being recruited to sell on it. They are opposite sides of the
+      market and share no key.
+
+refusals:
+  - id: profitability
+    triggers: [profit, margin, cost, cogs, roi, cac, payback, profitable]
+    response: >
+      Neither dataset records cost. Revenue is available, but profit, margin,
+      customer acquisition cost, and return on investment cannot be computed
+      from anything here. Answering would require cost data the business holds
+      elsewhere.
+
+  - id: cross_domain
+    triggers: [compare crm to olist, both datasets, across both, combined]
+    response: >
+      The sales pipeline and the acquisition funnel are separate datasets from
+      separate businesses, one of them synthetic. A figure spanning both would
+      be meaningless, so the layer refuses rather than computing it.
+
+  - id: causation
+    triggers: [cause, caused, because of, drive, impact of, effect of, due to]
+    response: >
+      This is observational data with no experiment and no control group. It
+      can show that two things moved together; it cannot show that one caused
+      the other. The honest answer is the association, labelled as such.
+
+  - id: prediction
+    triggers: [will, predict, forecast, next quarter, expected to, likely to]
+    response: >
+      The layer reports what happened in the observed window. It has no model
+      for what happens next, and the data ends in 2018, so any forecast would
+      be invented rather than estimated.
+
+  - id: identity
+    triggers: [name of the customer, who is, contact details, email address, phone]
+    response: >
+      Customers and sales representatives are anonymised at source - the data
+      carries hashed identifiers only. No individual can be identified, and the
+      layer will not attempt to.
+
+  - id: outside_window
+    triggers: [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, this year, last month]
+    response: >
+      The sales pipeline covers 2017 and the acquisition data runs from June
+      2017 to November 2018. Any question about a period outside that has no
+      data behind it.
+
+  - id: unsupported_entity
+    response: >
+      That asks about something the layer does not define. Rather than guess at
+      a column that might mean it, the layer declines and names what it does
+      cover.
+
+# Hard limits enforced by the validator, not by the prompt.
+policy:
+  statement: select_only
+  max_rows: 1000
+  max_joins: 5
+  max_query_chars: 4000
+  require_limit: true
+  forbid:
+    - data definition (CREATE, DROP, ALTER, TRUNCATE)
+    - data modification (INSERT, UPDATE, DELETE, MERGE)
+    - transaction and session control (BEGIN, COMMIT, SET, PRAGMA)
+    - file and extension access (COPY, INSTALL, LOAD, read_csv, read_json)
+    - subqueries in more than three levels of nesting

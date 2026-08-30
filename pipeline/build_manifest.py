@@ -18,6 +18,7 @@ from pathlib import Path
 
 import polars as pl
 
+from pipeline.guardrails import export_policy, load_policy
 from pipeline.provenance import PROVENANCE_DIR
 from pipeline.quality import QUALITY_DIR
 
@@ -200,6 +201,11 @@ def main() -> int:
     for t in tables:
         print(f"    {t['name']:<22} {t['rows']:>8,} rows  {t['bytes'] / 1024:>7.0f} KB")
     print(f"  manifest -> {out}")
+
+    # The validator policy is derived from the manifest that was just written,
+    # so it can never describe tables that did not ship.
+    policy_path = export_policy(load_policy(manifest_path=out), PUBLIC_DATA / "policy.json")
+    print(f"  policy   -> {policy_path}")
     return 0
 
 

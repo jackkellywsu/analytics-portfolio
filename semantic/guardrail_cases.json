@@ -1,0 +1,202 @@
+{
+  "$comment": [
+    "Shared conformance corpus for the SQL validator.",
+    "The Python implementation (pipeline/guardrails.py) and the TypeScript one",
+    "(web/lib/guardrails) are both tested against this file. Two implementations",
+    "of the same rules will drift unless something forces them to agree; this is",
+    "that something.",
+    "",
+    "'codes' lists violation codes that MUST be present on a denial. A denial may",
+    "report additional codes - a query can be wrong in more than one way - but it",
+    "must at least catch these."
+  ],
+  "cases": [
+    {
+      "id": "simple-select",
+      "why": "The ordinary case has to keep working.",
+      "sql": "SELECT sector, COUNT(*) AS n FROM crm_accounts GROUP BY sector LIMIT 50",
+      "expect": "allow"
+    },
+    {
+      "id": "two-table-join",
+      "why": "A legitimate documented join.",
+      "sql": "SELECT a.sector, AVG(CASE WHEN o.is_won THEN 1.0 ELSE 0.0 END) AS win_rate FROM crm_opportunities o JOIN crm_accounts a ON a.account = o.account WHERE o.is_closed GROUP BY a.sector",
+      "expect": "allow"
+    },
+    {
+      "id": "cte",
+      "why": "Common table expressions are normal analytical SQL, and their names must not be mistaken for unknown tables.",
+      "sql": "WITH live AS (SELECT * FROM orders WHERE order_status <> 'canceled') SELECT COUNT(*) FROM live",
+      "expect": "allow"
+    },
+    {
+      "id": "missing-limit-is-added",
+      "why": "A limit the model is asked to include is a limit it will sometimes forget, so the validator adds one.",
+      "sql": "SELECT order_id FROM orders",
+      "expect": "allow",
+      "limit_applied": 1000
+    },
+    {
+      "id": "oversized-limit-is-clamped",
+      "why": "A model can ask for a million rows. It does not get them.",
+      "sql": "SELECT order_id FROM orders LIMIT 999999",
+      "expect": "allow",
+      "limit_applied": 1000
+    },
+    {
+      "id": "small-limit-is-respected",
+      "why": "Clamping must not raise a limit the model set deliberately.",
+      "sql": "SELECT order_id FROM orders LIMIT 5",
+      "expect": "allow",
+      "limit_applied": 5
+    },
+    {
+      "id": "drop-table",
+      "why": "The obvious one.",
+      "sql": "DROP TABLE orders",
+      "expect": "deny",
+      "codes": [
+        "not_select"
+      ]
+    },
+    {
+      "id": "delete",
+      "sql": "DELETE FROM orders WHERE order_id = 'x'",
+      "expect": "deny",
+      "codes": [
+        "not_select"
+      ]
+    },
+    {
+      "id": "insert",
+      "sql": "INSERT INTO orders (order_id) VALUES ('x')",
+      "expect": "deny",
+      "codes": [
+        "not_select"
+      ]
+    },
+    {
+      "id": "update",
+      "sql": "UPDATE orders SET order_status = 'delivered'",
+      "expect": "deny",
+      "codes": [
+        "not_select"
+      ]
+    },
+    {
+      "id": "stacked-statement",
+      "why": "The classic injection shape: a valid query followed by a second one. Both validators report not_select rather than a statement count: DuckDB refuses to serialise a batch containing a non-SELECT and never reveals how many statements it held, so the Python side checks statement type first to match.",
+      "sql": "SELECT 1 FROM orders; DROP TABLE orders",
+      "expect": "deny",
+      "codes": [
+        "not_select"
+      ]
+    },
+    {
+      "id": "stacked-statement-with-comment",
+      "why": "A keyword blocklist is defeated by a comment. An AST is not. Both validators report not_select rather than a statement count: DuckDB refuses to serialise a batch containing a non-SELECT and never reveals how many statements it held, so the Python side checks statement type first to match.",
+      "sql": "SELECT 1 FROM orders; -- harmless\nDROP TABLE customers",
+      "expect": "deny",
+      "codes": [
+        "not_select"
+      ]
+    },
+    {
+      "id": "lowercase-ddl",
+      "why": "Case folding must not change the verdict.",
+      "sql": "drop table orders",
+      "expect": "deny",
+      "codes": [
+        "not_select"
+      ]
+    },
+    {
+      "id": "unknown-table",
+      "why": "A hallucinated table is the single most common text-to-SQL failure.",
+      "sql": "SELECT * FROM sales_targets LIMIT 10",
+      "expect": "deny",
+      "codes": [
+        "unknown_table"
+      ]
+    },
+    {
+      "id": "unknown-column",
+      "why": "A hallucinated column on a real table is the second most common.",
+      "sql": "SELECT crm_accounts.annual_profit FROM crm_accounts LIMIT 10",
+      "expect": "deny",
+      "codes": [
+        "unknown_column"
+      ]
+    },
+    {
+      "id": "forbidden-join-crm-to-funnel",
+      "why": "Syntactically fine, semantically meaningless: a synthetic hardware vendor joined to a real marketplace.",
+      "sql": "SELECT COUNT(*) FROM crm_opportunities o JOIN deal_outcomes d ON o.account = d.seller_id",
+      "expect": "deny",
+      "codes": [
+        "forbidden_join"
+      ]
+    },
+    {
+      "id": "cartesian-join",
+      "why": "Two 99,000-row tables with no ON clause is a hung browser tab, not a slow query.",
+      "sql": "SELECT COUNT(*) FROM orders, customers",
+      "expect": "deny",
+      "codes": [
+        "cartesian_join"
+      ]
+    },
+    {
+      "id": "file-read",
+      "sql": "SELECT * FROM read_csv('/etc/passwd') LIMIT 1",
+      "expect": "deny",
+      "codes": [
+        "unknown_table"
+      ]
+    },
+    {
+      "id": "parquet-read",
+      "why": "The views are built on read_parquet; the model must not call it directly.",
+      "sql": "SELECT * FROM read_parquet('https://example.com/other.parquet') LIMIT 1",
+      "expect": "deny",
+      "codes": [
+        "unknown_table"
+      ]
+    },
+    {
+      "id": "not-sql",
+      "why": "Models sometimes answer in prose when they should emit SQL.",
+      "sql": "I cannot answer that question with the available data.",
+      "expect": "deny",
+      "codes": [
+        "unparseable"
+      ]
+    },
+    {
+      "id": "empty",
+      "sql": "",
+      "expect": "deny",
+      "codes": [
+        "empty"
+      ]
+    },
+    {
+      "id": "union-with-unknown-table",
+      "why": "A UNION is a place to smuggle a second source past a check that only looks at the first.",
+      "sql": "SELECT order_id FROM orders UNION ALL SELECT id FROM secret_table",
+      "expect": "deny",
+      "codes": [
+        "unknown_table"
+      ]
+    },
+    {
+      "id": "subquery-unknown-table",
+      "why": "Nesting must not hide a table from the check.",
+      "sql": "SELECT * FROM (SELECT * FROM internal_payroll) AS x LIMIT 5",
+      "expect": "deny",
+      "codes": [
+        "unknown_table"
+      ]
+    }
+  ]
+}

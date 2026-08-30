@@ -1,0 +1,186 @@
+{
+  "allowed_tables": [
+    "crm_accounts",
+    "crm_opportunities",
+    "crm_products",
+    "crm_sales_teams",
+    "customers",
+    "deal_outcomes",
+    "funnel_deals",
+    "funnel_leads",
+    "order_items",
+    "order_reviews",
+    "orders",
+    "products",
+    "seller_performance",
+    "sellers"
+  ],
+  "columns_by_table": {
+    "crm_accounts": [
+      "account",
+      "employees",
+      "office_location",
+      "parent_account",
+      "revenue_musd",
+      "sector",
+      "year_established"
+    ],
+    "crm_opportunities": [
+      "account",
+      "close_date",
+      "close_value",
+      "cycle_days",
+      "deal_stage",
+      "engage_date",
+      "is_closed",
+      "is_won",
+      "opportunity_id",
+      "product",
+      "sales_agent"
+    ],
+    "crm_products": [
+      "list_price",
+      "product",
+      "series"
+    ],
+    "crm_sales_teams": [
+      "manager",
+      "regional_office",
+      "sales_agent"
+    ],
+    "customers": [
+      "customer_city",
+      "customer_id",
+      "customer_state",
+      "customer_unique_id",
+      "customer_zip_code_prefix"
+    ],
+    "deal_outcomes": [
+      "behaviour_primary",
+      "business_segment",
+      "business_type",
+      "days_observed",
+      "days_to_close",
+      "ever_sold",
+      "first_contact_date",
+      "landing_page_id",
+      "lead_type",
+      "mql_id",
+      "orders_90d",
+      "orders_lifetime",
+      "origin",
+      "revenue_90d",
+      "revenue_lifetime",
+      "sdr_id",
+      "seller_id",
+      "sr_id",
+      "window_complete",
+      "won_date"
+    ],
+    "funnel_deals": [
+      "average_stock",
+      "behaviour_multi",
+      "behaviour_primary",
+      "business_segment",
+      "business_type",
+      "days_to_close",
+      "declared_monthly_revenue",
+      "declared_product_catalog_size",
+      "first_contact_date",
+      "has_company",
+      "has_gtin",
+      "landing_page_id",
+      "lead_behaviour_profile",
+      "lead_type",
+      "mql_id",
+      "origin",
+      "sdr_id",
+      "seller_id",
+      "sr_id",
+      "won_date"
+    ],
+    "funnel_leads": [
+      "first_contact_date",
+      "landing_page_id",
+      "mql_id",
+      "origin"
+    ],
+    "order_items": [
+      "freight_value",
+      "order_id",
+      "order_item_id",
+      "price",
+      "product_id",
+      "seller_id",
+      "shipping_limit_date"
+    ],
+    "order_reviews": [
+      "order_id",
+      "review_answer_timestamp",
+      "review_creation_date",
+      "review_id",
+      "review_score"
+    ],
+    "orders": [
+      "customer_id",
+      "order_approved_at",
+      "order_delivered_carrier_date",
+      "order_delivered_customer_date",
+      "order_estimated_delivery_date",
+      "order_id",
+      "order_purchase_timestamp",
+      "order_status"
+    ],
+    "products": [
+      "product_category_name",
+      "product_category_name_english",
+      "product_description_length",
+      "product_height_cm",
+      "product_id",
+      "product_length_cm",
+      "product_name_length",
+      "product_photos_qty",
+      "product_weight_g",
+      "product_width_cm"
+    ],
+    "seller_performance": [
+      "avg_review_score",
+      "first_order_at",
+      "freight_brl",
+      "items",
+      "last_order_at",
+      "orders",
+      "revenue_brl",
+      "reviews",
+      "seller_id"
+    ],
+    "sellers": [
+      "seller_city",
+      "seller_id",
+      "seller_state",
+      "seller_zip_code_prefix"
+    ]
+  },
+  "forbidden_pairs": [
+    [
+      "crm_accounts",
+      "deal_outcomes"
+    ],
+    [
+      "crm_accounts",
+      "funnel_leads"
+    ],
+    [
+      "crm_opportunities",
+      "deal_outcomes"
+    ],
+    [
+      "customers",
+      "funnel_leads"
+    ]
+  ],
+  "max_rows": 1000,
+  "max_joins": 5,
+  "max_chars": 4000,
+  "max_depth": 3
+}
