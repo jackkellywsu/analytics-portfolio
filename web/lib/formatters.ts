@@ -14,6 +14,7 @@ export type FormatName =
   | "pct"
   | "pct0"
   | "usd"
+  | "usd4"
   | "usdCompact"
   | "brl"
   | "brlCompact"
@@ -25,6 +26,8 @@ export const FORMATTERS: Record<FormatName, (value: number) => string> = {
   pct: (v) => pct(v),
   pct0: (v) => pct(v, 0),
   usd: (v) => usd(v),
+  // Sub-cent costs need four places or every model looks like $0.00.
+  usd4: (v) => `$${v.toFixed(4)}`,
   usdCompact: (v) => usd(v, true),
   brl: (v) => brl(v),
   brlCompact: (v) => brl(v, true),

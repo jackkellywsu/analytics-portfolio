@@ -67,7 +67,7 @@ export function Figure({
                 <tr>
                   {table.columns.map((column, i) => (
                     <th
-                      key={column}
+                      key={`${i}-${column}`}
                       scope="col"
                       className={cn(
                         "whitespace-nowrap border-b border-border px-3 py-2 font-mono text-[10px] font-normal uppercase tracking-[0.06em] text-ink-subtle",

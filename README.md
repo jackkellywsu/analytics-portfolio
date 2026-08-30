@@ -75,6 +75,15 @@ refusals served when the live translator is unavailable — with:
 .venv/Scripts/python.exe -m pipeline.build_ask_gallery
 ```
 
+The benchmark is two steps, so scoring can be re-run and corrected without
+paying for the API calls again:
+
+```bash
+.venv/Scripts/python.exe -m pipeline.evals.verify_gold
+.venv/Scripts/python.exe -m pipeline.evals.harness
+.venv/Scripts/python.exe -m pipeline.evals.analyze
+```
+
 `acquire` downloads each source and writes a provenance record with per-file checksums
 and quote-aware row counts. The `build_*` scripts clean each source and write a quality
 log recording every rule applied and the rows it touched. `build_manifest` publishes the
@@ -89,8 +98,8 @@ drift from what actually shipped.
 | 2 | Data pipeline, provenance, DuckDB-WASM | ✅ done |
 | 3 | Dashboards | ✅ done |
 | 4 | Semantic layer, natural-language interface, guardrails | ✅ done |
-| 5 | Evaluation lab | next |
-| 6 | Anomaly detection, methods, about, polish | not started |
+| 5 | Evaluation lab | ✅ done |
+| 6 | Anomaly detection, about, polish | next |
 
 Prior, abandoned work on a USPTO patent dataset is preserved on the
 `archive/uspto-portfolio` branch. That effort stopped when the PatentsView API was retired.

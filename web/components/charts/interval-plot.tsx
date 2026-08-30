@@ -153,9 +153,9 @@ export function IntervalPlot({
                       opacity={0.55}
                     />
                     {/* Whisker caps make the interval endpoints readable. */}
-                    {[row.low, row.high].map((value) => (
+                    {[row.low, row.high].map((value, cap) => (
                       <line
-                        key={value}
+                        key={`${row.key}-cap-${cap}`}
                         x1={scale(value)}
                         x2={scale(value)}
                         y1={y - 5}

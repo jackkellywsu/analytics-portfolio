@@ -100,8 +100,8 @@ export function XGrid({
 }) {
   return (
     <g aria-hidden="true">
-      {ticks.map((tick) => (
-        <g key={tick}>
+      {ticks.map((tick, i) => (
+        <g key={`${i}-${tick}`}>
           <line
             x1={scale(tick)}
             x2={scale(tick)}
@@ -142,8 +142,8 @@ export function YGrid({
 }) {
   return (
     <g aria-hidden="true">
-      {ticks.map((tick) => (
-        <g key={tick}>
+      {ticks.map((tick, i) => (
+        <g key={`${i}-${tick}`}>
           <line
             x1={left}
             x2={right}

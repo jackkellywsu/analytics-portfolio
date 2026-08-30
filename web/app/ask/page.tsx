@@ -90,9 +90,9 @@ export default function AskPage() {
               <PanelHeader title="What a question costs" />
               <dl className="divide-y divide-border text-sm">
                 {[
-                  ["Model", "Claude Sonnet 5"],
-                  ["Typical latency", "4–5 seconds"],
-                  ["Typical cost", "$0.006"],
+                  ["Model", "Claude Haiku 4.5"],
+                  ["Median latency", "2.2 seconds"],
+                  ["Cost per question", "$0.0019"],
                   ["Rate limit", "5/min, 40/day per visitor"],
                   ["Daily budget", "$0.50, then pre-run answers"],
                 ].map(([label, value]) => (
@@ -106,8 +106,14 @@ export default function AskPage() {
                 ))}
               </dl>
               <p className="border-t border-border px-4 py-3 text-xs leading-relaxed text-ink-subtle">
-                Measured, not estimated. The cost of every question you ask is
-                shown with its answer.
+                Measured over 72 benchmark cases, not estimated. Haiku was
+                chosen because it matched both larger models to within three
+                points at a fifth of the cost — the{" "}
+                <Link href="/evals" className="text-accent hover:underline">
+                  evaluation lab
+                </Link>{" "}
+                shows the working. The cost of every question you ask is shown
+                with its answer.
               </p>
             </Panel>
           </aside>

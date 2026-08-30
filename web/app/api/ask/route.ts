@@ -21,12 +21,20 @@ import policyJson from "@/public/data/policy.json";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-// Sonnet 5 by choice, not by default. Measured on this workload it answers in
-// ~4.5s for $0.0056 a question against Opus 5's ~5.5s for $0.0157 - 2.8x
-// cheaper for the same task - and both produced correct SQL on every question
-// tried by hand. Whether that holds across the whole benchmark is what the
-// evaluation lab measures; if it does not, this line changes.
-const MODEL = process.env.ASK_MODEL ?? "claude-sonnet-5";
+// Haiku 4.5, chosen from the benchmark rather than from intuition.
+//
+// Across 72 cases on the production prompt it scored 79.2% under lenient
+// scoring against Sonnet 5's 77.8% and Opus 5's 76.4% - a spread of three
+// points on a sample where the confidence intervals are about eleven points
+// wide, so the honest reading is that the three are indistinguishable on this
+// task. At that point cost and latency decide: $0.0019 a question and a 2.2s
+// median, against $0.0043/3.1s for Sonnet and $0.0117/3.8s for Opus.
+//
+// The caveat that goes with it: Haiku produced three false refusals to Sonnet's
+// two, and it is the one model that got worse when examples were added to the
+// prompt. If the false-refusal rate becomes the binding problem, this is the
+// line to change.
+const MODEL = process.env.ASK_MODEL ?? "claude-haiku-4-5";
 const EFFORT = (process.env.ASK_EFFORT ?? "medium") as
   | "low"
   | "medium"
@@ -40,8 +48,9 @@ const PER_IP_PER_MINUTE = 5;
 const PER_IP_PER_DAY = 40;
 // A dollar cap rather than a token cap: tokens cost different amounts on
 // different models, and the number that matters is the one on the invoice.
-// At Sonnet 5 prices (~$0.006 a question, measured) this is roughly 85 live
-// questions a day, or about $15 a month if the demo is busy every single day.
+// At Haiku 4.5 prices (~$0.002 a question, measured over 72 benchmark cases)
+// this is roughly 250 live questions a day - far more than this demo will see,
+// which is the point: the cap is a backstop, not a ration.
 const GLOBAL_DAILY_COST_USD = Number(process.env.ASK_DAILY_BUDGET_USD ?? 0.5);
 
 const PRICING: Record<string, { input: number; output: number }> = {
