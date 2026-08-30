@@ -421,6 +421,22 @@ refusals:
       The sales pipeline and the acquisition funnel are separate datasets from
       separate businesses, one of them synthetic. A figure spanning both would
       be meaningless, so the layer refuses rather than computing it.
+    # This rule was over-firing. The word "client" appears in both domains -
+    # crm_accounts holds client accounts, deal_outcomes holds signed clients -
+    # so "win rate by client sector" read as spanning both and was refused three
+    # times out of three, despite being answerable from the CRM domain alone.
+    # The fix belongs here rather than in the model: the vocabulary was
+    # ambiguous, so the resolution rule is now written down.
+    does_not_apply_when: >
+      The question can be answered inside one domain. Resolve the domain from
+      the vocabulary before considering this rule. Win rate, deal stage,
+      opportunity, sales agent, manager, regional office, product series, list
+      price, close value and sector are CRM terms and are answerable from the
+      CRM domain alone - "client" in that context means an account. Lead,
+      channel, marketing-qualified, signed client, attachment, business
+      segment, order, seller, review and delivery are acquisition terms. Only
+      refuse when answering would require joining the two, or when the question
+      explicitly asks to compare them.
 
   - id: causation
     triggers: [cause, caused, because of, drive, impact of, effect of, due to]

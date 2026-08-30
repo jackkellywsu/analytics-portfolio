@@ -21,7 +21,12 @@ import policyJson from "@/public/data/policy.json";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MODEL = process.env.ASK_MODEL ?? "claude-opus-5";
+// Sonnet 5 by choice, not by default. Measured on this workload it answers in
+// ~4.5s for $0.0056 a question against Opus 5's ~5.5s for $0.0157 - 2.8x
+// cheaper for the same task - and both produced correct SQL on every question
+// tried by hand. Whether that holds across the whole benchmark is what the
+// evaluation lab measures; if it does not, this line changes.
+const MODEL = process.env.ASK_MODEL ?? "claude-sonnet-5";
 const EFFORT = (process.env.ASK_EFFORT ?? "medium") as
   | "low"
   | "medium"
@@ -35,8 +40,8 @@ const PER_IP_PER_MINUTE = 5;
 const PER_IP_PER_DAY = 40;
 // A dollar cap rather than a token cap: tokens cost different amounts on
 // different models, and the number that matters is the one on the invoice.
-// At Opus 5 prices (~$0.016 a query, measured) this is about 30 live questions
-// a day, or roughly $15 a month if the demo is used every day.
+// At Sonnet 5 prices (~$0.006 a question, measured) this is roughly 85 live
+// questions a day, or about $15 a month if the demo is busy every single day.
 const GLOBAL_DAILY_COST_USD = Number(process.env.ASK_DAILY_BUDGET_USD ?? 0.5);
 
 const PRICING: Record<string, { input: number; output: number }> = {

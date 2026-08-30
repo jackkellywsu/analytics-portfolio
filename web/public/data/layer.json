@@ -414,7 +414,8 @@
         "across both",
         "combined"
       ],
-      "response": "The sales pipeline and the acquisition funnel are separate datasets from separate businesses, one of them synthetic. A figure spanning both would be meaningless, so the layer refuses rather than computing it.\n"
+      "response": "The sales pipeline and the acquisition funnel are separate datasets from separate businesses, one of them synthetic. A figure spanning both would be meaningless, so the layer refuses rather than computing it.\n",
+      "does_not_apply_when": "The question can be answered inside one domain. Resolve the domain from the vocabulary before considering this rule. Win rate, deal stage, opportunity, sales agent, manager, regional office, product series, list price, close value and sector are CRM terms and are answerable from the CRM domain alone - \"client\" in that context means an account. Lead, channel, marketing-qualified, signed client, attachment, business segment, order, seller, review and delivery are acquisition terms. Only refuse when answering would require joining the two, or when the question explicitly asks to compare them.\n"
     },
     {
       "id": "causation",

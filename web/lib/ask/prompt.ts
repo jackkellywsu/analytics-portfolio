@@ -51,7 +51,12 @@ export type Layer = {
     note?: string;
   }>;
   forbidden_joins: Array<{ between: string[]; reason: string }>;
-  refusals: Array<{ id: string; triggers?: string[]; response: string }>;
+  refusals: Array<{
+    id: string;
+    triggers?: string[];
+    response: string;
+    does_not_apply_when?: string;
+  }>;
   policy: Record<string, unknown>;
 };
 
@@ -116,6 +121,9 @@ export function renderLayer(columns: ColumnIndex): string {
   lines.push("", "# Questions to refuse");
   for (const refusal of layer.refusals) {
     lines.push(`- ${refusal.id}: ${collapse(refusal.response)}`);
+    if (refusal.does_not_apply_when) {
+      lines.push(`  DOES NOT APPLY WHEN: ${collapse(refusal.does_not_apply_when)}`);
+    }
   }
 
   return lines.join("\n");
@@ -144,6 +152,10 @@ export function systemPrompt(columns: ColumnIndex): string {
     "- Always aggregate before counting orders when order_items is involved, or",
     "  an order with three lines counts three times.",
     "- Prefer medians to means for durations and revenue; both are skewed.",
+    "",
+    "Before anything else, work out which domain the question belongs to from",
+    "its vocabulary. Most questions sit entirely inside one. Refusing a question",
+    "the layer can answer is a real failure, not a safe default.",
     "",
     "Call `refuse` when the layer cannot honestly support the question — no cost",
     "or profit data exists, the question asks for a prediction or a causal claim,",

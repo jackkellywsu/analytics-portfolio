@@ -90,9 +90,9 @@ export default function AskPage() {
               <PanelHeader title="What a question costs" />
               <dl className="divide-y divide-border text-sm">
                 {[
-                  ["Model", "Claude Opus 5"],
-                  ["Typical latency", "5–6 seconds"],
-                  ["Typical cost", "$0.016"],
+                  ["Model", "Claude Sonnet 5"],
+                  ["Typical latency", "4–5 seconds"],
+                  ["Typical cost", "$0.006"],
                   ["Rate limit", "5/min, 40/day per visitor"],
                   ["Daily budget", "$0.50, then pre-run answers"],
                 ].map(([label, value]) => (

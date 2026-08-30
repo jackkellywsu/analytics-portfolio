@@ -1,0 +1,635 @@
+{
+  "$comment": [
+    "Text-to-SQL benchmark cases.",
+    "",
+    "Each case carries a gold query that was written by hand and verified to",
+    "execute. Scoring is execution accuracy: the candidate's result set is",
+    "compared to the gold result set, so a query that reaches the right answer by",
+    "a different route counts as correct. String-matching SQL would mark correct",
+    "answers wrong and is not used.",
+    "",
+    "'skills' records what a case is actually testing, so the error analysis can",
+    "say which capability failed rather than only how often something did.",
+    "'trap' marks cases where the schema alone leads a model to a plausible wrong",
+    "answer - these are the cases the semantic layer exists to fix, and the",
+    "difference between the prompt conditions should concentrate here."
+  ],
+  "cases": [
+    {
+      "id": "crm-01",
+      "question": "How many opportunities are in the pipeline in total?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM crm_opportunities",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "crm-02",
+      "question": "How many client accounts are there?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM crm_accounts",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "crm-03",
+      "question": "List the product series and how many products are in each.",
+      "gold_sql": "SELECT series, COUNT(*) AS n FROM crm_products GROUP BY series ORDER BY series",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["group_by"]
+    },
+    {
+      "id": "crm-04",
+      "question": "How many opportunities are in each deal stage?",
+      "gold_sql": "SELECT deal_stage, COUNT(*) AS n FROM crm_opportunities GROUP BY deal_stage ORDER BY deal_stage",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["group_by"]
+    },
+    {
+      "id": "crm-05",
+      "question": "What is the total value of all won deals?",
+      "gold_sql": "SELECT SUM(close_value) AS booked FROM crm_opportunities WHERE is_won",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["filter", "aggregate"]
+    },
+    {
+      "id": "crm-06",
+      "question": "What is the overall win rate across closed deals?",
+      "gold_sql": "SELECT AVG(CASE WHEN is_won THEN 1.0 ELSE 0.0 END) AS win_rate FROM crm_opportunities WHERE is_closed",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["mandatory_filter", "aggregate"],
+      "trap": "Computing the rate over all opportunities instead of closed ones counts undecided deals as losses.",
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "crm-07",
+      "question": "What is the average value of a won deal?",
+      "gold_sql": "SELECT AVG(close_value) AS avg_won FROM crm_opportunities WHERE is_won",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["null_semantics", "aggregate"],
+      "trap": "Lost deals carry close_value = 0 rather than NULL, so averaging over all closed deals drags the figure toward zero.",
+      "trap_kind": "null_semantics"
+    },
+    {
+      "id": "crm-08",
+      "question": "What is the win rate for each client sector?",
+      "gold_sql": "SELECT a.sector, AVG(CASE WHEN o.is_won THEN 1.0 ELSE 0.0 END) AS win_rate FROM crm_opportunities o JOIN crm_accounts a ON a.account = o.account WHERE o.is_closed GROUP BY a.sector ORDER BY a.sector",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["join", "mandatory_filter", "group_by"],
+      "trap": "Needs both the account join and the closed-only filter.",
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "crm-09",
+      "question": "Which sales agents booked the most value? Show the top five.",
+      "gold_sql": "SELECT sales_agent, SUM(close_value) AS booked FROM crm_opportunities WHERE is_won GROUP BY sales_agent ORDER BY booked DESC LIMIT 5",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["group_by", "order_by", "limit"]
+    },
+    {
+      "id": "crm-10",
+      "question": "What is the median sales cycle in days for won deals?",
+      "gold_sql": "SELECT MEDIAN(cycle_days) AS median_days FROM crm_opportunities WHERE is_won AND cycle_days IS NOT NULL",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["aggregate", "null_handling"]
+    },
+    {
+      "id": "crm-11",
+      "question": "How does booked value break down by regional office?",
+      "gold_sql": "SELECT t.regional_office, SUM(o.close_value) AS booked FROM crm_opportunities o JOIN crm_sales_teams t ON t.sales_agent = o.sales_agent WHERE o.is_won GROUP BY t.regional_office ORDER BY t.regional_office",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["join", "group_by"]
+    },
+    {
+      "id": "crm-12",
+      "question": "For each manager, how many agents report to them?",
+      "gold_sql": "SELECT manager, COUNT(*) AS agents FROM crm_sales_teams GROUP BY manager ORDER BY manager",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["group_by"]
+    },
+    {
+      "id": "crm-13",
+      "question": "Which products have a list price above 3000?",
+      "gold_sql": "SELECT product, list_price FROM crm_products WHERE list_price > 3000 ORDER BY list_price DESC",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["filter"]
+    },
+    {
+      "id": "crm-14",
+      "question": "What is the median won deal value for each product series?",
+      "gold_sql": "SELECT p.series, MEDIAN(o.close_value) AS median_value FROM crm_opportunities o JOIN crm_products p ON p.product = o.product WHERE o.is_won GROUP BY p.series ORDER BY p.series",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["join", "group_by", "aggregate"]
+    },
+    {
+      "id": "crm-15",
+      "question": "How many opportunities have no account recorded?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM crm_opportunities WHERE account IS NULL",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["null_handling"]
+    },
+    {
+      "id": "crm-16",
+      "question": "How many deals closed in each month of 2017?",
+      "gold_sql": "SELECT strftime(close_date, '%Y-%m') AS month, COUNT(*) AS n FROM crm_opportunities WHERE close_date IS NOT NULL GROUP BY month ORDER BY month",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["date", "group_by"]
+    },
+    {
+      "id": "crm-17",
+      "question": "Which accounts in the technology sector have more than 5000 employees?",
+      "gold_sql": "SELECT account, employees FROM crm_accounts WHERE sector = 'technology' AND employees > 5000 ORDER BY employees DESC",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["filter"],
+      "trap": "The source spells this sector 'technolgy'; the cleaned table spells it correctly.",
+      "trap_kind": "value_normalisation"
+    },
+    {
+      "id": "crm-18",
+      "question": "What share of opportunities are still open?",
+      "gold_sql": "SELECT AVG(CASE WHEN is_closed THEN 0.0 ELSE 1.0 END) AS open_share FROM crm_opportunities",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "crm-19",
+      "question": "How many opportunities did each manager's team close, and how many did they win?",
+      "gold_sql": "SELECT t.manager, COUNT(*) AS closed, SUM(CASE WHEN o.is_won THEN 1 ELSE 0 END) AS won FROM crm_opportunities o JOIN crm_sales_teams t ON t.sales_agent = o.sales_agent WHERE o.is_closed GROUP BY t.manager ORDER BY t.manager",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["join", "mandatory_filter", "group_by"]
+    },
+    {
+      "id": "crm-20",
+      "question": "Which sector has the highest average won deal value, and what is it?",
+      "gold_sql": "SELECT a.sector, AVG(o.close_value) AS avg_won FROM crm_opportunities o JOIN crm_accounts a ON a.account = o.account WHERE o.is_won GROUP BY a.sector ORDER BY avg_won DESC LIMIT 1",
+      "difficulty": "hard",
+      "domain": "crm",
+      "skills": ["join", "null_semantics", "order_by", "limit"],
+      "trap": "Averaging close_value over closed rather than won deals includes the zeros lost deals carry.",
+      "trap_kind": "null_semantics"
+    },
+    {
+      "id": "crm-21",
+      "question": "How many accounts are subsidiaries of another company?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM crm_accounts WHERE parent_account IS NOT NULL",
+      "difficulty": "easy",
+      "domain": "crm",
+      "skills": ["null_handling"]
+    },
+    {
+      "id": "crm-22",
+      "question": "Compare the median cycle length of won deals against lost deals.",
+      "gold_sql": "SELECT CASE WHEN is_won THEN 'Won' ELSE 'Lost' END AS outcome, MEDIAN(cycle_days) AS median_days FROM crm_opportunities WHERE is_closed AND cycle_days IS NOT NULL GROUP BY outcome ORDER BY outcome",
+      "difficulty": "hard",
+      "domain": "crm",
+      "skills": ["case", "mandatory_filter", "group_by"]
+    },
+    {
+      "id": "crm-23",
+      "question": "What is the total list-price value of the open pipeline?",
+      "gold_sql": "SELECT SUM(p.list_price) AS open_value FROM crm_opportunities o JOIN crm_products p ON p.product = o.product WHERE NOT o.is_closed",
+      "difficulty": "hard",
+      "domain": "crm",
+      "skills": ["join", "filter"],
+      "trap": "Open deals carry no close_value at all, so the value has to come from the product catalogue.",
+      "trap_kind": "null_semantics"
+    },
+    {
+      "id": "crm-24",
+      "question": "Which five accounts generated the most booked value?",
+      "gold_sql": "SELECT account, SUM(close_value) AS booked FROM crm_opportunities WHERE is_won AND account IS NOT NULL GROUP BY account ORDER BY booked DESC LIMIT 5",
+      "difficulty": "medium",
+      "domain": "crm",
+      "skills": ["group_by", "null_handling", "limit"]
+    },
+
+    {
+      "id": "acq-01",
+      "question": "How many marketing-qualified leads are there?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM funnel_leads",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "acq-02",
+      "question": "How many leads came from each acquisition channel?",
+      "gold_sql": "SELECT origin AS channel, COUNT(*) AS n FROM funnel_leads GROUP BY origin ORDER BY n DESC",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["group_by"]
+    },
+    {
+      "id": "acq-03",
+      "question": "How many leads became signed clients?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM deal_outcomes",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "acq-04",
+      "question": "What share of qualified leads converted into signed clients?",
+      "gold_sql": "SELECT (SELECT COUNT(*) FROM deal_outcomes) * 1.0 / (SELECT COUNT(*) FROM funnel_leads) AS conversion_rate",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["subquery", "aggregate"]
+    },
+    {
+      "id": "acq-05",
+      "question": "What share of signed clients ever generated revenue?",
+      "gold_sql": "SELECT AVG(CASE WHEN ever_sold THEN 1.0 ELSE 0.0 END) AS attachment_rate FROM deal_outcomes WHERE window_complete",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "aggregate"],
+      "trap": "Without the window_complete filter this returns 45.0% instead of 51.4%, because clients signed after the commerce data ends cannot show revenue by construction.",
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-06",
+      "question": "What is the median number of days from first contact to signature?",
+      "gold_sql": "SELECT MEDIAN(days_to_close) AS median_days FROM deal_outcomes",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "acq-07",
+      "question": "How many signed clients are in each business segment? Show the top ten.",
+      "gold_sql": "SELECT business_segment, COUNT(*) AS n FROM deal_outcomes WHERE business_segment IS NOT NULL GROUP BY business_segment ORDER BY n DESC, business_segment LIMIT 10",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["group_by", "limit"]
+    },
+    {
+      "id": "acq-08",
+      "question": "How much revenue did signed clients generate in their first 90 days, by channel?",
+      "gold_sql": "SELECT origin AS channel, SUM(revenue_90d) AS revenue FROM deal_outcomes WHERE window_complete GROUP BY origin ORDER BY revenue DESC",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "group_by"],
+      "trap": "Revenue summed without the window filter includes clients with no observation window.",
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-09",
+      "question": "How many orders are there in total?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM orders",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "acq-10",
+      "question": "What is the total item revenue across all non-cancelled orders?",
+      "gold_sql": "SELECT SUM(i.price) AS revenue FROM order_items i JOIN orders o ON o.order_id = i.order_id WHERE o.order_status <> 'canceled'",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["join", "mandatory_filter", "aggregate"],
+      "trap": "Cancelled orders remain in the table and must be excluded from revenue.",
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-11",
+      "question": "How many distinct orders contain more than one item line?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM (SELECT order_id FROM order_items GROUP BY order_id HAVING COUNT(*) > 1) t",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["grain", "subquery", "having"],
+      "trap": "order_items is one row per line, so counting rows rather than grouping by order gives the wrong answer.",
+      "trap_kind": "grain"
+    },
+    {
+      "id": "acq-12",
+      "question": "What is the average review score?",
+      "gold_sql": "SELECT AVG(review_score) AS avg_score FROM order_reviews",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "acq-13",
+      "question": "How many unique customers are there?",
+      "gold_sql": "SELECT COUNT(DISTINCT customer_unique_id) AS n FROM customers",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["grain", "distinct"],
+      "trap": "customer_id is per order, not per person. Counting it overstates the customer base by 3,345.",
+      "trap_kind": "grain"
+    },
+    {
+      "id": "acq-14",
+      "question": "Which five states have the most delivered orders?",
+      "gold_sql": "SELECT c.customer_state, COUNT(*) AS n FROM orders o JOIN customers c ON c.customer_id = o.customer_id WHERE o.order_delivered_customer_date IS NOT NULL GROUP BY c.customer_state ORDER BY n DESC LIMIT 5",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["join", "group_by", "limit"]
+    },
+    {
+      "id": "acq-15",
+      "question": "What share of delivered orders arrived on or before the estimated date?",
+      "gold_sql": "SELECT AVG(CASE WHEN order_delivered_customer_date <= order_estimated_delivery_date THEN 1.0 ELSE 0.0 END) AS on_time FROM orders WHERE order_delivered_customer_date IS NOT NULL",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "date", "aggregate"],
+      "trap": "Orders never delivered must be excluded rather than counted as late.",
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-16",
+      "question": "What is the average number of days between purchase and delivery?",
+      "gold_sql": "SELECT AVG(DATE_DIFF('day', order_purchase_timestamp, order_delivered_customer_date)) AS avg_days FROM orders WHERE order_delivered_customer_date IS NOT NULL",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["date", "aggregate"]
+    },
+    {
+      "id": "acq-17",
+      "question": "How many signed clients had a complete 90-day observation window?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM deal_outcomes WHERE window_complete",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["filter"]
+    },
+    {
+      "id": "acq-18",
+      "question": "What is the conversion rate from lead to signed client for each channel?",
+      "gold_sql": "SELECT l.origin AS channel, COUNT(d.mql_id) * 1.0 / COUNT(*) AS conversion_rate FROM funnel_leads l LEFT JOIN deal_outcomes d ON d.mql_id = l.mql_id GROUP BY l.origin ORDER BY conversion_rate DESC",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["join", "outer_join", "group_by"],
+      "trap": "Needs a LEFT JOIN: an inner join drops channels whose leads never converted and inflates every rate.",
+      "trap_kind": "join_type"
+    },
+    {
+      "id": "acq-19",
+      "question": "How many leads had no acquisition channel recorded at all?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM funnel_leads WHERE origin = 'not_recorded'",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["value_semantics"],
+      "trap": "'unknown' is a recorded value meaning unidentifiable; 'not_recorded' is the label for a missing one. Merging them conflates two different facts.",
+      "trap_kind": "value_normalisation"
+    },
+    {
+      "id": "acq-20",
+      "question": "Which business segments have the highest revenue attachment rate? Show segments with at least twenty clients.",
+      "gold_sql": "SELECT business_segment, AVG(CASE WHEN ever_sold THEN 1.0 ELSE 0.0 END) AS attachment_rate, COUNT(*) AS clients FROM deal_outcomes WHERE window_complete AND business_segment IS NOT NULL GROUP BY business_segment HAVING COUNT(*) >= 20 ORDER BY attachment_rate DESC",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "group_by", "having"],
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-21",
+      "question": "What is the total revenue for each seller state? Show the top five.",
+      "gold_sql": "SELECT s.seller_state, SUM(i.price) AS revenue FROM order_items i JOIN orders o ON o.order_id = i.order_id JOIN sellers s ON s.seller_id = i.seller_id WHERE o.order_status <> 'canceled' GROUP BY s.seller_state ORDER BY revenue DESC LIMIT 5",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["join", "mandatory_filter", "group_by", "limit"]
+    },
+    {
+      "id": "acq-22",
+      "question": "How many orders were cancelled?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM orders WHERE order_status = 'canceled'",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["filter"]
+    },
+    {
+      "id": "acq-23",
+      "question": "What is the average review score for each order status?",
+      "gold_sql": "SELECT o.order_status, AVG(r.review_score) AS avg_score FROM order_reviews r JOIN orders o ON o.order_id = r.order_id GROUP BY o.order_status ORDER BY o.order_status",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["join", "group_by"]
+    },
+    {
+      "id": "acq-24",
+      "question": "How many signed clients came from each lead type?",
+      "gold_sql": "SELECT lead_type, COUNT(*) AS n FROM deal_outcomes WHERE lead_type IS NOT NULL GROUP BY lead_type ORDER BY n DESC",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["group_by"]
+    },
+    {
+      "id": "acq-25",
+      "question": "What is the median 90-day revenue among clients that generated any revenue at all?",
+      "gold_sql": "SELECT MEDIAN(revenue_90d) AS median_revenue FROM deal_outcomes WHERE window_complete AND revenue_90d > 0",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "conditional", "aggregate"],
+      "trap": "The median across all clients is zero, because most bill nothing in 90 days.",
+      "trap_kind": "zero_inflation"
+    },
+    {
+      "id": "acq-26",
+      "question": "How many products are there in each English category? Show the top ten.",
+      "gold_sql": "SELECT product_category_name_english, COUNT(*) AS n FROM products WHERE product_category_name_english IS NOT NULL GROUP BY product_category_name_english ORDER BY n DESC, product_category_name_english LIMIT 10",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["group_by", "null_handling", "limit"]
+    },
+    {
+      "id": "acq-27",
+      "question": "How many leads were first contacted in each month?",
+      "gold_sql": "SELECT strftime(first_contact_date, '%Y-%m') AS month, COUNT(*) AS n FROM funnel_leads GROUP BY month ORDER BY month",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["date", "group_by"]
+    },
+    {
+      "id": "acq-28",
+      "question": "Which sellers have the highest lifetime revenue? Show the top five with their average review score.",
+      "gold_sql": "SELECT seller_id, revenue_brl, avg_review_score FROM seller_performance ORDER BY revenue_brl DESC LIMIT 5",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["order_by", "limit"]
+    },
+    {
+      "id": "acq-29",
+      "question": "What is the average order value, counting each order once?",
+      "gold_sql": "SELECT AVG(order_total) AS avg_order_value FROM (SELECT i.order_id, SUM(i.price) AS order_total FROM order_items i JOIN orders o ON o.order_id = i.order_id WHERE o.order_status <> 'canceled' GROUP BY i.order_id) t",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["grain", "subquery", "mandatory_filter"],
+      "trap": "Averaging item price gives the average line value, not the average order value. The order has to be aggregated first.",
+      "trap_kind": "grain"
+    },
+    {
+      "id": "acq-30",
+      "question": "How many signed clients generated no revenue at all within their first 90 days?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM deal_outcomes WHERE window_complete AND revenue_90d = 0",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "filter"],
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-31",
+      "question": "Which landing pages produced the most leads? Show the top five.",
+      "gold_sql": "SELECT landing_page_id, COUNT(*) AS n FROM funnel_leads GROUP BY landing_page_id ORDER BY n DESC, landing_page_id LIMIT 5",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["group_by", "limit"]
+    },
+    {
+      "id": "acq-32",
+      "question": "What is the average time to close for each business type?",
+      "gold_sql": "SELECT business_type, AVG(days_to_close) AS avg_days FROM deal_outcomes WHERE business_type IS NOT NULL GROUP BY business_type ORDER BY business_type",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["group_by", "null_handling"]
+    },
+    {
+      "id": "acq-33",
+      "question": "How many orders had a review score of 1?",
+      "gold_sql": "SELECT COUNT(DISTINCT order_id) AS n FROM order_reviews WHERE review_score = 1",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["distinct", "filter"],
+      "trap": "review_id is not unique across orders, so counting reviews rather than distinct orders can miscount.",
+      "trap_kind": "grain"
+    },
+    {
+      "id": "acq-34",
+      "question": "For clients with a complete window, what is the average revenue in the first 90 days by lead type?",
+      "gold_sql": "SELECT lead_type, AVG(revenue_90d) AS avg_revenue FROM deal_outcomes WHERE window_complete AND lead_type IS NOT NULL GROUP BY lead_type ORDER BY avg_revenue DESC",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "group_by"]
+    },
+    {
+      "id": "acq-35",
+      "question": "How many distinct sellers appear in the order items?",
+      "gold_sql": "SELECT COUNT(DISTINCT seller_id) AS n FROM order_items",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["distinct"]
+    },
+    {
+      "id": "acq-36",
+      "question": "Which five business segments produced the most 90-day revenue in total?",
+      "gold_sql": "SELECT business_segment, SUM(revenue_90d) AS revenue FROM deal_outcomes WHERE window_complete AND business_segment IS NOT NULL GROUP BY business_segment ORDER BY revenue DESC LIMIT 5",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "group_by", "limit"],
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-37",
+      "question": "What is the average freight cost per item line?",
+      "gold_sql": "SELECT AVG(freight_value) AS avg_freight FROM order_items",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["aggregate"]
+    },
+    {
+      "id": "acq-38",
+      "question": "How many clients signed in each month?",
+      "gold_sql": "SELECT strftime(won_date, '%Y-%m') AS month, COUNT(*) AS n FROM deal_outcomes GROUP BY month ORDER BY month",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["date", "group_by"]
+    },
+    {
+      "id": "acq-39",
+      "question": "Which customer states have an average delivery time above 20 days? Include only states with at least 500 delivered orders.",
+      "gold_sql": "SELECT c.customer_state, AVG(DATE_DIFF('day', o.order_purchase_timestamp, o.order_delivered_customer_date)) AS avg_days FROM orders o JOIN customers c ON c.customer_id = o.customer_id WHERE o.order_delivered_customer_date IS NOT NULL GROUP BY c.customer_state HAVING COUNT(*) >= 500 AND AVG(DATE_DIFF('day', o.order_purchase_timestamp, o.order_delivered_customer_date)) > 20 ORDER BY avg_days DESC",
+      "difficulty": "hard",
+      "domain": "acquisition",
+      "skills": ["join", "date", "having", "group_by"]
+    },
+    {
+      "id": "acq-40",
+      "question": "What proportion of signed clients came from paid search?",
+      "gold_sql": "SELECT AVG(CASE WHEN origin = 'paid_search' THEN 1.0 ELSE 0.0 END) AS share FROM deal_outcomes",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["aggregate", "case"]
+    },
+    {
+      "id": "acq-41",
+      "question": "How many item lines are there per order on average?",
+      "gold_sql": "SELECT COUNT(*) * 1.0 / COUNT(DISTINCT order_id) AS avg_lines FROM order_items",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["grain", "distinct"],
+      "trap_kind": "grain"
+    },
+    {
+      "id": "acq-42",
+      "question": "Which five sellers received the most reviews?",
+      "gold_sql": "SELECT seller_id, reviews FROM seller_performance WHERE reviews IS NOT NULL ORDER BY reviews DESC, seller_id LIMIT 5",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["order_by", "limit"]
+    },
+    {
+      "id": "acq-43",
+      "question": "What is the revenue attachment rate for each acquisition channel, restricted to clients with a complete window?",
+      "gold_sql": "SELECT origin AS channel, AVG(CASE WHEN ever_sold THEN 1.0 ELSE 0.0 END) AS attachment_rate, COUNT(*) AS clients FROM deal_outcomes WHERE window_complete GROUP BY origin ORDER BY attachment_rate DESC",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "group_by"]
+    },
+    {
+      "id": "acq-44",
+      "question": "How many orders are there for each order status?",
+      "gold_sql": "SELECT order_status, COUNT(*) AS n FROM orders GROUP BY order_status ORDER BY n DESC",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["group_by"]
+    },
+    {
+      "id": "acq-45",
+      "question": "What is the total 90-day revenue across all clients with a complete window?",
+      "gold_sql": "SELECT SUM(revenue_90d) AS revenue FROM deal_outcomes WHERE window_complete",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["mandatory_filter", "aggregate"],
+      "trap_kind": "missing_required_filter"
+    },
+    {
+      "id": "acq-46",
+      "question": "Which behaviour profile is most common among signed clients?",
+      "gold_sql": "SELECT behaviour_primary, COUNT(*) AS n FROM deal_outcomes WHERE behaviour_primary IS NOT NULL GROUP BY behaviour_primary ORDER BY n DESC LIMIT 1",
+      "difficulty": "medium",
+      "domain": "acquisition",
+      "skills": ["group_by", "limit", "null_handling"]
+    },
+    {
+      "id": "acq-47",
+      "question": "How many sellers have an average review score below 3?",
+      "gold_sql": "SELECT COUNT(*) AS n FROM seller_performance WHERE avg_review_score < 3",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["filter"]
+    },
+    {
+      "id": "acq-48",
+      "question": "What is the longest time to close recorded for any signed client?",
+      "gold_sql": "SELECT MAX(days_to_close) AS max_days FROM deal_outcomes",
+      "difficulty": "easy",
+      "domain": "acquisition",
+      "skills": ["aggregate"]
+    }
+  ]
+}
