@@ -63,6 +63,8 @@ python -m venv .venv
 .venv/Scripts/python.exe -m pipeline.build_crm
 .venv/Scripts/python.exe -m pipeline.build_olist
 .venv/Scripts/python.exe -m pipeline.build_manifest
+.venv/Scripts/python.exe -m pipeline.build_dashboards
+.venv/Scripts/python.exe -m pipeline.build_attribution
 ```
 
 `acquire` downloads each source and writes a provenance record with per-file checksums
@@ -77,8 +79,8 @@ drift from what actually shipped.
 |---|---|---|
 | 1 | Foundation — design system, layout, routes | ✅ done |
 | 2 | Data pipeline, provenance, DuckDB-WASM | ✅ done |
-| 3 | Dashboards | next |
-| 4 | Semantic layer, natural-language interface, guardrails | not started |
+| 3 | Dashboards | ✅ done |
+| 4 | Semantic layer, natural-language interface, guardrails | next |
 | 5 | Evaluation lab | not started |
 | 6 | Anomaly detection, methods, about, polish | not started |
 

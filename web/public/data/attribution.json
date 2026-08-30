@@ -1,0 +1,1209 @@
+{
+  "headline": {
+    "leads": 8000,
+    "deals": 842,
+    "conversion": {
+      "n": 8000,
+      "successes": 842,
+      "point": 0.10525,
+      "low": 0.09871,
+      "high": 0.11217
+    },
+    "naive_attachment": {
+      "n": 842,
+      "successes": 379,
+      "point": 0.45012,
+      "low": 0.41682,
+      "high": 0.48387
+    },
+    "corrected_attachment": {
+      "n": 671,
+      "successes": 345,
+      "point": 0.51416,
+      "low": 0.47637,
+      "high": 0.55179
+    },
+    "complete_deals": 671,
+    "censored_deals": 171,
+    "window_days": 90,
+    "revenue_90d_total": 340291.28,
+    "median_revenue_converting": 323.6,
+    "median_days_to_close": 14.0,
+    "lead_window": [
+      "2017-06-14",
+      "2018-05-31"
+    ],
+    "won_window": [
+      "2017-12-05",
+      "2018-11-14"
+    ]
+  },
+  "cohorts": [
+    {
+      "cohort": "2017-12",
+      "deals": 3,
+      "attached": 1,
+      "rate": {
+        "n": 3,
+        "successes": 1,
+        "point": 0.33333,
+        "low": 0.06149,
+        "high": 0.79234
+      },
+      "median_days_observed": 265.0,
+      "window_complete": true
+    },
+    {
+      "cohort": "2018-01",
+      "deals": 73,
+      "attached": 41,
+      "rate": {
+        "n": 73,
+        "successes": 41,
+        "point": 0.56164,
+        "low": 0.44758,
+        "high": 0.66955
+      },
+      "median_days_observed": 223.0,
+      "window_complete": true
+    },
+    {
+      "cohort": "2018-02",
+      "deals": 113,
+      "attached": 61,
+      "rate": {
+        "n": 113,
+        "successes": 61,
+        "point": 0.53982,
+        "low": 0.44813,
+        "high": 0.6289
+      },
+      "median_days_observed": 198.0,
+      "window_complete": true
+    },
+    {
+      "cohort": "2018-03",
+      "deals": 147,
+      "attached": 74,
+      "rate": {
+        "n": 147,
+        "successes": 74,
+        "point": 0.5034,
+        "low": 0.42352,
+        "high": 0.5831
+      },
+      "median_days_observed": 170.0,
+      "window_complete": true
+    },
+    {
+      "cohort": "2018-04",
+      "deals": 207,
+      "attached": 103,
+      "rate": {
+        "n": 207,
+        "successes": 103,
+        "point": 0.49758,
+        "low": 0.43014,
+        "high": 0.56512
+      },
+      "median_days_observed": 137.0,
+      "window_complete": true
+    },
+    {
+      "cohort": "2018-05",
+      "deals": 122,
+      "attached": 64,
+      "rate": {
+        "n": 122,
+        "successes": 64,
+        "point": 0.52459,
+        "low": 0.43658,
+        "high": 0.6111
+      },
+      "median_days_observed": 110.0,
+      "window_complete": true
+    },
+    {
+      "cohort": "2018-06",
+      "deals": 57,
+      "attached": 23,
+      "rate": {
+        "n": 57,
+        "successes": 23,
+        "point": 0.40351,
+        "low": 0.28618,
+        "high": 0.53303
+      },
+      "median_days_observed": 82.0,
+      "window_complete": false
+    },
+    {
+      "cohort": "2018-07",
+      "deals": 37,
+      "attached": 10,
+      "rate": {
+        "n": 37,
+        "successes": 10,
+        "point": 0.27027,
+        "low": 0.15397,
+        "high": 0.42978
+      },
+      "median_days_observed": 51.0,
+      "window_complete": false
+    },
+    {
+      "cohort": "2018-08",
+      "deals": 33,
+      "attached": 2,
+      "rate": {
+        "n": 33,
+        "successes": 2,
+        "point": 0.06061,
+        "low": 0.01678,
+        "high": 0.19606
+      },
+      "median_days_observed": 13.0,
+      "window_complete": false
+    },
+    {
+      "cohort": "2018-09",
+      "deals": 23,
+      "attached": 0,
+      "rate": {
+        "n": 23,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.14312
+      },
+      "median_days_observed": -9.0,
+      "window_complete": false
+    },
+    {
+      "cohort": "2018-10",
+      "deals": 21,
+      "attached": 0,
+      "rate": {
+        "n": 21,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.15464
+      },
+      "median_days_observed": -45.0,
+      "window_complete": false
+    },
+    {
+      "cohort": "2018-11",
+      "deals": 6,
+      "attached": 0,
+      "rate": {
+        "n": 6,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.39033
+      },
+      "median_days_observed": -65.5,
+      "window_complete": false
+    }
+  ],
+  "channels": [
+    {
+      "origin": "unknown",
+      "leads": 1099,
+      "deals": 179,
+      "conversion": {
+        "n": 1099,
+        "successes": 179,
+        "point": 0.16288,
+        "low": 0.14223,
+        "high": 0.18587
+      },
+      "complete_deals": 155,
+      "attachment": {
+        "n": 155,
+        "successes": 77,
+        "point": 0.49677,
+        "low": 0.4191,
+        "high": 0.57461
+      },
+      "revenue_90d": 128963.97999999997,
+      "revenue_per_deal": 832.0256774193547,
+      "revenue_per_lead": 135.5203423380645
+    },
+    {
+      "origin": "paid_search",
+      "leads": 1586,
+      "deals": 195,
+      "conversion": {
+        "n": 1586,
+        "successes": 195,
+        "point": 0.12295,
+        "low": 0.10769,
+        "high": 0.14003
+      },
+      "complete_deals": 147,
+      "attachment": {
+        "n": 147,
+        "successes": 88,
+        "point": 0.59864,
+        "low": 0.51786,
+        "high": 0.67439
+      },
+      "revenue_90d": 75274.35999999999,
+      "revenue_per_deal": 512.0704761904761,
+      "revenue_per_lead": 62.95906504761904
+    },
+    {
+      "origin": "organic_search",
+      "leads": 2296,
+      "deals": 271,
+      "conversion": {
+        "n": 2296,
+        "successes": 271,
+        "point": 0.11803,
+        "low": 0.10547,
+        "high": 0.13187
+      },
+      "complete_deals": 209,
+      "attachment": {
+        "n": 209,
+        "successes": 103,
+        "point": 0.49282,
+        "low": 0.42579,
+        "high": 0.56012
+      },
+      "revenue_90d": 90557.05999999998,
+      "revenue_per_deal": 433.2873684210526,
+      "revenue_per_lead": 51.14090809473684
+    },
+    {
+      "origin": "referral",
+      "leads": 284,
+      "deals": 24,
+      "conversion": {
+        "n": 284,
+        "successes": 24,
+        "point": 0.08451,
+        "low": 0.05744,
+        "high": 0.12266
+      },
+      "complete_deals": 19,
+      "attachment": {
+        "n": 19,
+        "successes": 9,
+        "point": 0.47368,
+        "low": 0.2733,
+        "high": 0.68292
+      },
+      "revenue_90d": 11480.759999999998,
+      "revenue_per_deal": 604.2505263157894,
+      "revenue_per_lead": 51.06521197894737
+    },
+    {
+      "origin": "other",
+      "leads": 150,
+      "deals": 4,
+      "conversion": {
+        "n": 150,
+        "successes": 4,
+        "point": 0.02667,
+        "low": 0.01042,
+        "high": 0.06655
+      },
+      "complete_deals": 4,
+      "attachment": {
+        "n": 4,
+        "successes": 2,
+        "point": 0.5,
+        "low": 0.15004,
+        "high": 0.84996
+      },
+      "revenue_90d": 5283.98,
+      "revenue_per_deal": 1320.995,
+      "revenue_per_lead": 35.23093665
+    },
+    {
+      "origin": "direct_traffic",
+      "leads": 499,
+      "deals": 56,
+      "conversion": {
+        "n": 499,
+        "successes": 56,
+        "point": 0.11222,
+        "low": 0.08744,
+        "high": 0.14293
+      },
+      "complete_deals": 49,
+      "attachment": {
+        "n": 49,
+        "successes": 28,
+        "point": 0.57143,
+        "low": 0.4327,
+        "high": 0.69977
+      },
+      "revenue_90d": 8980.43,
+      "revenue_per_deal": 183.27408163265306,
+      "revenue_per_lead": 20.567017440816326
+    },
+    {
+      "origin": "email",
+      "leads": 493,
+      "deals": 15,
+      "conversion": {
+        "n": 493,
+        "successes": 15,
+        "point": 0.03043,
+        "low": 0.01852,
+        "high": 0.04959
+      },
+      "complete_deals": 13,
+      "attachment": {
+        "n": 13,
+        "successes": 6,
+        "point": 0.46154,
+        "low": 0.23206,
+        "high": 0.70856
+      },
+      "revenue_90d": 6129.69,
+      "revenue_per_deal": 471.51461538461535,
+      "revenue_per_lead": 14.348189746153844
+    },
+    {
+      "origin": "social",
+      "leads": 1350,
+      "deals": 75,
+      "conversion": {
+        "n": 1350,
+        "successes": 75,
+        "point": 0.05556,
+        "low": 0.04455,
+        "high": 0.06908
+      },
+      "complete_deals": 55,
+      "attachment": {
+        "n": 55,
+        "successes": 26,
+        "point": 0.47273,
+        "low": 0.34693,
+        "high": 0.60208
+      },
+      "revenue_90d": 12767.02,
+      "revenue_per_deal": 232.12763636363638,
+      "revenue_per_lead": 12.897011476363637
+    },
+    {
+      "origin": "not_recorded",
+      "leads": 60,
+      "deals": 14,
+      "conversion": {
+        "n": 60,
+        "successes": 14,
+        "point": 0.23333,
+        "low": 0.1444,
+        "high": 0.35436
+      },
+      "complete_deals": 11,
+      "attachment": {
+        "n": 11,
+        "successes": 4,
+        "point": 0.36364,
+        "low": 0.15166,
+        "high": 0.6462
+      },
+      "revenue_90d": 581.0,
+      "revenue_per_deal": 52.81818181818182,
+      "revenue_per_lead": 12.324066363636364
+    },
+    {
+      "origin": "display",
+      "leads": 118,
+      "deals": 6,
+      "conversion": {
+        "n": 118,
+        "successes": 6,
+        "point": 0.05085,
+        "low": 0.02351,
+        "high": 0.10651
+      },
+      "complete_deals": 6,
+      "attachment": {
+        "n": 6,
+        "successes": 2,
+        "point": 0.33333,
+        "low": 0.09677,
+        "high": 0.70001
+      },
+      "revenue_90d": 273.0,
+      "revenue_per_deal": 45.5,
+      "revenue_per_lead": 2.313675
+    },
+    {
+      "origin": "other_publicities",
+      "leads": 65,
+      "deals": 3,
+      "conversion": {
+        "n": 65,
+        "successes": 3,
+        "point": 0.04615,
+        "low": 0.01582,
+        "high": 0.12714
+      },
+      "complete_deals": 3,
+      "attachment": {
+        "n": 3,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.5615
+      },
+      "revenue_90d": 0.0,
+      "revenue_per_deal": 0.0,
+      "revenue_per_lead": 0.0
+    }
+  ],
+  "segments": [
+    {
+      "segment": "home_decor",
+      "deals": 84,
+      "attached": 39,
+      "attachment_raw": 0.46429,
+      "attachment_shrunk": 0.46393,
+      "attachment_interval": {
+        "n": 84,
+        "successes": 39,
+        "point": 0.46429,
+        "low": 0.36154,
+        "high": 0.57015
+      },
+      "converters": 28,
+      "revenue_per_converter_raw": 650.46,
+      "revenue_per_converter_shrunk": 296.47,
+      "revenue_per_deal": 216.82011904761904,
+      "revenue_90d": 18212.89,
+      "median_days_to_close": 9.0
+    },
+    {
+      "segment": "health_beauty",
+      "deals": 77,
+      "attached": 42,
+      "attachment_raw": 0.54545,
+      "attachment_shrunk": 0.5393,
+      "attachment_interval": {
+        "n": 77,
+        "successes": 42,
+        "point": 0.54545,
+        "low": 0.43473,
+        "high": 0.65186
+      },
+      "converters": 36,
+      "revenue_per_converter_raw": 1316.61,
+      "revenue_per_converter_shrunk": 289.51,
+      "revenue_per_deal": 615.5568831168831,
+      "revenue_90d": 47397.88,
+      "median_days_to_close": 10.0
+    },
+    {
+      "segment": "car_accessories",
+      "deals": 64,
+      "attached": 29,
+      "attachment_raw": 0.45312,
+      "attachment_shrunk": 0.45361,
+      "attachment_interval": {
+        "n": 64,
+        "successes": 29,
+        "point": 0.45312,
+        "low": 0.33729,
+        "high": 0.57426
+      },
+      "converters": 23,
+      "revenue_per_converter_raw": 828.07,
+      "revenue_per_converter_shrunk": 376.53,
+      "revenue_per_deal": 297.58796875,
+      "revenue_90d": 19045.63,
+      "median_days_to_close": 10.5
+    },
+    {
+      "segment": "household_utilities",
+      "deals": 59,
+      "attached": 40,
+      "attachment_raw": 0.67797,
+      "attachment_shrunk": 0.65806,
+      "attachment_interval": {
+        "n": 59,
+        "successes": 40,
+        "point": 0.67797,
+        "low": 0.55105,
+        "high": 0.78312
+      },
+      "converters": 36,
+      "revenue_per_converter_raw": 725.98,
+      "revenue_per_converter_shrunk": 303.64,
+      "revenue_per_deal": 442.9715254237288,
+      "revenue_90d": 26135.32,
+      "median_days_to_close": 8.0
+    },
+    {
+      "segment": "construction_tools_house_garden",
+      "deals": 55,
+      "attached": 30,
+      "attachment_raw": 0.54545,
+      "attachment_shrunk": 0.53707,
+      "attachment_interval": {
+        "n": 55,
+        "successes": 30,
+        "point": 0.54545,
+        "low": 0.41523,
+        "high": 0.66975
+      },
+      "converters": 22,
+      "revenue_per_converter_raw": 642.87,
+      "revenue_per_converter_shrunk": 312.76,
+      "revenue_per_deal": 257.1496363636364,
+      "revenue_90d": 14143.23,
+      "median_days_to_close": 7.0
+    },
+    {
+      "segment": "audio_video_electronics",
+      "deals": 45,
+      "attached": 26,
+      "attachment_raw": 0.57778,
+      "attachment_shrunk": 0.564,
+      "attachment_interval": {
+        "n": 45,
+        "successes": 26,
+        "point": 0.57778,
+        "low": 0.43301,
+        "high": 0.71031
+      },
+      "converters": 25,
+      "revenue_per_converter_raw": 913.17,
+      "revenue_per_converter_shrunk": 402.15,
+      "revenue_per_deal": 507.3142222222222,
+      "revenue_90d": 22829.14,
+      "median_days_to_close": 11.0
+    },
+    {
+      "segment": "pet",
+      "deals": 26,
+      "attached": 16,
+      "attachment_raw": 0.61538,
+      "attachment_shrunk": 0.58645,
+      "attachment_interval": {
+        "n": 26,
+        "successes": 16,
+        "point": 0.61538,
+        "low": 0.42535,
+        "high": 0.77571
+      },
+      "converters": 14,
+      "revenue_per_converter_raw": 749.02,
+      "revenue_per_converter_shrunk": 403.68,
+      "revenue_per_deal": 403.32076923076926,
+      "revenue_90d": 10486.34,
+      "median_days_to_close": 14.5
+    },
+    {
+      "segment": "computers",
+      "deals": 26,
+      "attached": 10,
+      "attachment_raw": 0.38462,
+      "attachment_shrunk": 0.39833,
+      "attachment_interval": {
+        "n": 26,
+        "successes": 10,
+        "point": 0.38462,
+        "low": 0.22429,
+        "high": 0.57465
+      },
+      "converters": 10,
+      "revenue_per_converter_raw": 336.12,
+      "revenue_per_converter_shrunk": 245.16,
+      "revenue_per_deal": 129.27653846153845,
+      "revenue_90d": 3361.19,
+      "median_days_to_close": 11.0
+    },
+    {
+      "segment": "sports_leisure",
+      "deals": 22,
+      "attached": 13,
+      "attachment_raw": 0.59091,
+      "attachment_shrunk": 0.563,
+      "attachment_interval": {
+        "n": 22,
+        "successes": 13,
+        "point": 0.59091,
+        "low": 0.38735,
+        "high": 0.76744
+      },
+      "converters": 12,
+      "revenue_per_converter_raw": 692.15,
+      "revenue_per_converter_shrunk": 329.72,
+      "revenue_per_deal": 377.53545454545457,
+      "revenue_90d": 8305.78,
+      "median_days_to_close": 6.5
+    },
+    {
+      "segment": "food_supplement",
+      "deals": 21,
+      "attached": 7,
+      "attachment_raw": 0.33333,
+      "attachment_shrunk": 0.36084,
+      "attachment_interval": {
+        "n": 21,
+        "successes": 7,
+        "point": 0.33333,
+        "low": 0.17195,
+        "high": 0.54627
+      },
+      "converters": 6,
+      "revenue_per_converter_raw": 1102.62,
+      "revenue_per_converter_shrunk": 409.58,
+      "revenue_per_deal": 315.0347619047619,
+      "revenue_90d": 6615.7300000000005,
+      "median_days_to_close": 18.0
+    },
+    {
+      "segment": "food_drink",
+      "deals": 21,
+      "attached": 9,
+      "attachment_raw": 0.42857,
+      "attachment_shrunk": 0.4352,
+      "attachment_interval": {
+        "n": 21,
+        "successes": 9,
+        "point": 0.42857,
+        "low": 0.2447,
+        "high": 0.63453
+      },
+      "converters": 5,
+      "revenue_per_converter_raw": 226.04,
+      "revenue_per_converter_shrunk": 237.8,
+      "revenue_per_deal": 53.81904761904762,
+      "revenue_90d": 1130.2,
+      "median_days_to_close": 14.0
+    },
+    {
+      "segment": "bags_backpacks",
+      "deals": 19,
+      "attached": 12,
+      "attachment_raw": 0.63158,
+      "attachment_shrunk": 0.59068,
+      "attachment_interval": {
+        "n": 19,
+        "successes": 12,
+        "point": 0.63158,
+        "low": 0.4104,
+        "high": 0.8085
+      },
+      "converters": 10,
+      "revenue_per_converter_raw": 775.0,
+      "revenue_per_converter_shrunk": 405.65,
+      "revenue_per_deal": 407.8926315789474,
+      "revenue_90d": 7749.96,
+      "median_days_to_close": 7.0
+    },
+    {
+      "segment": "bed_bath_table",
+      "deals": 18,
+      "attached": 10,
+      "attachment_raw": 0.55556,
+      "attachment_shrunk": 0.5317,
+      "attachment_interval": {
+        "n": 18,
+        "successes": 10,
+        "point": 0.55556,
+        "low": 0.33716,
+        "high": 0.7544
+      },
+      "converters": 10,
+      "revenue_per_converter_raw": 738.08,
+      "revenue_per_converter_shrunk": 357.51,
+      "revenue_per_deal": 410.0433333333333,
+      "revenue_90d": 7380.78,
+      "median_days_to_close": 14.0
+    },
+    {
+      "segment": "toys",
+      "deals": 15,
+      "attached": 10,
+      "attachment_raw": 0.66667,
+      "attachment_shrunk": 0.60804,
+      "attachment_interval": {
+        "n": 15,
+        "successes": 10,
+        "point": 0.66667,
+        "low": 0.41714,
+        "high": 0.84824
+      },
+      "converters": 8,
+      "revenue_per_converter_raw": 395.87,
+      "revenue_per_converter_shrunk": 292.74,
+      "revenue_per_deal": 211.12866666666665,
+      "revenue_90d": 3166.93,
+      "median_days_to_close": 5.0
+    },
+    {
+      "segment": "fashion_accessories",
+      "deals": 15,
+      "attached": 6,
+      "attachment_raw": 0.4,
+      "attachment_shrunk": 0.4166,
+      "attachment_interval": {
+        "n": 15,
+        "successes": 6,
+        "point": 0.4,
+        "low": 0.19824,
+        "high": 0.64253
+      },
+      "converters": 4,
+      "revenue_per_converter_raw": 189.9,
+      "revenue_per_converter_shrunk": 239.8,
+      "revenue_per_deal": 50.63866666666667,
+      "revenue_90d": 759.58,
+      "median_days_to_close": 9.0
+    },
+    {
+      "segment": "home_office_furniture",
+      "deals": 12,
+      "attached": 3,
+      "attachment_raw": 0.25,
+      "attachment_shrunk": 0.31879,
+      "attachment_interval": {
+        "n": 12,
+        "successes": 3,
+        "point": 0.25,
+        "low": 0.08894,
+        "high": 0.53231
+      },
+      "converters": 3,
+      "revenue_per_converter_raw": 1222.56,
+      "revenue_per_converter_shrunk": 451.92,
+      "revenue_per_deal": 305.6408333333334,
+      "revenue_90d": 3667.6900000000005,
+      "median_days_to_close": 7.0
+    },
+    {
+      "segment": "phone_mobile",
+      "deals": 12,
+      "attached": 5,
+      "attachment_raw": 0.41667,
+      "attachment_shrunk": 0.43055,
+      "attachment_interval": {
+        "n": 12,
+        "successes": 5,
+        "point": 0.41667,
+        "low": 0.19326,
+        "high": 0.68049
+      },
+      "converters": 5,
+      "revenue_per_converter_raw": 683.7,
+      "revenue_per_converter_shrunk": 304.37,
+      "revenue_per_deal": 284.87416666666667,
+      "revenue_90d": 3418.49,
+      "median_days_to_close": 9.0
+    },
+    {
+      "segment": "stationery",
+      "deals": 11,
+      "attached": 7,
+      "attachment_raw": 0.63636,
+      "attachment_shrunk": 0.57442,
+      "attachment_interval": {
+        "n": 11,
+        "successes": 7,
+        "point": 0.63636,
+        "low": 0.3538,
+        "high": 0.84834
+      },
+      "converters": 7,
+      "revenue_per_converter_raw": 423.09,
+      "revenue_per_converter_shrunk": 279.64,
+      "revenue_per_deal": 269.23636363636365,
+      "revenue_90d": 2961.6,
+      "median_days_to_close": 14.0
+    },
+    {
+      "segment": "baby",
+      "deals": 10,
+      "attached": 6,
+      "attachment_raw": 0.6,
+      "attachment_shrunk": 0.54765,
+      "attachment_interval": {
+        "n": 10,
+        "successes": 6,
+        "point": 0.6,
+        "low": 0.31267,
+        "high": 0.83182
+      },
+      "converters": 6,
+      "revenue_per_converter_raw": 2518.02,
+      "revenue_per_converter_shrunk": 450.94,
+      "revenue_per_deal": 1510.8129999999999,
+      "revenue_90d": 15108.13,
+      "median_days_to_close": 42.5
+    },
+    {
+      "segment": "small_appliances",
+      "deals": 8,
+      "attached": 5,
+      "attachment_raw": 0.625,
+      "attachment_shrunk": 0.55451,
+      "attachment_interval": {
+        "n": 8,
+        "successes": 5,
+        "point": 0.625,
+        "low": 0.30574,
+        "high": 0.86316
+      },
+      "converters": 4,
+      "revenue_per_converter_raw": 7361.72,
+      "revenue_per_converter_shrunk": 499.02,
+      "revenue_per_deal": 3680.86,
+      "revenue_90d": 29446.88,
+      "median_days_to_close": 16.5
+    },
+    {
+      "segment": "books",
+      "deals": 8,
+      "attached": 4,
+      "attachment_raw": 0.5,
+      "attachment_shrunk": 0.48253,
+      "attachment_interval": {
+        "n": 8,
+        "successes": 4,
+        "point": 0.5,
+        "low": 0.21522,
+        "high": 0.78478
+      },
+      "converters": 4,
+      "revenue_per_converter_raw": 1426.97,
+      "revenue_per_converter_shrunk": 311.75,
+      "revenue_per_deal": 713.4849999999999,
+      "revenue_90d": 5707.879999999999,
+      "median_days_to_close": 6.5
+    },
+    {
+      "segment": "handcrafted",
+      "deals": 8,
+      "attached": 3,
+      "attachment_raw": 0.375,
+      "attachment_shrunk": 0.41056,
+      "attachment_interval": {
+        "n": 8,
+        "successes": 3,
+        "point": 0.375,
+        "low": 0.13684,
+        "high": 0.69426
+      },
+      "converters": 1,
+      "revenue_per_converter_raw": 187.6,
+      "revenue_per_converter_shrunk": 316.61,
+      "revenue_per_deal": 23.45,
+      "revenue_90d": 187.6,
+      "median_days_to_close": 15.5
+    },
+    {
+      "segment": "jewerly",
+      "deals": 7,
+      "attached": 0,
+      "attachment_raw": 0.0,
+      "attachment_shrunk": 0.20974,
+      "attachment_interval": {
+        "n": 7,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.35433
+      },
+      "converters": 0,
+      "revenue_per_converter_raw": 0.0,
+      "revenue_per_converter_shrunk": 338.03,
+      "revenue_per_deal": 0.0,
+      "revenue_90d": 0.0,
+      "median_days_to_close": 30.0
+    },
+    {
+      "segment": "music_instruments",
+      "deals": 6,
+      "attached": 3,
+      "attachment_raw": 0.5,
+      "attachment_shrunk": 0.4796,
+      "attachment_interval": {
+        "n": 6,
+        "successes": 3,
+        "point": 0.5,
+        "low": 0.18762,
+        "high": 0.81238
+      },
+      "converters": 3,
+      "revenue_per_converter_raw": 912.08,
+      "revenue_per_converter_shrunk": 388.67,
+      "revenue_per_deal": 456.0416666666667,
+      "revenue_90d": 2736.25,
+      "median_days_to_close": 22.0
+    },
+    {
+      "segment": "home_appliances",
+      "deals": 5,
+      "attached": 3,
+      "attachment_raw": 0.6,
+      "attachment_shrunk": 0.52362,
+      "attachment_interval": {
+        "n": 5,
+        "successes": 3,
+        "point": 0.6,
+        "low": 0.23072,
+        "high": 0.88238
+      },
+      "converters": 3,
+      "revenue_per_converter_raw": 672.25,
+      "revenue_per_converter_shrunk": 387.6,
+      "revenue_per_deal": 403.35,
+      "revenue_90d": 2016.75,
+      "median_days_to_close": 4.0
+    },
+    {
+      "segment": "watches",
+      "deals": 5,
+      "attached": 3,
+      "attachment_raw": 0.6,
+      "attachment_shrunk": 0.52362,
+      "attachment_interval": {
+        "n": 5,
+        "successes": 3,
+        "point": 0.6,
+        "low": 0.23072,
+        "high": 0.88238
+      },
+      "converters": 2,
+      "revenue_per_converter_raw": 38875.72,
+      "revenue_per_converter_shrunk": 694.78,
+      "revenue_per_deal": 15550.287999999997,
+      "revenue_90d": 77751.43999999999,
+      "median_days_to_close": 9.0
+    },
+    {
+      "segment": "gifts",
+      "deals": 4,
+      "attached": 2,
+      "attachment_raw": 0.5,
+      "attachment_shrunk": 0.47547,
+      "attachment_interval": {
+        "n": 4,
+        "successes": 2,
+        "point": 0.5,
+        "low": 0.15004,
+        "high": 0.84996
+      },
+      "converters": 1,
+      "revenue_per_converter_raw": 189.0,
+      "revenue_per_converter_shrunk": 316.87,
+      "revenue_per_deal": 47.25,
+      "revenue_90d": 189.0,
+      "median_days_to_close": 23.0
+    },
+    {
+      "segment": "party",
+      "deals": 4,
+      "attached": 1,
+      "attachment_raw": 0.25,
+      "attachment_shrunk": 0.3744,
+      "attachment_interval": {
+        "n": 4,
+        "successes": 1,
+        "point": 0.25,
+        "low": 0.04559,
+        "high": 0.69936
+      },
+      "converters": 1,
+      "revenue_per_converter_raw": 378.99,
+      "revenue_per_converter_shrunk": 342.36,
+      "revenue_per_deal": 94.7475,
+      "revenue_90d": 378.99,
+      "median_days_to_close": 8.5
+    },
+    {
+      "segment": "air_conditioning",
+      "deals": 2,
+      "attached": 1,
+      "attachment_raw": 0.5,
+      "attachment_shrunk": 0.46926,
+      "attachment_interval": {
+        "n": 2,
+        "successes": 1,
+        "point": 0.5,
+        "low": 0.09453,
+        "high": 0.90547
+      },
+      "converters": 0,
+      "revenue_per_converter_raw": 0.0,
+      "revenue_per_converter_shrunk": 338.03,
+      "revenue_per_deal": 0.0,
+      "revenue_90d": 0.0,
+      "median_days_to_close": 10.0
+    },
+    {
+      "segment": "games_consoles",
+      "deals": 1,
+      "attached": 0,
+      "attachment_raw": 0.0,
+      "attachment_shrunk": 0.39227,
+      "attachment_interval": {
+        "n": 1,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.79345
+      },
+      "converters": 0,
+      "revenue_per_converter_raw": 0.0,
+      "revenue_per_converter_shrunk": 338.03,
+      "revenue_per_deal": 0.0,
+      "revenue_90d": 0.0,
+      "median_days_to_close": 10.0
+    },
+    {
+      "segment": "religious",
+      "deals": 1,
+      "attached": 0,
+      "attachment_raw": 0.0,
+      "attachment_shrunk": 0.39227,
+      "attachment_interval": {
+        "n": 1,
+        "successes": 0,
+        "point": 0.0,
+        "low": 0.0,
+        "high": 0.79345
+      },
+      "converters": 0,
+      "revenue_per_converter_raw": 0.0,
+      "revenue_per_converter_shrunk": 338.03,
+      "revenue_per_deal": 0.0,
+      "revenue_90d": 0.0,
+      "median_days_to_close": 4.0
+    }
+  ],
+  "prior": {
+    "alpha": 2.7044,
+    "beta": 3.1897,
+    "mean": 0.45883,
+    "strength": 5.89
+  },
+  "days_to_close": {
+    "summary": {
+      "n": 842,
+      "min": -2.0,
+      "p25": 5.0,
+      "median": 14.0,
+      "p75": 54.75,
+      "p90": 161.89999999999998,
+      "max": 427.0,
+      "mean": 48.44061757719715
+    },
+    "histogram": [
+      {
+        "start": 0,
+        "end": 30,
+        "count": 546,
+        "overflow": false
+      },
+      {
+        "start": 30,
+        "end": 60,
+        "count": 97,
+        "overflow": false
+      },
+      {
+        "start": 60,
+        "end": 90,
+        "count": 47,
+        "overflow": false
+      },
+      {
+        "start": 90,
+        "end": 120,
+        "count": 35,
+        "overflow": false
+      },
+      {
+        "start": 120,
+        "end": 150,
+        "count": 24,
+        "overflow": false
+      },
+      {
+        "start": 150,
+        "end": 180,
+        "count": 24,
+        "overflow": false
+      },
+      {
+        "start": 180,
+        "end": 210,
+        "count": 23,
+        "overflow": false
+      },
+      {
+        "start": 210,
+        "end": 240,
+        "count": 11,
+        "overflow": false
+      },
+      {
+        "start": 240,
+        "end": 270,
+        "count": 9,
+        "overflow": false
+      },
+      {
+        "start": 270,
+        "end": 300,
+        "count": 2,
+        "overflow": false
+      },
+      {
+        "start": 300,
+        "end": 330,
+        "count": 12,
+        "overflow": false
+      },
+      {
+        "start": 330,
+        "end": 360,
+        "count": 7,
+        "overflow": false
+      },
+      {
+        "start": 360,
+        "end": 390,
+        "count": 3,
+        "overflow": false
+      },
+      {
+        "start": 390,
+        "end": 420,
+        "count": 0,
+        "overflow": false
+      },
+      {
+        "start": 420,
+        "end": 450,
+        "count": 2,
+        "overflow": false
+      }
+    ]
+  },
+  "revenue_concentration": {
+    "converting_clients": 289,
+    "percentiles": {
+      "25": 137.5,
+      "50": 323.6,
+      "75": 849.97,
+      "90": 2257.0,
+      "99": 12246.37
+    },
+    "top_decile_share": 0.6429
+  }
+}

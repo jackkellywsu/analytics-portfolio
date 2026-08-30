@@ -10,7 +10,16 @@ import math
 
 import pytest
 
-from pipeline.stats import Interval, histogram, quantile, summarise, wilson
+from pipeline.stats import (
+    BetaPrior,
+    Interval,
+    fit_beta_prior,
+    histogram,
+    quantile,
+    shrink_group_means,
+    summarise,
+    wilson,
+)
 
 
 class TestWilson:
@@ -118,3 +127,129 @@ class TestSummarise:
 
     def test_empty(self) -> None:
         assert summarise([]) == {}
+
+
+class TestBetaShrinkage:
+    def test_prior_recovers_a_known_population(self) -> None:
+        """Groups drawn around a 40% rate should yield a prior centred there."""
+        groups = [(40, 100), (35, 100), (45, 100), (38, 100), (42, 100)]
+        prior = fit_beta_prior(groups)
+        assert prior.mean == pytest.approx(0.40, abs=0.02)
+        assert prior.strength > 0
+
+    def test_small_groups_are_pulled_hardest(self) -> None:
+        groups = [(40, 100), (35, 100), (45, 100), (38, 100), (2, 2)]
+        prior = fit_beta_prior(groups)
+
+        tiny_raw = 2 / 2
+        tiny_shrunk = prior.shrink(2, 2)
+        big_raw = 40 / 100
+        big_shrunk = prior.shrink(40, 100)
+
+        # The 2-of-2 group must not stay at 100%.
+        assert tiny_shrunk < tiny_raw - 0.2
+        # The large group barely moves.
+        assert abs(big_shrunk - big_raw) < abs(tiny_shrunk - tiny_raw)
+
+    def test_shrinkage_never_leaves_the_unit_interval(self) -> None:
+        prior = fit_beta_prior([(1, 10), (9, 10), (5, 10), (3, 10)])
+        for successes, trials in [(0, 1), (1, 1), (0, 1000), (1000, 1000)]:
+            value = prior.shrink(successes, trials)
+            assert 0.0 <= value <= 1.0
+
+    def test_zero_variance_falls_back_to_uniform(self) -> None:
+        # Every group identical: a moment fit would divide by zero.
+        prior = fit_beta_prior([(5, 10), (5, 10), (5, 10)])
+        assert prior == BetaPrior(1.0, 1.0)
+
+    def test_too_few_groups_falls_back_to_uniform(self) -> None:
+        assert fit_beta_prior([(5, 10)]) == BetaPrior(1.0, 1.0)
+        assert fit_beta_prior([]) == BetaPrior(1.0, 1.0)
+
+    def test_overdispersed_input_falls_back_rather_than_going_negative(self) -> None:
+        # Variance at the theoretical maximum would give a non-positive
+        # concentration and, unguarded, negative alpha and beta.
+        prior = fit_beta_prior([(0, 10), (10, 10), (0, 10), (10, 10)])
+        assert prior.alpha > 0 and prior.beta > 0
+
+
+class TestShrinkGroupMeans:
+    def test_small_group_is_pulled_toward_the_grand_mean(self) -> None:
+        groups = {
+            "big_a": [10.0, 11.0, 9.0, 10.5, 9.5] * 10,
+            "big_b": [20.0, 21.0, 19.0, 20.5, 19.5] * 10,
+            "big_c": [30.0, 31.0, 29.0, 30.5, 29.5] * 10,
+            "tiny": [40.0, 30.0],
+        }
+        shrunk = shrink_group_means(groups)
+        raw_tiny = sum(groups["tiny"]) / len(groups["tiny"])
+        grand = sum(v for values in groups.values() for v in values) / sum(
+            len(v) for v in groups.values()
+        )
+        # The two-observation group moves toward the grand mean; the large,
+        # internally consistent groups keep their own.
+        assert abs(shrunk["tiny"] - grand) < abs(raw_tiny - grand)
+        assert shrunk["big_a"] == pytest.approx(10.0, abs=0.5)
+
+    def test_a_single_extreme_group_resists_shrinkage(self) -> None:
+        """Documents a real limitation of the moment-based estimator.
+
+        One wildly out-of-range group inflates the between-group variance, and
+        a large between-group variance is exactly what tells the estimator that
+        group differences are real and should be preserved. The outlier ends up
+        justifying itself.
+
+        This is why the attribution build shrinks revenue on the log scale and
+        conditions on clients that actually converted, rather than feeding raw
+        heavy-tailed means straight in. The estimator is not wrong; it is being
+        asked the wrong question when the input is that skewed.
+        """
+        groups = {
+            "a": [10.0] * 50,
+            "b": [12.0] * 50,
+            "c": [11.0] * 50,
+            "outlier": [500.0, 5.0],
+        }
+        shrunk = shrink_group_means(groups)
+        raw = sum(groups["outlier"]) / len(groups["outlier"])
+        # Barely moves — this is the documented failure, asserted so that a
+        # future change to the estimator has to confront it deliberately.
+        assert shrunk["outlier"] > raw * 0.9
+
+    def test_large_consistent_group_keeps_its_mean(self) -> None:
+        groups = {
+            "a": [10.0] * 200,
+            "b": [20.0] * 200,
+            "c": [30.0] * 200,
+        }
+        shrunk = shrink_group_means(groups)
+        # No within-group variance at all, so nothing should move.
+        assert shrunk["a"] == pytest.approx(10.0, abs=1e-6)
+        assert shrunk["c"] == pytest.approx(30.0, abs=1e-6)
+
+    def test_no_real_between_group_spread_collapses_to_grand_mean(self) -> None:
+        # Groups differ only by sampling noise around the same mean.
+        groups = {
+            "a": [9.0, 11.0, 10.0, 10.0],
+            "b": [10.0, 10.0, 9.0, 11.0],
+            "c": [11.0, 9.0, 10.0, 10.0],
+        }
+        shrunk = shrink_group_means(groups)
+        for value in shrunk.values():
+            assert value == pytest.approx(10.0, abs=0.5)
+
+    def test_shrunk_means_stay_within_the_observed_range(self) -> None:
+        groups = {"a": [1.0, 2.0], "b": [100.0, 200.0], "c": [50.0] * 20}
+        shrunk = shrink_group_means(groups)
+        low = min(v for values in groups.values() for v in values)
+        high = max(v for values in groups.values() for v in values)
+        for value in shrunk.values():
+            assert low <= value <= high
+
+    def test_empty_group_gets_the_grand_mean(self) -> None:
+        groups = {"a": [10.0] * 5, "b": [20.0] * 5, "empty": []}
+        shrunk = shrink_group_means(groups)
+        assert 10.0 <= shrunk["empty"] <= 20.0
+
+    def test_single_group_is_returned_unchanged(self) -> None:
+        assert shrink_group_means({"only": [3.0, 5.0]})["only"] == pytest.approx(4.0)
