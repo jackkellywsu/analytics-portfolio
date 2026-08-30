@@ -1,5 +1,7 @@
 # Jack Kelly — BI & Applied AI Portfolio
 
+**Live:** https://analytics-portfolio-umber.vercel.app
+
 A working portfolio, not a slide deck. Four things it sets out to demonstrate:
 
 1. **Governed dashboards on real data** — a B2B business-development pipeline and a
