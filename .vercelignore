@@ -1,0 +1,5 @@
+# Nothing outside web/ is needed to build the site. The Python pipeline is here
+# because the code is part of the portfolio, not because the deploy runs it.
+.venv
+pipeline
+docs

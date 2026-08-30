@@ -31,3 +31,7 @@ Thumbs.db
 
 # Intermediate build artefacts; the published copy lives in web/public/data
 pipeline/processed/
+
+# Vercel project link and the OIDC token it downloads
+.vercel
+.env*
