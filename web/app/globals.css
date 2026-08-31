@@ -1,72 +1,91 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Design tokens.
+   Design tokens — warm editorial.
 
-   The site is dark by design, not by preference detection. It is an analytics
-   surface: charts, tables, and SQL read better on a dark ground, and committing
-   to one palette keeps every figure on the site colour-consistent.
+   Light by design. The palette leads with a cream, and a cream is a ground:
+   trying to use it as an accent on a dark surface would waste the one colour
+   that sets the whole tone. Charts read perfectly well on a light surface as
+   long as the series colours are chosen for it, which is the part that takes
+   the work.
+
+   Two things are worth stating because they are easy to get wrong:
+
+   The brand palette is not a chart palette. Of the five supplied colours, the
+   sand (#F2CC8F) sits at 1.34:1 against the cream and the sage at 2.11:1 —
+   invisible as marks. They stay on badges, fills and decoration, where contrast
+   is not carrying meaning.
+
+   Terracotta and sage are a red-green pair, which is the exact pair that
+   collapses under the two most common kinds of colour blindness. Measured, they
+   separate by ΔE 6-7, inside the band that needs a second encoding channel. So
+   the validated chart pair is terracotta against indigo (ΔE 18.5, every gate
+   passed), and the green third slot is only used where marks are also directly
+   labelled.
 --------------------------------------------------------------------------- */
 
 @theme {
-  /* Ground */
-  --color-bg: #08090b;
-  --color-surface: #0e1014;
-  --color-surface-2: #14171d;
-  --color-surface-3: #1b1f27;
-  --color-border: #23272f;
-  --color-border-strong: #333944;
+  /* Ground — the supplied cream, with cards lifting slightly off it */
+  --color-bg: #f4f1de;
+  --color-surface: #fbfaf3;
+  --color-surface-2: #efebd6;
+  --color-surface-3: #e7e2c9;
+  --color-border: #ddd7bc;
+  --color-border-strong: #c5bd9c;
 
-  /* Ink */
-  --color-ink: #e9ebef;
-  --color-ink-muted: #9aa1ad;
-  --color-ink-subtle: #6b727e;
+  /* Ink — the supplied navy, and two steps down from it. Every one of these
+     clears 4.5:1 against both the ground and the card surface, because they all
+     carry small text somewhere. */
+  --color-ink: #3d405b;
+  --color-ink-muted: #5a5d77;
+  --color-ink-subtle: #63667d;
 
-  /* Accent — a single warm signal against the cool ground */
-  --color-accent: #f0b429;
-  --color-accent-bright: #ffc94a;
-  --color-accent-dim: #7a5c14;
+  /* Accent. The raw terracotta is 2.6:1 on cream — fine behind a badge, not
+     fine as a link. The text step is darkened until it clears 5:1; the raw one
+     is kept for fills. */
+  --color-accent: #a8421f;
+  --color-accent-bright: #e07a5f;
+  --color-accent-soft: #f2cc8f;
 
   /* Semantic */
-  --color-positive: #3fb950;
-  --color-negative: #f85149;
-  --color-caution: #d29922;
-  --color-info: #58a6ff;
+  --color-positive: #2e7355;
+  --color-negative: #b3261e;
+  --color-caution: #9a6b12;
+  --color-info: #4a4e8f;
 
   /* ---------------------------------------------------------------------
-     Chart series.
+     Chart series, validated against this surface (#f4f1de).
 
-     Validated against this site's chart surface (#0e1014), not a generic one:
-     all three sit inside the L 0.48-0.67 band, clear the chroma floor, and
-     clear 3:1 contrast. Two series separate cleanly (CVD dE 27.4); three pass
-     but the yellow/aqua pair is tight under tritanopia (dE 4.0), so any
-     three-series chart must also carry direct labels. Four fail outright -
-     past three, facet or fold the tail into "Other" rather than adding a hue.
-
-     The site accent (#f0b429) is deliberately NOT a series colour: at L 0.804
-     it sits outside the band and would dominate whatever it shared a chart
-     with. It stays on UI chrome.
+     Two series separate cleanly: CVD ΔE 18.5, every gate passed. A third is
+     legal only alongside direct labels, because terracotta and green sit at
+     ΔE 6.6 under protanopia. Past three, facet or fold the tail into "Other".
   --------------------------------------------------------------------- */
-  --color-series-1: #c98500;
-  --color-series-2: #3987e5;
-  --color-series-3: #199e70;
+  --color-series-1: #c0512f;
+  --color-series-2: #4a4e8f;
+  --color-series-3: #0b7a5e;
+
+  /* Flagged points. Deliberately not the alert red: on this palette the red and
+     the terracotta series are neighbours, and a marker that shares a hue with
+     the line it sits on is not a marker. Ink is the one value guaranteed to
+     separate from every series colour and from the ground. */
+  --color-mark: #3d405b;
 
   /* Chart chrome, one step off the surface and recessive by design. */
-  --color-grid: #1e222a;
-  --color-axis: #2b313b;
+  --color-grid: #e5e0c6;
+  --color-axis: #d3cbab;
 
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", monospace;
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
@@ -78,6 +97,13 @@ body {
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Familjen Grotesk carries the display sizes on its own weight and width, so
+   headings are tightened rather than set in a second face. */
+.font-display {
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -100,8 +126,8 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-accent);
-  color: var(--color-bg);
+  background-color: var(--color-accent-soft);
+  color: var(--color-ink);
 }
 
 :focus-visible {

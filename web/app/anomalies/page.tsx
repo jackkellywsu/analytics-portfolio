@@ -116,7 +116,7 @@ export default function AnomaliesPage() {
                 items={[
                   { label: "Observed", color: "var(--color-series-1)" },
                   { label: "Expected", color: "var(--color-series-2)" },
-                  { label: "Flagged", color: "var(--color-negative)" },
+                  { label: "Flagged", color: "var(--color-mark)" },
                 ]}
               />
             }
@@ -172,7 +172,7 @@ export default function AnomaliesPage() {
                 items={[
                   { label: "Observed", color: "var(--color-series-1)" },
                   { label: "Expected", color: "var(--color-series-2)" },
-                  { label: "Flagged", color: "var(--color-negative)" },
+                  { label: "Flagged", color: "var(--color-mark)" },
                 ]}
               />
             }

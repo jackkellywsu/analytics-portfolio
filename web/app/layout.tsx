@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Familjen_Grotesk, JetBrains_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SITE } from "@/lib/routes";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// One face carries the whole site. Familjen Grotesk is a variable grotesk with
+// enough character at display sizes that a second display face would be
+// decoration rather than contrast.
+const familjen = Familjen_Grotesk({
+  variable: "--font-familjen",
   subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -34,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
+      className={`${familjen.variable} ${jetbrainsMono.variable} antialiased`}
     >
       <body className="flex min-h-screen flex-col font-sans">
         <a

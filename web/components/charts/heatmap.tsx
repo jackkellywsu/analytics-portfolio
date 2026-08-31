@@ -6,24 +6,24 @@ import { int } from "@/lib/format";
 /**
  * Sequential heatmap.
  *
- * One hue, ordered light to dark — except the ordering is inverted for a dark
- * surface. On a light ground the palest step means "near zero" because it
- * recedes toward the page; on this ground the palest step is the loudest thing
- * on screen, so the ramp runs from near-surface (nothing) to bright (a lot).
- * Using a light-to-dark ramp unchanged here would make empty cells shout.
+ * One hue, running light to dark as magnitude rises. On this cream ground the
+ * palest step sits almost on the surface, which is what "near zero" should look
+ * like — an empty cell recedes rather than shouting. The ramp is the indigo
+ * from the chart palette rather than the terracotta, because terracotta at full
+ * strength reads as an alert and a count of three is not an alert.
  *
  * Never a rainbow: multi-hue ramps invent category boundaries where the data
  * has a continuum.
  */
 const RAMP = [
-  "#11161f",
-  "#12314f",
-  "#154272",
-  "#1c5cab",
-  "#2a78d6",
-  "#5598e7",
-  "#86b6ef",
-  "#b7d3f6",
+  "#eeead2",
+  "#d8d5e0",
+  "#bcbad0",
+  "#9b9cc0",
+  "#7c7eae",
+  "#5f6299",
+  "#4a4e8f",
+  "#343873",
 ];
 
 export type HeatCell = {
@@ -147,8 +147,8 @@ export function Heatmap({
                             // Ink flips on the pale end of the ramp so the label
                             // always clears contrast against its own cell.
                             fill={
-                              value / max > 0.62
-                                ? "var(--color-bg)"
+                              value / max > 0.55
+                                ? "var(--color-surface)"
                                 : "var(--color-ink)"
                             }
                           >

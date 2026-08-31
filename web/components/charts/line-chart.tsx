@@ -152,11 +152,10 @@ export function LineChart({
                       cx={cx}
                       cy={cy}
                       r={5}
-                      fill={
-                        marker.direction === "drop"
-                          ? "var(--color-info)"
-                          : "var(--color-negative)"
-                      }
+                      // One colour for every flag. Direction is already carried
+                      // by the geometry — a spike goes up — so spending a second
+                      // hue on it would encode information the chart shows twice.
+                      fill="var(--color-mark)"
                       stroke="var(--color-surface)"
                       strokeWidth={2}
                     />
