@@ -27,10 +27,19 @@ export function useMeasuredWidth<T extends HTMLElement>(): [
   useLayoutEffect(() => {
     const node = ref.current;
     if (!node) return;
-    const observer = new ResizeObserver((entries) => {
-      const next = entries[0]?.contentRect.width ?? 0;
+
+    // Measure once, synchronously, before observing. ResizeObserver normally
+    // fires an initial callback on observe, but not reliably in a backgrounded
+    // or hidden tab — and a chart whose only path to rendering is that callback
+    // silently renders nothing. This was found by a page rendering its headings
+    // and every one of its charts as an empty div.
+    const measure = () => {
+      const next = node.getBoundingClientRect().width;
       setWidth((current) => (Math.abs(current - next) > 0.5 ? next : current));
-    });
+    };
+    measure();
+
+    const observer = new ResizeObserver(measure);
     observer.observe(node);
     return () => observer.disconnect();
   }, []);

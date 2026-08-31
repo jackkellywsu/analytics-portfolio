@@ -69,7 +69,7 @@ export const ROUTES: Route[] = [
     label: "Anomalies",
     title: "Anomaly detection",
     blurb:
-      "Automated detection over the funnel time series, with written explanations that link to the evidence.",
+      "Automated detection over two real time series, validated by injecting anomalies of known size to measure what it would miss.",
     group: "AI systems",
     phase: 6,
   },
@@ -108,7 +108,7 @@ export function routeByHref(href: string): Route | undefined {
 }
 
 /** The highest phase currently shipped. Pages above this render a scaffold. */
-export const CURRENT_PHASE: Phase = 4;
+export const CURRENT_PHASE: Phase = 6;
 
 export const RESUME_HREF = "/Jack-Kelly-Resume.pdf";
 

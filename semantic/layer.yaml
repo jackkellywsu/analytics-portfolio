@@ -150,20 +150,24 @@ entities:
     caveats:
       - review_id is not unique; one review can attach to more than one order.
 
+# Dimension names are display labels, not column names. The benchmark caught a
+# model writing "product_series" as a column because the layer listed it that
+# way - so the simple ones are now named after the column they wrap, and the
+# prompt states the rule explicitly.
 dimensions:
   sector:
     entity: accounts
     sql: crm_accounts.sector
     description: Industry of the client account.
-  account_name:
+  account:
     entity: accounts
     sql: crm_accounts.account
     description: Client account name.
-  product_name:
+  product:
     entity: products
     sql: crm_products.product
     description: Product name.
-  product_series:
+  series:
     entity: products
     sql: crm_products.series
     description: Product family (GTX, MG, GTK).
@@ -187,7 +191,7 @@ dimensions:
     entity: opportunities
     sql: strftime(crm_opportunities.close_date, '%Y-%m')
     description: Month an opportunity closed.
-  channel:
+  origin:
     entity: leads
     sql: funnel_leads.origin
     description: >

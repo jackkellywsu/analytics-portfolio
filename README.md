@@ -84,6 +84,13 @@ paying for the API calls again:
 .venv/Scripts/python.exe -m pipeline.evals.analyze
 ```
 
+Anomaly detection runs separately, and the narratives step needs the key:
+
+```bash
+.venv/Scripts/python.exe -m pipeline.build_anomalies
+.venv/Scripts/python.exe -m pipeline.build_anomaly_narratives
+```
+
 `acquire` downloads each source and writes a provenance record with per-file checksums
 and quote-aware row counts. The `build_*` scripts clean each source and write a quality
 log recording every rule applied and the rows it touched. `build_manifest` publishes the
@@ -99,7 +106,7 @@ drift from what actually shipped.
 | 3 | Dashboards | ✅ done |
 | 4 | Semantic layer, natural-language interface, guardrails | ✅ done |
 | 5 | Evaluation lab | ✅ done |
-| 6 | Anomaly detection, about, polish | next |
+| 6 | Anomaly detection, about, polish | ✅ done |
 
 Prior, abandoned work on a USPTO patent dataset is preserved on the
 `archive/uspto-portfolio` branch. That effort stopped when the PatentsView API was retired.

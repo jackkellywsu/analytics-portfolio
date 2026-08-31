@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
+import { StatRow, StatTile } from "@/components/ui/stat-tile";
 import { NAV_ROUTES, RESUME_HREF } from "@/lib/routes";
+import { manifest } from "@/lib/manifest";
+import { int, pct } from "@/lib/format";
+import evals from "@/public/data/evals.json";
+import anomalies from "@/public/data/anomalies.json";
+import corpus from "@/public/data/guardrail_cases.json";
 
 const CAPABILITIES = [
   {
@@ -48,6 +54,18 @@ const GROUND_RULES = [
 ];
 
 export default function Home() {
+  // Every figure below is read from the generated data files rather than typed
+  // in. A hardcoded headline number is the first thing to go stale, and this
+  // site's whole argument is that its numbers are traceable.
+  const rows = manifest.tables.reduce((n, t) => n + t.rows, 0);
+  const layerGains = evals.ablation
+    .filter((a) => a.a === "layer" && a.b === "bare")
+    .map((a) => a.strict.difference);
+  const flagged = anomalies.series.reduce((n, s) => n + s.anomalies.length, 0);
+  const production = evals.accuracy.find(
+    (a) => a.model === "haiku" && a.condition === "layer",
+  )!;
+
   return (
     <>
       <section className="border-b border-border">
@@ -87,6 +105,33 @@ export default function Home() {
               </a>
             </div>
           </div>
+        </Container>
+      </section>
+
+      <section className="border-b border-border">
+        <Container wide className="py-14">
+          <StatRow>
+            <StatTile
+              label="Rows governed"
+              value={int(rows)}
+              detail={`Across ${manifest.tables.length} documented tables from three sources, every cleaning rule logged with the rows it touched`}
+            />
+            <StatTile
+              label="What the semantic layer is worth"
+              value={`+${Math.round(Math.min(...layerGains) * 100)}–${Math.round(Math.max(...layerGains) * 100)} pts`}
+              detail="Measured accuracy gain over a bare schema across 72 benchmark cases and three models, paired and significant for each"
+            />
+            <StatTile
+              label="Cost of a question"
+              value={`$${production.cost_per_query.toFixed(4)}`}
+              detail={`${pct(production.rate_lenient.point)} accurate on the benchmark, answered in about two seconds`}
+            />
+            <StatTile
+              label="Checks that run in your browser"
+              value={int(corpus.cases.length + flagged)}
+              detail={`${corpus.cases.length} guardrail conformance cases and ${flagged} flagged anomalies, all reproducible from one command`}
+            />
+          </StatRow>
         </Container>
       </section>
 

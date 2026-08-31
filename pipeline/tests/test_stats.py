@@ -17,8 +17,11 @@ from pipeline.stats import (
     histogram,
     calibration,
     compare_paired,
+    mad,
     mcnemar_exact,
     paired_bootstrap,
+    robust_z,
+    rolling_median,
     quantile,
     shrink_group_means,
     summarise,
@@ -340,3 +343,55 @@ class TestCalibration:
 
     def test_empty_input(self) -> None:
         assert calibration([], [])["n"] == 0
+
+
+class TestRobustStatistics:
+    def test_mad_matches_the_definition(self) -> None:
+        # median 3; deviations 2,1,0,1,2 -> median deviation 1 -> 1.4826
+        assert mad([1.0, 2.0, 3.0, 4.0, 5.0]) == pytest.approx(1.4826, abs=1e-6)
+
+    def test_mad_resists_an_outlier_where_stdev_does_not(self) -> None:
+        """The property the whole detector rests on.
+
+        Deliberately not a bimodal series: with two equal modes, adding a single
+        element flips the median from one mode to the other and the MAD moves for
+        a reason that has nothing to do with the outlier. The first version of
+        this test did exactly that and failed for the wrong reason.
+        """
+        import statistics
+
+        clean = [8.0, 9.0, 10.0, 10.0, 11.0, 11.0, 12.0, 13.0] * 5
+        spiked = [*clean, 5000.0]
+
+        stdev_ratio = statistics.pstdev(spiked) / statistics.pstdev(clean)
+        mad_ratio = mad(spiked) / mad(clean)
+
+        # The standard deviation is destroyed by one point; the MAD barely moves.
+        assert stdev_ratio > 100
+        assert mad_ratio < 1.2
+
+    def test_mad_of_a_constant_series_is_zero(self) -> None:
+        assert mad([7.0] * 10) == 0.0
+
+    def test_robust_z_flags_the_spike(self) -> None:
+        series = [10.0, 11.0, 9.0, 10.0, 11.0, 9.0, 10.0, 40.0]
+        scores = robust_z(series)
+        assert scores[-1] > 10
+        assert all(abs(s) < 3 for s in scores[:-1])
+
+    def test_robust_z_on_a_constant_series_is_all_zero(self) -> None:
+        assert robust_z([5.0] * 6) == [0.0] * 6
+
+    def test_rolling_median_smooths_without_chasing_the_spike(self) -> None:
+        series = [10.0, 10.0, 10.0, 100.0, 10.0, 10.0, 10.0]
+        smoothed = rolling_median(series, 5)
+        # The trend at the spike stays near the level of its neighbours.
+        assert smoothed[3] == pytest.approx(10.0)
+
+    def test_rolling_median_handles_edges(self) -> None:
+        smoothed = rolling_median([1.0, 2.0, 3.0], 5)
+        assert len(smoothed) == 3
+
+    def test_rolling_median_rejects_a_bad_window(self) -> None:
+        with pytest.raises(ValueError, match="at least 1"):
+            rolling_median([1.0, 2.0], 0)

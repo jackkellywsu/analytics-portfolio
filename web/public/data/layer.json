@@ -126,17 +126,17 @@
       "sql": "crm_accounts.sector",
       "description": "Industry of the client account."
     },
-    "account_name": {
+    "account": {
       "entity": "accounts",
       "sql": "crm_accounts.account",
       "description": "Client account name."
     },
-    "product_name": {
+    "product": {
       "entity": "products",
       "sql": "crm_products.product",
       "description": "Product name."
     },
-    "product_series": {
+    "series": {
       "entity": "products",
       "sql": "crm_products.series",
       "description": "Product family (GTX, MG, GTK)."
@@ -166,7 +166,7 @@
       "sql": "strftime(crm_opportunities.close_date, '%Y-%m')",
       "description": "Month an opportunity closed."
     },
-    "channel": {
+    "origin": {
       "entity": "leads",
       "sql": "funnel_leads.origin",
       "description": "Acquisition channel of a lead. Values include organic_search, paid_search, social, unknown, direct_traffic, email, referral, display, other, other_publicities, not_recorded.\n"

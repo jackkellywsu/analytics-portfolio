@@ -398,3 +398,55 @@ def calibration(
 
     brier = sum((c - (1.0 if o else 0.0)) ** 2 for c, o in zip(confidences, outcomes)) / n
     return {"bins": rows, "ece": round(ece, 5), "brier": round(brier, 5), "n": n}
+
+
+def median(values: list[float]) -> float:
+    return quantile(values, 0.5)
+
+
+def mad(values: list[float]) -> float:
+    """Median absolute deviation, scaled to estimate the standard deviation.
+
+    Used instead of the standard deviation for anomaly detection because the
+    standard deviation is computed from the very outliers it is meant to find:
+    one large spike inflates it, which raises the threshold, which hides the
+    spike. The MAD has a breakdown point of 50% - half the series would have to
+    be anomalous before it is fooled.
+
+    The 1.4826 factor makes it comparable to a standard deviation for normally
+    distributed data, so a threshold of 3 means roughly what it usually means.
+    """
+    if not values:
+        return 0.0
+    centre = median(values)
+    deviations = [abs(v - centre) for v in values]
+    return 1.4826 * median(deviations)
+
+
+def robust_z(values: list[float]) -> list[float]:
+    """Distance from the median in robust standard deviations."""
+    if not values:
+        return []
+    centre = median(values)
+    scale = mad(values)
+    if scale <= 0:
+        return [0.0 for _ in values]
+    return [(v - centre) / scale for v in values]
+
+
+def rolling_median(values: list[float], window: int) -> list[float]:
+    """Centred rolling median, with the window shrinking at the edges.
+
+    A mean here would let a spike pull the trend up toward itself and then
+    partly hide from the residual it is supposed to appear in.
+    """
+    if window < 1:
+        msg = "window must be at least 1"
+        raise ValueError(msg)
+    half = window // 2
+    out = []
+    for i in range(len(values)):
+        low = max(0, i - half)
+        high = min(len(values), i + half + 1)
+        out.append(median(values[low:high]))
+    return out

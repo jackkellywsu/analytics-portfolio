@@ -100,9 +100,14 @@ export function renderLayer(columns: ColumnIndex): string {
     lines.push("");
   }
 
-  lines.push("# Dimensions");
+  lines.push(
+    "# Dimensions",
+    "These names are display labels. Always write the SQL expression, never the label.",
+  );
   for (const [name, dimension] of Object.entries(layer.dimensions)) {
-    lines.push(`- ${name}: ${dimension.sql} — ${collapse(dimension.description)}`);
+    lines.push(
+      `- "${name}" -> write ${dimension.sql} — ${collapse(dimension.description)}`,
+    );
   }
 
   lines.push("", "# Permitted joins");
