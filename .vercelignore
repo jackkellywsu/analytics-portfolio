@@ -1,5 +1,9 @@
 # Nothing outside web/ is needed to build the site. The Python pipeline is here
 # because the code is part of the portfolio, not because the deploy runs it.
-.venv
-pipeline
-docs
+#
+# These patterns are anchored with a leading slash on purpose. Unanchored,
+# "pipeline" also matched web/app/pipeline/, which silently 404'd the dashboard
+# in production while building fine locally.
+/.venv
+/pipeline
+/docs
